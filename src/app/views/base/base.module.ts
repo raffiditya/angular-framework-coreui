@@ -14,6 +14,7 @@ import { TablesComponent } from './tables.component';
 // Tabs Component
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TabsComponent } from './tabs.component';
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 
 // Carousel Component
 import { CarouselModule } from 'ngx-bootstrap/carousel';
@@ -45,6 +46,8 @@ import { TooltipsComponent } from './tooltips.component';
 
 // Components Routing
 import { BaseRoutingModule } from './base-routing.module';
+import { DataTableComponent } from './data-table.component';
+import { FormsNgComponent } from './forms-ng.component';
 
 @NgModule({
   imports: [
@@ -58,7 +61,8 @@ import { BaseRoutingModule } from './base-routing.module';
     PaginationModule.forRoot(),
     PopoverModule.forRoot(),
     ProgressbarModule.forRoot(),
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    NgxDatatableModule
   ],
   declarations: [
     CardsComponent,
@@ -71,7 +75,9 @@ import { BaseRoutingModule } from './base-routing.module';
     PaginationsComponent,
     PopoversComponent,
     ProgressComponent,
-    TooltipsComponent
+    TooltipsComponent,
+    DataTableComponent,
+    FormsNgComponent
   ]
 })
 export class BaseModule { }

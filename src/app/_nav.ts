@@ -52,6 +52,11 @@ export const navItems = [
         icon: 'icon-puzzle'
       },
       {
+        name: 'Forms New',
+        url: '/base/forms',
+        icon: 'icon-puzzle'
+      },
+      {
         name: 'Pagination',
         url: '/base/paginations',
         icon: 'icon-puzzle'
@@ -75,6 +80,15 @@ export const navItems = [
         name: 'Tables',
         url: '/base/tables',
         icon: 'icon-puzzle'
+      },
+      {
+        name: 'Datatable',
+        url: '/base/datatable',
+        icon: 'icon-puzzle',
+        badge: {
+          variant: 'success',
+          text: 'CUSTOM'
+        }
       },
       {
         name: 'Tabs',

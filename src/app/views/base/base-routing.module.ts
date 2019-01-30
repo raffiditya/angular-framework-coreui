@@ -12,6 +12,8 @@ import { PaginationsComponent } from './paginations.component';
 import {PopoversComponent} from './popovers.component';
 import {ProgressComponent} from './progress.component';
 import {TooltipsComponent} from './tooltips.component';
+import {DataTableComponent} from "./data-table.component";
+import {FormsNgComponent} from "./forms-ng.component";
 
 const routes: Routes = [
   {
@@ -39,6 +41,13 @@ const routes: Routes = [
         }
       },
       {
+        path: 'forms-new',
+        component: FormsNgComponent,
+        data: {
+          title: 'Forms NG'
+        }
+      },
+      {
         path: 'switches',
         component: SwitchesComponent,
         data: {
@@ -50,6 +59,13 @@ const routes: Routes = [
         component: TablesComponent,
         data: {
           title: 'Tables'
+        }
+      },
+      {
+        path: 'datatable',
+        component: DataTableComponent,
+        data: {
+          title: 'DataTable'
         }
       },
       {
