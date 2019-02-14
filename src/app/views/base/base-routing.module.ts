@@ -14,6 +14,7 @@ import {ProgressComponent} from './progress.component';
 import {TooltipsComponent} from './tooltips.component';
 import {DataTableComponent} from "./data-table.component";
 import {FormsNgComponent} from "./forms-ng.component";
+import { LoadingSpinnerComponent } from "./loading-spinner.component";
 
 const routes: Routes = [
   {
@@ -34,6 +35,13 @@ const routes: Routes = [
         }
       },
       {
+        path: 'datatable',
+        component: DataTableComponent,
+        data: {
+          title: 'DataTable'
+        }
+      },
+      {
         path: 'forms',
         component: FormsComponent,
         data: {
@@ -48,6 +56,13 @@ const routes: Routes = [
         }
       },
       {
+        path: 'loading-spinner',
+        component: LoadingSpinnerComponent,
+        data: {
+          title: 'Loading Spinner'
+        }
+      },
+      {
         path: 'switches',
         component: SwitchesComponent,
         data: {
@@ -59,13 +74,6 @@ const routes: Routes = [
         component: TablesComponent,
         data: {
           title: 'Tables'
-        }
-      },
-      {
-        path: 'datatable',
-        component: DataTableComponent,
-        data: {
-          title: 'DataTable'
         }
       },
       {

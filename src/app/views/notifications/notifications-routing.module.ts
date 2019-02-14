@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AlertsComponent } from './alerts.component';
 import { BadgesComponent } from './badges.component';
 import { ModalsComponent } from './modals.component';
+import { ToastrComponent } from "./toastr.component";
 
 const routes: Routes = [
   {
@@ -35,6 +36,13 @@ const routes: Routes = [
         component: ModalsComponent,
         data: {
           title: 'Modals'
+        }
+      },
+      {
+        path: 'toastr',
+        component: ToastrComponent,
+        data: {
+          title: 'Toastr'
         }
       }
     ]

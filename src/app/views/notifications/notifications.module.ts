@@ -1,4 +1,5 @@
 // Angular
+// import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
@@ -15,17 +16,24 @@ import { ModalsComponent } from './modals.component';
 // Notifications Routing
 import { NotificationsRoutingModule } from './notifications-routing.module';
 
+// Toastr
+// import { ToastrModule } from "ngx-toastr";
+import { ToastrComponent } from './toastr.component';
+
 @NgModule({
   imports: [
     CommonModule,
+    // BrowserAnimationsModule,
     NotificationsRoutingModule,
     AlertModule.forRoot(),
     ModalModule.forRoot()
+    // ToastrModule.forRoot()
   ],
   declarations: [
     AlertsComponent,
     BadgesComponent,
-    ModalsComponent
+    ModalsComponent,
+    ToastrComponent
   ]
 })
 export class NotificationsModule { }

@@ -1,13 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { LoadingBarService } from "@ngx-loading-bar/core";
+import { delay, map, withLatestFrom } from "rxjs/operators";
 
 @Component({
-  // tslint:disable-next-line
   selector: 'body',
-  template: '<router-outlet></router-outlet>'
+  template: `
+    <block-ui [name]="'appRoot'">
+      <router-outlet></router-outlet>
+    </block-ui>
+    <ngx-loading-bar [value]="(delayedProgress$|async) || 0" [includeSpinner]="false"></ngx-loading-bar>
+  `
 })
 export class AppComponent implements OnInit {
-  constructor(private router: Router) { }
+
+  delayedProgress$ = this.loader.progress$.pipe(
+    delay(1000),
+    withLatestFrom(this.loader.progress$),
+    map(v => v[1])
+  );
+
+  constructor(
+    private router: Router,
+    private loader: LoadingBarService) {
+  }
 
   ngOnInit() {
     this.router.events.subscribe((evt) => {
