@@ -12,6 +12,9 @@ import { PaginationsComponent } from './paginations.component';
 import {PopoversComponent} from './popovers.component';
 import {ProgressComponent} from './progress.component';
 import {TooltipsComponent} from './tooltips.component';
+import {DataTableComponent} from "./data-table.component";
+import {FormsNgComponent} from "./forms-ng.component";
+import { LoadingSpinnerComponent } from "./loading-spinner.component";
 
 const routes: Routes = [
   {
@@ -32,10 +35,31 @@ const routes: Routes = [
         }
       },
       {
+        path: 'datatable',
+        component: DataTableComponent,
+        data: {
+          title: 'DataTable'
+        }
+      },
+      {
         path: 'forms',
         component: FormsComponent,
         data: {
           title: 'Forms'
+        }
+      },
+      {
+        path: 'forms-new',
+        component: FormsNgComponent,
+        data: {
+          title: 'Forms NG'
+        }
+      },
+      {
+        path: 'loading-spinner',
+        component: LoadingSpinnerComponent,
+        data: {
+          title: 'Loading Spinner'
         }
       },
       {

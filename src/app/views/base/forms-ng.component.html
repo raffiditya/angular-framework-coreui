@@ -1,0 +1,110 @@
+<div class="animated fadeIn">
+  <form [formGroup]="advanceForm" (submit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <i class="icon-note"></i><strong>Custom Advanced Form</strong> - Input
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="col-form-label required" for="inputCc">Credit Card Number</label>
+              <div class="input-group">
+                <span class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="fa fa-credit-card"></i>
+                  </span>
+                </span>
+                <input [class.is-invalid]="isFieldInvalid('creditCard')"
+                       [textMask]="{ mask: ccMask, guide: true, placeholderChar: '_' }"
+                       class="form-control" formControlName="creditCard" id="inputCc" required type="text">
+                <ng-container *ngIf="isFieldInvalid('creditCard')">
+                  <div *ngIf="advanceForm.get('creditCard').hasError('required')" class="invalid-feedback">
+                    Credit card is required.
+                  </div>
+                  <div *ngIf="advanceForm.get('creditCard').hasError('pattern')" class="invalid-feedback">
+                    Credit card must be at least 16 numbers long.
+                  </div>
+                </ng-container>
+              </div>
+              <small class="text-muted">ex. 9999 9999 9999 9999</small>
+            </div>
+            <fieldset class="form-group">
+              <label class="form-col-form-label" for="inputAmount">Amount</label>
+              <div class="input-group">
+              <span class="input-group-prepend">
+                <span class="input-group-text">
+                  Rp
+                </span>
+              </span>
+                <input [textMask]="{ mask: rupiahMask }" class="form-control" formControlName="amount" id="inputAmount"
+                       type="text">
+              </div>
+            </fieldset>
+            <fieldset class="form-group">
+              <label class="form-col-form-label required" for="inputCity">City</label>
+              <ng-select [class.is-invalid]="isFieldInvalid('city')" [items]="cities" bindLabel="name"
+                         bindValue="provId" class="form-control" clearAllText="Clear" formControlName="city"
+                         labelForId="inputCity" placeholder="Select cities">
+              </ng-select>
+              <ng-container *ngIf="isFieldInvalid('city')">
+                <div *ngIf="advanceForm.get('city').hasError('required')" class="invalid-feedback">
+                  City is required.
+                </div>
+              </ng-container>
+            </fieldset>
+            <fieldset class="form-group">
+              <label class="form-col-form-label required" for="inputBirthDate">Birth Date</label>
+              <div class="input-group">
+                <span class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="fa fa-calendar"></i>
+                  </span>
+                </span>
+                <input [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY' }" [class.is-invalid]="isFieldInvalid('birthDate')"
+                       [maxDate]="maxDate" [minDate]="minDate" bsDatepicker class="form-control"
+                       formControlName="birthDate" id="inputBirthDate">
+                <ng-container *ngIf="isFieldInvalid('birthDate')">
+                  <div *ngIf="advanceForm.get('birthDate').hasError('required')" class="invalid-feedback">
+                    Birth date card is required.
+                  </div>
+                </ng-container>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <i class="icon-note"></i><strong>Custom Advanced Form</strong> - Value
+          </div>
+          <div class="card-body">
+            <div class="card bg-secondary">
+              <div class="card-body">
+              <pre>
+Value : <code>{{ advanceForm.value | json }}</code>
+              </pre>
+                <p> Status : {{ advanceForm.status }}</p>
+                <p> Errors : {{ advanceForm.errors | json }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="form-group">
+              <button [disabled]="!advanceForm.valid" class="btn btn-primary mr-1" type="submit">Submit</button>
+              <button class="btn btn-success mr-1" type="submit">Validate</button>
+              <button [disabled]="!advanceForm.touched" class="btn btn-danger" type="reset">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

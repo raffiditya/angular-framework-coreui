@@ -39,10 +39,16 @@ import { AppRoutingModule } from './app.routing';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { ToastrModule } from "ngx-toastr";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { LoadingBarRouterModule } from "@ngx-loading-bar/router";
+import { BlockUIModule } from "ng-block-ui";
+import { BlockUiTemplateComponent } from "./loading/block-ui-template.component";
 
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     AppAsideModule,
     AppBreadcrumbModule.forRoot(),
@@ -50,17 +56,30 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
     AppHeaderModule,
     AppSidebarModule,
     PerfectScrollbarModule,
+    BlockUIModule.forRoot({
+      message: 'Loading...',
+      template: BlockUiTemplateComponent
+    }),
+    LoadingBarRouterModule,
+    ToastrModule.forRoot({
+      timeOut: 7000,
+      progressBar: true
+    }),
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     ChartsModule
   ],
   declarations: [
     AppComponent,
+    BlockUiTemplateComponent,
     ...APP_CONTAINERS,
     P404Component,
     P500Component,
     LoginComponent,
     RegisterComponent
+  ],
+  entryComponents: [
+    BlockUiTemplateComponent
   ],
   providers: [{
     provide: LocationStrategy,
