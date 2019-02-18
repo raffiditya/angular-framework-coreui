@@ -1,5 +1,61 @@
 // Here you can add other styles
 
+// Theme style override
+.navbar-brand {
+  color: $white;
+
+  @include hover-focus {
+    color: $bni-orange-light;
+  }
+}
+
+.app-header {
+  .dropdown-item {
+    @include hover-focus {
+      color: $bni-orange-light;
+
+      .icon-item {
+        color: $bni-orange-light;
+      }
+    }
+  }
+}
+
+.sidebar {
+  .nav-dropdown {
+    .nav-link {
+      &.active {
+        color: $sidebar-nav-link-active-color;
+      }
+
+      @include hover-focus {
+        color: $sidebar-nav-link-active-color;
+      }
+    }
+  }
+}
+
+.sidebar-minimized {
+  .sidebar {
+    .sidebar-minimizer {
+      @include borders($sidebar-borders);
+
+      &:hover {
+        background-color: $sidebar-minimizer-hover-bg;
+      }
+    }
+  }
+}
+
+.breadcrumb-menu {
+  .btn {
+    &:hover,
+    &.active {
+      color: $bni-orange-light;
+    }
+  }
+}
+
 // Import ngx-datatable
 @import '~@swimlane/ngx-datatable/release/index.css';
 @import '~@swimlane/ngx-datatable/release/themes/bootstrap.css';
