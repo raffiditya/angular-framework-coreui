@@ -253,6 +253,11 @@ export const navItems: NavData[] = [
         icon: 'icon-star'
       },
       {
+        name: 'Error 403',
+        url: '/403',
+        icon: 'icon-star'
+      },
+      {
         name: 'Error 404',
         url: '/404',
         icon: 'icon-star'

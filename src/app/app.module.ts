@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
@@ -15,6 +17,7 @@ import { AppComponent } from './app.component';
 // Import containers
 import { DefaultLayoutComponent } from './containers';
 
+import { P403Component } from "./views/error/403.component";
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
@@ -40,7 +43,6 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { ToastrModule } from "ngx-toastr";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { LoadingBarRouterModule } from "@ngx-loading-bar/router";
 import { BlockUIModule } from "ng-block-ui";
 import { BlockUiTemplateComponent } from "./loading/block-ui-template.component";
@@ -56,6 +58,8 @@ import { BlockUiTemplateComponent } from "./loading/block-ui-template.component"
     AppHeaderModule,
     AppSidebarModule,
     PerfectScrollbarModule,
+    FormsModule,
+    ReactiveFormsModule,
     BlockUIModule.forRoot({
       message: 'Loading...',
       template: BlockUiTemplateComponent
@@ -73,6 +77,7 @@ import { BlockUiTemplateComponent } from "./loading/block-ui-template.component"
     AppComponent,
     BlockUiTemplateComponent,
     ...APP_CONTAINERS,
+    P403Component,
     P404Component,
     P500Component,
     LoginComponent,

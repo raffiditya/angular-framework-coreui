@@ -1,2 +1,63 @@
 // Variable overrides
 $enable-validation-icons: false;
+
+// Import references
+@import "~@coreui/coreui/scss/variables/colors";
+
+// Colors section
+$bni-orange: #e55300;
+$bni-orange-light: #ff843a;
+$bni-teal: #4694a6;
+$blue: $bni-teal;
+
+// Variable style overrides
+
+// Navbar
+$navbar-height: 50px;
+$navbar-brand-width: 220px;
+$border-color: $gray-300;
+$navbar-border: none;
+/*$navbar-brand-border: (
+  bottom: (
+    size:                             1px,
+    style:                            solid,
+    color:                            $border-color
+  )
+);*/
+$navbar-bg: $blue;
+$navbar-brand-bg: #006677;
+$navbar-color: $white;
+$navbar-hover-color: $bni-orange-light;
+$navbar-active-color: $bni-orange-light;
+
+// Sidebar
+$sidebar-borders: (
+  right: (
+    size:                             1px,
+    style:                            solid,
+    color:                            $border-color
+  )
+);
+$sidebar-minimizer-borders: (
+  top: (
+    size:                             1px,
+    style:                            solid,
+    color:                            $border-color
+  )
+);
+$sidebar-width: 220px;
+$sidebar-bg: $white;
+$sidebar-color: $gray-800;
+$sidebar-nav-link-color: $gray-800;
+$sidebar-nav-link-icon-color: $gray-700;
+$sidebar-nav-link-hover-bg: $blue;
+$sidebar-nav-link-active-bg: $blue;
+$sidebar-nav-link-active-icon-color: $white;
+$sidebar-nav-title-color: $bni-orange-light;
+$sidebar-nav-dropdown-bg: $gray-200;
+$sidebar-nav-dropdown-color: $gray-800;
+$sidebar-minimizer-bg: $gray-100;
+$sidebar-minimizer-hover-bg: $blue;
+
+// Breadcrumb
+$breadcrumb-active-color: $bni-orange;
