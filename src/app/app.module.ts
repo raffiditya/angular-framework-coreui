@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from "@angular/common/http";
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
@@ -57,6 +57,7 @@ import { BlockUiTemplateComponent } from "./loading/block-ui-template.component"
     AppFooterModule,
     AppHeaderModule,
     AppSidebarModule,
+    HttpClientModule,
     PerfectScrollbarModule,
     FormsModule,
     ReactiveFormsModule,
@@ -86,10 +87,6 @@ import { BlockUiTemplateComponent } from "./loading/block-ui-template.component"
   entryComponents: [
     BlockUiTemplateComponent
   ],
-  providers: [{
-    provide: LocationStrategy,
-    useClass: HashLocationStrategy
-  }],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
