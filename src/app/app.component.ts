@@ -9,7 +9,8 @@ import { delay, map, withLatestFrom } from "rxjs/operators";
     <block-ui [name]="'appRoot'">
       <router-outlet></router-outlet>
     </block-ui>
-    <ngx-loading-bar [value]="(delayedProgress$|async) || 0" [color]="'#ff843a'" [includeSpinner]="false"></ngx-loading-bar>
+    <ngx-loading-bar [value]="(delayedProgress$|async) || 0" [color]="'#ff843a'"
+                     [includeSpinner]="false"></ngx-loading-bar>
   `
 })
 export class AppComponent implements OnInit {
