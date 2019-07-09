@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { LoadingBarService } from "@ngx-loading-bar/core";
-import { delay, map, withLatestFrom } from "rxjs/operators";
+import {Component, OnInit} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {LoadingBarService} from "@ngx-loading-bar/core";
+import {delay, map, withLatestFrom} from "rxjs/operators";
 
 @Component({
+  // tslint:disable-next-line
   selector: 'body',
   template: `
     <block-ui [name]="'appRoot'">

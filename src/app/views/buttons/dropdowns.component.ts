@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 
 @Component({
   templateUrl: 'dropdowns.component.html',
   styleUrls: ['dropdowns.component.css']
 })
-export class DropdownsComponent {
+export class DropdownsComponent implements OnDestroy {
 
   status: { isOpen: boolean } = { isOpen: false };
   disabled: boolean = false;
@@ -18,6 +18,10 @@ export class DropdownsComponent {
     'And another choice for you.',
     'but wait! A third!'
   ];
+
+  ngOnDestroy () {
+    this.status.isOpen = false;
+  }
 
   onHidden(): void {
     console.log('Dropdown is hidden');

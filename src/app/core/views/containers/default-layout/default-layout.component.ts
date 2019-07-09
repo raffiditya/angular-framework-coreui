@@ -1,9 +1,9 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import {Component, Inject, OnDestroy} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
 // import { navItems } from '../../_nav';
-import { navItems } from '../../../../_new-nav';
-import { AuthService } from "../../../services/auth.service";
-import { Router } from "@angular/router";
+import {navItems} from '../../../../_nav';
+import {AuthService} from "../../../services/auth.service";
+import {Router} from "@angular/router";
 
 
 @Component({
