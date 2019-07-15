@@ -1,6 +1,9 @@
-import { Component, OnDestroy, Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { navItems } from '../../_nav';
+import {Component, Inject, OnDestroy} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
+// import { navItems } from '../../_nav';
+import {navItems} from '../../../../_nav';
+import {AuthService} from "../../../services/auth.service";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -10,9 +13,10 @@ import { navItems } from '../../_nav';
 export class DefaultLayoutComponent implements OnDestroy {
   public navItems = navItems;
   public sidebarMinimized = true;
-  private changes: MutationObserver;
   public element: HTMLElement;
-  constructor(@Inject(DOCUMENT) _document?: any) {
+  private changes: MutationObserver;
+
+  constructor(private authService: AuthService, private router: Router, @Inject(DOCUMENT) _document?: any) {
 
     this.changes = new MutationObserver((mutations) => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
@@ -26,5 +30,9 @@ export class DefaultLayoutComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.changes.disconnect();
+  }
+
+  onLogout() {
+    this.authService.logout().subscribe(() => this.router.navigateByUrl('/login'));
   }
 }

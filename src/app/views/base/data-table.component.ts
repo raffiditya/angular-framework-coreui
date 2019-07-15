@@ -1,11 +1,12 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 
+
 @Component({
   templateUrl: './data-table.component.html'
 })
 export class DataTableComponent implements OnInit {
 
-  @ViewChild('statusTemplate') statusTemplate: TemplateRef<any>;
+  @ViewChild('statusTemplate', {static: true}) statusTemplate: TemplateRef<any>;
 
   columns = [];
 
