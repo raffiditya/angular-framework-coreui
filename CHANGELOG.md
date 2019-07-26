@@ -1,4 +1,130 @@
-## [angular](./README.md) version `changelog`
+## [CoreUI for Angular](./README.md) version `changelog`
+
+###### `v2.5.2`
+- fix(cards): card with header actions
+- fix(carousels): images and intervals cleanup
+
+###### dependencies update
+- update `@angular/animations` to `^8.0.2`
+- update `@angular/common` to `^8.0.2`
+- update `@angular/compiler` to `^8.0.2`
+- update `@angular/core` to `^8.0.2`
+- update `@angular/forms` to `^8.0.2`
+- update `@angular/platform-browser` to `^8.0.2`
+- update `@angular/platform-browser-dynamic` to `^8.0.2`
+- update `@angular/router` to `^8.0.2`
+- update `@coreui/angular` to `^2.5.2`
+- update `@coreui/coreui` to `^2.1.12`
+- update `@angular-devkit/build-angular` to `^0.800.3`
+- update `@angular/cli` to `^8.0.3`
+- update `@angular/compiler-cli` to `^8.0.2`
+- update `@angular/language-service` to `^8.0.2`
+- update `@types/node` to `^12.0.8`
+- update `ts-node` to `^8.3.0`
+    
+###### `v2.5.1`
+###### dependencies update
+- update `@coreui/angular` to `^2.5.1`
+- update `ngx-bootstrap` to `^5.0.0` 
+- update `ngx-perfect-scrollbar` to `^8.0.0`
+- update `tslib` to `^1.10.0`
+- update `@angular-devkit/build-angular` to `^0.800.2`
+- update `@angular/cli` to `^8.0.2`
+- update `@types/node` to `^12.0.7`
+
+###### `v2.5.0`
+- refactor(app.routing): lazy loading via dynamic import()
+- refactor(modals): `ViewChild` second parameter 
+- refactor(tsconfig): "module: "esnext", "target": "es6" 
+- chore: update `ng2-charts@2.3.0` imports
+- chore: update `ngx-bootstrap@4.2.0` 
+- fix(collapse): `No provider for AnimationBuilder` add import `BrowserAnimationsModule` to app.module
+- fix(polyfill): import `web-animations-js`
+- chore(tslint): remove depracated/undefined rules  
+- chore(tsconfig): set "target" to "es5" / IE11 compatible
+
+###### breaking changes
+- `Angular v8.0.0` (see https://update.angular.io/)
+- `@ViewChild` second parameter required 
+- `BrowserAnimationsModule` required
+- routing: lazy loading via dynamic import()
+
+###### dependencies update
+- update: Angular to `v8.0.0`
+- update: `@angular/animations` to `^8.0.0`
+- update: `@angular/common` to `^8.0.0`
+- update: `@angular/compiler` to `^8.0.0`
+- update: `@angular/core` to `^8.0.0`
+- update: `@angular/forms` to `^8.0.0`
+- update: `@angular/http` to `^8.0.0-beta.10`
+- update: `@angular/platform-browser` to `^8.0.0`
+- update: `@angular/platform-browser-dynamic` to `^8.0.0`
+- update: `@angular/router` to `^8.0.0`
+- update: `@coreui/angular` to `^2.5.0`
+- update: `@coreui/coreui` to `^2.1.11`
+- update: `@coreui/coreui-plugin-chartjs-custom-tooltips` to `^1.3.1`
+- update: `core-js` to `^2.6.9`
+- update: `ng2-charts` to `^2.3.0`
+- update: `ngx-boottsrap` to `^4.2.0`
+- update: `rxjs` to `^6.5.2`
+- update: `tsickle` to `^0.35.0`
+- update: `tslib` to `^1.9.3`
+- update: `zone.js` to `^0.9.1`
+- update: `@angular-devkit/build-angular` to `^0.800.1`
+- update: `@angular/cli` to `^8.0.1`
+- update: `@angular/compiler-cli` to `^8.0.0`
+- update: `@angular/language-service` to `^8.0.0`
+- update: `@types/node` to `^12.0.4`
+- update: `codelyzer` to `^5.1.0`
+- update: `jasmine-core` to `^3.4.0`
+- update: `karma` to `^4.1.0`
+- update: `karma-jasmine-html-reporter` to `^1.4.2`
+- update: `ts-node` to `^8.2.0`
+- update: `tslint` to `^5.17.0`
+- update: `typescript` to `~3.4.5`
+
+###### `v2.4.5`
+- refactor(modals): add `@ViewChild` 
+- update: `@coreui/angular` to `^2.4.5`
+- update: `@coreui/coreui` to `^2.1.8`
+- update: `@angular/animations` to `^7.2.10`
+- update: `@angular/common` to `^7.2.10`
+- update: `@angular/compiler` to `^7.2.10`
+- update: `@angular/core` to `^7.2.10`
+- update: `@angular/forms` to `^7.2.10`
+- update: `@angular/http` to `^7.2.10`
+- update: `@angular/platform-browser` to `^7.2.10`
+- update: `@angular/platform-browser-dynamic` to `^7.2.10`
+- update: `@angular/router` to `^7.2.10`
+- update: `chart.js` to `^2.8.0`
+- update: `flag-icon-css` to `^3.3.0`
+- update: `@angular-devkit/build-angular` to `^0.13.6`
+- update: `@angular/cli` to `^7.3.6`
+- update: `@angular/compiler-cli` to `^7.2.10`
+- update: `@angular/language-service` to `^7.2.10`
+- update: `@types/jasmine` to `^3.3.12`
+- update: `@types/node` to `^11.11.4`
+- update: `karma` to `^4.0.1`
+- update: `ts-node` to `^8.0.3`
+- update: `tslint` to `^5.14.0`
+
+###### `v2.4.3`
+- update: `@coreui/angular` to `^2.4.3`
+- update: `@coreui/coreui` to `^2.1.7`
+- update: `@angular/animations` to `^7.2.6`
+- update: `@angular/common` to `^7.2.6`
+- update: `@angular/compiler` to `^7.2.6`
+- update: `@angular/core` to `^7.2.6`
+- update: `@angular/forms` to `^7.2.6`
+- update: `@angular/http` to `^7.2.6`
+- update: `@angular/platform-browser` to `^7.2.6`
+- update: `@angular/platform-browser-dynamic` to `^7.2.6`
+- update: `@angular/router` to `^7.2.6`
+- update: `@angular-devkit/build-angular` to `^0.13.3`
+- update: `@angular/cli` to `^7.3.3`
+- update: `@angular/compiler-cli` to `^7.2.6`
+- update: `@angular/language-service` to `^7.2.6`
+- update: `ngx-perfect-scrollbar` to `^7.2.1`
 
 ###### `v2.4.0`
 - fix(sidebar): navItems reassignment bug #126, #42

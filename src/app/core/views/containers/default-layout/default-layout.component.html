@@ -1,6 +1,7 @@
 <!--[navbarBrandFull]="{src: 'assets/img/brand/logo.svg', width: 89, height: 25, alt: 'CoreUI Logo'}"
   [navbarBrandMinimized]="{src: 'assets/img/brand/bni-small.png', width: 30, height: 30, alt: 'CoreUI Logo'}"-->
 <app-header
+  [navbarBrandRouterLink]="['/dashboard']"
   [asideMenuToggler]="false"
   [fixed]="true"
   [navbarBrandText]="{icon: '<img src=\'assets/img/brand/bni-small.png\'/>', text: 'Example App'}"
@@ -52,7 +53,7 @@
         <a class="dropdown-item" href="#"><i class="fa fa-file"></i> Projects<span class="badge badge-primary">42</span></a>
         <div class="divider"></div>
         <a class="dropdown-item" href="#"><i class="fa fa-shield"></i> Lock account</a>-->
-        <a class="dropdown-item" href="#"><i class="icon-item fa fa-lock"></i> Logout</a>
+        <a class="dropdown-item" (click)="onLogout()" role="button"><i class="icon-item fa fa-lock"></i> Logout</a>
       </div>
     </li>
   </ul>
