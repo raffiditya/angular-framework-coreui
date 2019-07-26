@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
-import { BlockUIService } from "ng-block-ui";
-import { NgForm } from "@angular/forms";
-import { AuthService } from "../../services/auth.service";
-import { Router } from "@angular/router";
+import {Component} from '@angular/core';
+import {BlockUIService} from "ng-block-ui";
+import {NgForm} from "@angular/forms";
+import {AuthService} from "../../services/auth.service";
+import {Router} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-dashboard',
@@ -17,8 +19,8 @@ export class LoginComponent {
     rememberMe: false
   };
 
-  constructor(private loadingService: BlockUIService, private authService: AuthService, private router: Router) {
-  }
+  constructor(private loadingService: BlockUIService, private authService: AuthService, private router: Router,
+              private toastr: ToastrService) { }
 
   onLogin(loginForm: NgForm) {
     console.log(this.userLogin);
@@ -28,9 +30,16 @@ export class LoginComponent {
 
     this.loadingService.start('appRoot');
 
-    this.authService.login(this.userLogin.username, this.userLogin.password).subscribe(() => {
-      this.loadingService.stop('appRoot');
-      this.router.navigateByUrl('/dashboard');
-    });
+    this.authService.login(this.userLogin.username, this.userLogin.password).subscribe(
+      () => {
+        this.loadingService.stop('appRoot');
+        this.router.navigateByUrl('/dashboard');
+      },
+      (error) => {
+        let errorResponse = error as HttpErrorResponse;
+        this.loadingService.stop('appRoot');
+        this.toastr.error(`${errorResponse.message}`, 'Login Error');
+      });
+
   }
 }
