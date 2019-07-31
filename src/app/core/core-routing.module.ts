@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {DefaultLayoutComponent, P403Component, P404Component, P500Component} from "./views";
-import {AuthGuard} from "./guard/auth.guard";
+import {DefaultLayoutComponent, P403Component, P404Component, P500Component} from './views';
+import {AuthGuard} from './guard/auth.guard';
 
 export const routes: Routes = [
   {

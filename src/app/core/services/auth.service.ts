@@ -1,15 +1,41 @@
-import {Injectable} from "@angular/core";
-import {Observable, of} from "rxjs";
-import {delay, tap} from "rxjs/operators";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {environment} from "../../../environments/environment";
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {finalize, tap} from 'rxjs/operators';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  static readonly loginUrl = `${environment.apiUrl}/oauth/token`;
+  static readonly logoutUrl = `${environment.apiUrl}/oauth/token/logout`;
+
   constructor(private http: HttpClient) {
+  }
+
+  public get accessToken(): string {
+    return localStorage.getItem('accessToken');
+  }
+
+  public set accessToken(accessToken: string) {
+    localStorage.setItem('accessToken', accessToken);
+  }
+
+  public get refreshToken(): string {
+    return localStorage.getItem('refreshToken');
+  }
+
+  public set refreshToken(refreshToken: string) {
+    localStorage.setItem('refreshToken', refreshToken);
+  }
+
+  private get basicHeader(): HttpHeaders {
+    return new HttpHeaders({
+      'Authorization': 'Basic ' + btoa(`${environment.basicUsername}:${environment.basicPassword}`),
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
   }
 
   public isAuthenticated(): boolean {
@@ -17,52 +43,47 @@ export class AuthService {
     return Boolean(token);
   }
 
-  public loginMock(username: string, password: string): Observable<any> {
-    return of({success: true}).pipe(
-      delay(1500),
-      tap(() => localStorage.setItem('accessToken', username + password))
-    );
+  public clearCredentials() {
+    localStorage.clear();
+  }
+
+  public doRefreshToken(): Observable<any> {
+    const body = `grant_type=refresh_token&refresh_token=${this.refreshToken}`;
+
+    return this.http.post(
+      AuthService.loginUrl,
+      body,
+      {
+        headers: this.basicHeader
+      })
+      .pipe(
+        tap(response => this.accessToken = response.access_token)
+      );
   }
 
   public login(username: string, password: string): Observable<any> {
-    let body = `grant_type=password&username=${username}&password=${password}`;
+    const body = `grant_type=password&username=${username}&password=${password}`;
     return this.http.post(
-      `${environment.apiUrl}/oauth/token`,
+      AuthService.loginUrl,
       body,
       {
-        headers: new HttpHeaders({
-            'Authorization': 'Basic ' + btoa(`${environment.basicUsername}:${environment.basicPassword}`),
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        )
+        headers: this.basicHeader
       })
       .pipe(
         tap(response => {
-          localStorage.setItem('accessToken', response.access_token)
+          this.accessToken = response.access_token;
+          this.refreshToken = response.refresh_token;
         })
       );
   }
 
-  public logoutMock(): Observable<any> {
-    return of({success: true}).pipe(
-      delay(1000),
-      tap(() => localStorage.clear())
-    );
-  }
-
   public logout(): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/oauth/logout/token`,
-      null,
-      {
-        headers: new HttpHeaders({
-            'Authorization': 'Bearer ' + btoa(localStorage.getItem('accessToken'))
-          }
-        )
-      })
+    return this.http.post(
+      AuthService.logoutUrl,
+      null
+    )
       .pipe(
-        tap(response => {
-          localStorage.clear()
-        })
+        finalize(() => this.clearCredentials())
       );
   }
 }

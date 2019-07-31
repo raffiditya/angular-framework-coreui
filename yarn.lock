@@ -4674,10 +4674,10 @@ neo-async@^2.5.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.0.tgz#b9d15e4d71c6762908654b5183ed38b753340835"
   integrity sha512-MFh0d/Wa7vkKO3Y3LlacqAEeHK0mckVqzDieUKTT+KGxi+zIpeVsFxymkIiRpbpDziHc290Xr9A1O4Om7otoRA==
 
-ng-block-ui@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/ng-block-ui/-/ng-block-ui-2.1.5.tgz#e72023f59fe7dd483937aea9553593e69372fc1e"
-  integrity sha512-fUAWceHkktlaIAHUOZRI9O8bVvXDEHjZ1c5hJpNXQTNJL25NlIjWlxAYxHHM3KRAz/4rJ1xQ6Ajw1PO8REzjVA==
+ng-block-ui@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/ng-block-ui/-/ng-block-ui-2.1.6.tgz#5b5c0ef939eda937132135e25f4c625c6c421dfe"
+  integrity sha512-2AVvPJTUathJF4BSd0kAFS00Vnln3tv0AXYcGVfPNSkZia+jngO9j167MYe0ZT/E0cWYjhyz04mb5Sg5+qvddQ==
   dependencies:
     tslib "^1.9.0"
 

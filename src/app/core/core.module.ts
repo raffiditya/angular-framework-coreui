@@ -1,16 +1,18 @@
-import {NgModule, Optional, SkipSelf} from "@angular/core";
-import {CommonModule} from "@angular/common";
-import {RouterModule} from "@angular/router";
-import {AppBreadcrumbModule, AppFooterModule, AppHeaderModule, AppSidebarModule} from "@coreui/angular";
-import {HttpClientModule} from "@angular/common/http";
-import {PerfectScrollbarConfigInterface, PerfectScrollbarModule} from "ngx-perfect-scrollbar";
-import {BlockUIModule} from "ng-block-ui";
-import {LoadingBarRouterModule} from "@ngx-loading-bar/router";
-import {ToastrModule} from "ngx-toastr";
-import {BsDropdownModule} from "ngx-bootstrap";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {BlockUiTemplateComponent, DefaultLayoutComponent, P403Component, P404Component, P500Component} from "./views";
-import {CoreRoutingModule} from "./core-routing.module";
+import {NgModule, Optional, SkipSelf} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
+import {AppBreadcrumbModule, AppFooterModule, AppHeaderModule, AppSidebarModule} from '@coreui/angular';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {PerfectScrollbarConfigInterface, PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
+import {BlockUIModule} from 'ng-block-ui';
+import {LoadingBarRouterModule} from '@ngx-loading-bar/router';
+import {ToastrModule} from 'ngx-toastr';
+import {BsDropdownModule} from 'ngx-bootstrap';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {BlockUiTemplateComponent, DefaultLayoutComponent, P403Component, P404Component, P500Component} from './views';
+import {CoreRoutingModule} from './core-routing.module';
+import {TokenInterceptorService} from './services/http-interceptors/token-interceptor.service';
+import {BlockUIHttpModule} from 'ng-block-ui/http';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -34,14 +36,17 @@ const APP_CONTAINERS = [
     PerfectScrollbarModule,
     BlockUIModule.forRoot({
       message: 'Loading...',
-      template: BlockUiTemplateComponent
+      template: BlockUiTemplateComponent,
+      delayStart: 300,
+      delayStop: 300,
     }),
+    BlockUIHttpModule.forRoot(),
     LoadingBarRouterModule,
     ToastrModule.forRoot({
       timeOut: 7000,
       progressBar: true
     }),
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
   ],
   declarations: [
     BlockUiTemplateComponent,
@@ -64,9 +69,13 @@ const APP_CONTAINERS = [
     HttpClientModule,
     PerfectScrollbarModule,
     BlockUIModule,
+    BlockUIHttpModule,
     LoadingBarRouterModule,
     ToastrModule,
     BsDropdownModule
+  ],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorService, multi: true}
   ]
 })
 export class CoreModule {

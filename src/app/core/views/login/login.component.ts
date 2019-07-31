@@ -1,10 +1,9 @@
 import {Component} from '@angular/core';
-import {BlockUIService} from "ng-block-ui";
-import {NgForm} from "@angular/forms";
-import {AuthService} from "../../services/auth.service";
-import {Router} from "@angular/router";
-import {ToastrService} from "ngx-toastr";
-import {HttpErrorResponse} from "@angular/common/http";
+import {BlockUIService} from 'ng-block-ui';
+import {NgForm} from '@angular/forms';
+import {AuthService} from '../../services/auth.service';
+import {Router} from '@angular/router';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,17 +12,19 @@ import {HttpErrorResponse} from "@angular/common/http";
 })
 export class LoginComponent {
 
+  wrongPassword: boolean = false;
+
   userLogin = {
     username: '',
     password: '',
     rememberMe: false
   };
 
-  constructor(private loadingService: BlockUIService, private authService: AuthService, private router: Router,
-              private toastr: ToastrService) { }
+  constructor(private loadingService: BlockUIService, private authService: AuthService, private router: Router) {
+  }
 
   onLogin(loginForm: NgForm) {
-    console.log(this.userLogin);
+    this.wrongPassword = false;
     if (!loginForm.form.valid) {
       return;
     }
@@ -31,15 +32,13 @@ export class LoginComponent {
     this.loadingService.start('appRoot');
 
     this.authService.login(this.userLogin.username, this.userLogin.password).subscribe(
-      () => {
-        this.loadingService.stop('appRoot');
-        this.router.navigateByUrl('/dashboard');
-      },
+      () => this.router.navigateByUrl('/dashboard').then(() => this.loadingService.stop('appRoot')),
       (error) => {
         let errorResponse = error as HttpErrorResponse;
+        if (errorResponse.status === 401) {
+          this.wrongPassword = true;
+        }
         this.loadingService.stop('appRoot');
-        this.toastr.error(`${errorResponse.message}`, 'Login Error');
       });
-
   }
 }
