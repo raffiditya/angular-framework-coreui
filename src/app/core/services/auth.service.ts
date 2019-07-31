@@ -3,14 +3,15 @@ import {Observable} from 'rxjs';
 import {finalize, tap} from 'rxjs/operators';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
+import {constant} from '../../../environments/constant';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  static readonly loginUrl = `${environment.apiUrl}/oauth/token`;
-  static readonly logoutUrl = `${environment.apiUrl}/oauth/token/logout`;
+  static readonly loginUrl = `${constant.oauthUrl}/token`;
+  static readonly logoutUrl = `${constant.oauthUrl}/token/logout`;
 
   constructor(private http: HttpClient) {
   }
