@@ -1,0 +1,41 @@
+.cms-form-header {
+  height: 55px;
+  background-color: #4694a6;
+  display: flex;
+  align-items: center;
+}
+
+.cms-form-header p {
+  margin: 0;
+  text-transform: capitalize;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cms-form-error{
+  font-size: 80%;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #f86c6b;
+}
+
+label.required::after {
+  content: "*";
+  color: #e32;
+  margin-left: 5px;
+}
+
+.main-button a {
+  text-decoration: none;
+}
+
+.option-buttons a {
+  color: white;
+  text-decoration: none;
+}
+
+.switch-button label {
+  margin-left: 20px;
+}

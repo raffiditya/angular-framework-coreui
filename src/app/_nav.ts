@@ -58,6 +58,11 @@ export const navItems: NavData[] = [
     name: 'Components'
   },
   {
+    name: 'Menu',
+    url: '/menu',
+    icon: 'icon-menu'
+  },
+  {
     name: 'Base',
     url: '/base',
     icon: 'icon-puzzle',

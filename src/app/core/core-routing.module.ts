@@ -47,6 +47,10 @@ export const routes: Routes = [
         loadChildren: 'app/dashboard/dashboard.module#DashboardModule'
       },
       {
+        path: 'menu',
+        loadChildren: () => import('../admin/menu/menu.module').then(m => m.MenuModule)
+      },
+      {
         path: 'base',
         loadChildren: () => import('./../views/base/base.module').then(m => m.BaseModule)
       }/*,
