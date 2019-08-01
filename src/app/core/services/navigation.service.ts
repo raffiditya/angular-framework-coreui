@@ -15,10 +15,10 @@ export class NavigationService {
 
   public getMenu(): Observable<Array<NavData>> {
     return this.http.get<Array<NavData>>(`${constant.appUrl}/menu/tree`)
-      .pipe(
-        map(navigations => {
-          return navigations.concat(navItems);
-        })
-      );
+      // .pipe(
+      //   map(navigations => {
+      //     return navigations.concat(navItems);
+      //   })
+      // );
   }
 }

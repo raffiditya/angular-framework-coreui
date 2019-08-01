@@ -30,13 +30,15 @@ export class MenuFormComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
   ) {
     this.form = formBuilder.group({
+      activeFlag: new FormControl('', Validators.required),
       name: new FormControl('', Validators.required),
+      description: new FormControl(null),
       url: new FormControl('', Validators.required),
       icon: new FormControl(''),
-      title: new FormControl(null, Validators.required),
-      attributeDisabled: new FormControl(null, Validators.required),
-      divider: new FormControl(null, Validators.required),
-      ParentIds: new FormControl(0)
+      orderNo: new FormControl(0),
+      titleFlag: new FormControl(null),
+      parentId: new FormControl(0),
+      children: new FormControl(null)
     })
   }
 
@@ -71,16 +73,17 @@ export class MenuFormComponent implements OnInit {
       //     }
       //   )
     } else {
-      // this.navigationService.getMenu()
-      //   .subscribe(
-      //     (data) => {
-      //       const dataObject = JSON.parse(data['_body'])
-      //       this.initialData = dataObject
-      //       this.form.get('title').setValue(false)
-      //       this.form.get('attributeDisabled').setValue(false)
-      //       this.form.get('divider').setValue(false)
-      //     }
-      //   )
+      this.navigationService.getMenu()
+        .subscribe(
+          (data) => {
+            console.log(data)
+            // const dataObject = JSON.parse(data['_body'])
+            // this.initialData = dataObject
+            // this.form.get('title').setValue(false)
+            // this.form.get('attributeDisabled').setValue(false)
+            // this.form.get('divider').setValue(false)
+          }
+        )
     }
   }
 

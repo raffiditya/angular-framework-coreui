@@ -9,15 +9,15 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: ''
+      title: 'Menu'
     },
     children: [
       {
         path: '',
         component: MenuTableComponent,
-        data: {
-          title: 'cms-menu'
-        },
+        // data: {
+        //   title: 'cms-menu'
+        // },
       },
       {
         path: 'add',
