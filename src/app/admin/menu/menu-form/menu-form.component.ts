@@ -1,19 +1,18 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
 
-import { AdminMenuService } from '../menu-service/admin-menu.service';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { AdminMenuService } from '../menu-service/admin-menu.service'
+import { Router, ActivatedRoute, Params } from '@angular/router'
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 
 @Component({
   templateUrl: './menu-form.component.html',
-  styleUrls: ['./menu-form.component.css']
+  styleUrls: ['./menu-form.component.css'],
 })
 export class MenuFormComponent implements OnInit {
-
   id = 0
   path = ''
   parentMenu = null
-  form: FormGroup;
+  form: FormGroup
   icons = [
     { value: 'icon-user', name: 'icon-user' },
     { value: 'icon-people', name: 'icon-people' },
@@ -34,23 +33,37 @@ export class MenuFormComponent implements OnInit {
     { value: 'icon-speech', name: 'icon-speech' },
     { value: 'icon-puzzle', name: 'icon-puzzle' },
     { value: 'icon-printer', name: 'icon-printer' },
+    { value: 'icon-credit-card', name: 'icon-credit-card' },
+    { value: 'icon-star', name: 'icon-star' },
+    { value: 'icon-settings', name: 'icon-settings' },
+    { value: 'icon-power', name: 'icon-power' },
+    { value: 'icon-magnifier-add', name: 'icon-magnifier-add' },
+    { value: 'icon-link', name: 'icon-link' },
+    { value: 'icon-cloud-download', name: 'icon-cloud-download' },
+    { value: 'icon-paper-plane', name: 'icon-paper-plane' },
+    { value: 'icon-grid', name: 'icon-grid' },
+    { value: 'icon-home', name: 'icon-home' },
+    { value: 'icon-pencil', name: 'icon-pencil' },
+    { value: 'icon-rocket', name: 'icon-rocket' },
+    { value: 'icon-share', name: 'icon-share' },
   ]
 
   constructor(
     private router: Router,
     private adminMenuService: AdminMenuService,
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+  ) {
     this.form = formBuilder.group({
-      activeFlag: new FormControl(null, Validators.required),
+      activeFlag: new FormControl(false, Validators.required),
       name: new FormControl('', Validators.required),
       description: new FormControl(null),
-      url: new FormControl('', Validators.required),
+      url: new FormControl(''),
       icon: new FormControl(''),
       orderNo: new FormControl(0),
-      titleFlag: new FormControl(null),
+      titleFlag: new FormControl(false),
       parentId: new FormControl(null),
-    });
+    })
   }
 
   ngOnInit() {
@@ -58,37 +71,32 @@ export class MenuFormComponent implements OnInit {
     this.path = this.activatedRoute.snapshot.data.title
 
     if (this.id) {
-      this.adminMenuService.getMenu(this.id)
-        .subscribe(
-          (data) => {
-            let dataObject = data
+      this.adminMenuService.getMenu(this.id).subscribe(data => {
+        if (data['activeFlag'] === 'Y') {
+          this.form.get('activeFlag').setValue(true)
+        } else {
+          this.form.get('activeFlag').setValue(false)
+        }
 
-            if (data.activeFlag === 'Y') {
-              this.form.get('activeFlag').setValue(true)
-            } else {
-              this.form.get('activeFlag').setValue(false)
-            }
+        this.form.get('name').setValue(data['name'])
+        this.form.get('description').setValue(data['description'])
+        this.form.get('url').setValue(data['url'])
+        this.form.get('icon').setValue(data['icon'])
+        this.form.get('orderNo').setValue(data['orderNo'])
 
-            this.form.get('name').setValue(data.name)
-            this.form.get('description').setValue(data.description)
-            this.form.get('url').setValue(data.url)
-            this.form.get('icon').setValue(data.icon)
-            this.form.get('orderNo').setValue(data.orderNo)
+        if (data['titleFlag'] === 'Y') {
+          this.form.get('titleFlag').setValue(true)
+        } else {
+          this.form.get('titleFlag').setValue(false)
+        }
 
-            if (data.titleFlag === 'Y') {
-              this.form.get('titleFlag').setValue(true)
-            } else {
-              this.form.get('titleFlag').setValue(false)
-            }
-
-            this.setParent(data.parentId)
-          }
-        )
-    } 
+        this.setParent(data['parentId'])
+      })
+    }
   }
 
   onDisabled() {
-    if (this.path === 'view') {
+    if (this.path === 'View') {
       return true
     } else {
       return false
@@ -99,7 +107,7 @@ export class MenuFormComponent implements OnInit {
     let icon = this.form.get('icon')
     let parentId = this.form.get('parentId')
 
-    if (this.path === 'view') {
+    if (this.path === 'View') {
       icon.disable()
       parentId.disable()
     } else {
@@ -109,112 +117,87 @@ export class MenuFormComponent implements OnInit {
   }
 
   isFieldInvalid(field: string) {
-    const fieldControl = this.form.get(field);
-    return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
+    const fieldControl = this.form.get(field)
+    return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched)
   }
 
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
+      const control = formGroup.get(field)
       if (control instanceof FormControl) {
-        control.markAsTouched({ onlySelf: true });
+        control.markAsTouched({ onlySelf: true })
       } else if (control instanceof FormGroup) {
-        this.validateAllFormFields(control);
+        this.validateAllFormFields(control)
       }
-    });
+    })
   }
 
   setParent(ParentId) {
     if (ParentId) {
-      this.adminMenuService.getMenu(ParentId)
-        .subscribe(
-          (data) => {
-            this.parentMenu = [data]
-            this.form.get('parentId').setValue(ParentId)
+      this.adminMenuService.getMenu(ParentId).subscribe(data => {
+        this.parentMenu = [data]
+        this.form.get('parentId').setValue(ParentId)
 
-            if (this.path === 'view') {
-              this.onSelectDisabled()
-            }
-          }
-        )
+        if (this.path === 'View') {
+          this.onSelectDisabled()
+        }
+      })
     } else {
       this.form.get('parentId').setValue(ParentId)
 
-      if (this.path === 'view') {
+      if (this.path === 'View') {
         this.onSelectDisabled()
       }
-    } 
+    }
   }
 
   onChangeParent(text) {
-    let searchTerm: string = text.term;
+    let searchTerm: string = text.term
 
     if (!searchTerm || searchTerm.length < 3) {
-      this.parentMenu = [];
-      return;
+      this.parentMenu = []
+      return
     } else {
-      this.adminMenuService.searchMenu(searchTerm)
-        .subscribe(
-          (data) => {
-            this.parentMenu = data;
-          }
-        )
+      this.adminMenuService.searchMenu(searchTerm).subscribe(data => {
+        this.parentMenu = data['content']
+      })
     }
-  }
-
-  displayRadioValue() {
-    console.log('masuk')
   }
 
   onSubmit() {
-    let activeFlagStatus = this.form.value.activeFlag;
-    let activeFlagResults = '';
+    let activeFlagStatus = this.form.value.activeFlag
 
     if (activeFlagStatus) {
-      activeFlagResults = 'Y'
+      this.form.get('activeFlag').setValue('Y')
     } else {
-      activeFlagResults = 'N'
+      this.form.get('activeFlag').setValue('N')
     }
 
     let titleFlagStatus = this.form.value.titleFlag
-    let titleFlagResults = ''
 
     if (titleFlagStatus) {
-      titleFlagResults = 'Y'
+      this.form.get('titleFlag').setValue('Y')
     } else {
-      titleFlagResults = 'N'
-    }
-
-    let newFormValue = {
-      activeFlag: activeFlagResults,
-      name: this.form.value.name,
-      description: this.form.value.description,
-      url: this.form.value.url,
-      icon: this.form.value.icon,
-      orderNo: this.form.value.orderNo,
-      titleFlag: titleFlagResults,
-      parentId: this.form.value.parentId
+      this.form.get('titleFlag').setValue('N')
     }
 
     this.validateAllFormFields(this.form)
 
     if (this.id) {
-      this.adminMenuService.editMenu(this.id, newFormValue)
-        .subscribe(
-          (data) => {
+      if (this.form.valid) {
+        this.adminMenuService
+          .editMenu(this.id, this.form.value)
+          .subscribe(data => {
             // const dataObject = JSON.parse(data['_body'])
-            this.router.navigate(['/menu'])
-          }
-        )
+            this.router.navigate(['/admin/menu'])
+          })
+      }
     } else {
       if (this.form.valid) {
-        this.adminMenuService.addMenu(newFormValue)
-          .subscribe(
-            (data) => {
-              this.router.navigate(['/menu'])
-            }
-          )
-      } 
+        this.adminMenuService.addMenu(this.form.value).subscribe(data => {
+          this.router.navigate(['/admin/menu'])
+        })
+      }
     }
   }
 }

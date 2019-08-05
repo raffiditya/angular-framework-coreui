@@ -13,7 +13,7 @@
   font-weight: 700;
 }
 
-.cms-form-error{
+.cms-form-error {
   font-size: 80%;
   width: 100%;
   margin-top: 0.25rem;
@@ -22,7 +22,7 @@
 }
 
 label.required::after {
-  content: "*";
+  content: '*';
   color: #e32;
   margin-left: 5px;
 }

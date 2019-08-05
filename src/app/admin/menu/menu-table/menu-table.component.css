@@ -19,9 +19,6 @@
 }
 
 .menu-button {
-  padding-right: 12px;
-}
-
-.main-button button {
-  color: white;
+  margin-right: 15px;
+  cursor: pointer;
 }

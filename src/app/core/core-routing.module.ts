@@ -1,7 +1,12 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {DefaultLayoutComponent, P403Component, P404Component, P500Component} from './views';
-import {AuthGuard} from './guard/auth.guard';
+import { NgModule } from '@angular/core'
+import { RouterModule, Routes } from '@angular/router'
+import {
+  DefaultLayoutComponent,
+  P403Component,
+  P404Component,
+  P500Component,
+} from './views'
+import { AuthGuard } from './guard/auth.guard'
 
 export const routes: Routes = [
   {
@@ -13,47 +18,49 @@ export const routes: Routes = [
     path: '403',
     component: P403Component,
     data: {
-      title: 'Page 403'
-    }
+      title: 'Page 403',
+    },
   },
   {
     path: '404',
     component: P404Component,
     data: {
-      title: 'Page 404'
-    }
+      title: 'Page 404',
+    },
   },
   {
     path: '500',
     component: P500Component,
     data: {
-      title: 'Page 500'
-    }
+      title: 'Page 500',
+    },
   },
   {
     path: 'login',
-    loadChildren: './views/login/login.module#LoginModule'
+    loadChildren: './views/login/login.module#LoginModule',
   },
   {
     path: '',
     component: DefaultLayoutComponent,
     data: {
-      title: 'Home'
+      title: 'Home',
     },
     canActivateChild: [AuthGuard],
     children: [
       {
         path: 'dashboard',
-        loadChildren: 'app/dashboard/dashboard.module#DashboardModule'
+        loadChildren: 'app/dashboard/dashboard.module#DashboardModule',
       },
       {
-        path: 'menu',
-        loadChildren: () => import('../admin/menu/menu.module').then(m => m.MenuModule)
+        path: 'admin',
+        loadChildren: () =>
+          import('../admin/admin.module').then(m => m.AdminModule),
       },
       {
         path: 'base',
-        loadChildren: () => import('./../views/base/base.module').then(m => m.BaseModule)
-      }/*,
+        loadChildren: () =>
+          import('./../views/base/base.module').then(m => m.BaseModule),
+      } /*,
       {
         path: 'buttons',
         loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule)
@@ -81,15 +88,14 @@ export const routes: Routes = [
       {
         path: 'widgets',
         loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
-      }*/
-    ]
+      }*/,
+    ],
   },
-  {path: '**', component: P404Component}
-];
+  { path: '**', component: P404Component },
+]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class CoreRoutingModule {
-}
+export class CoreRoutingModule {}
