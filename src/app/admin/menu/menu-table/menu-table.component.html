@@ -8,7 +8,7 @@
         <div class="cms-menu-add-button">
           <button type="button" class="btn">
             <a routerLink="/menu/add" routerLinkActive="active">
-              Add New Routes
+              Add New
             </a>
           </button>
         </div>
@@ -27,6 +27,12 @@
             [rowHeight]="'auto'"
             [limit]="10">
           </ngx-datatable>
+          <ng-template #activeTemplate let-row="row" let-rowIndex="rowIndex">
+            <ng-container [ngSwitch]="row.activeFlag">
+              <span *ngSwitchCase="'Y'" class="badge badge-success">Active</span>
+              <span *ngSwitchCase="'N'" class="badge badge-danger">Inactive</span>
+            </ng-container>
+          </ng-template>
           <ng-template #optionsTemplate let-row="row" let-rowIndex="rowIndex">
             <ng-container>
               <span class="menu-button main-button">
@@ -40,7 +46,7 @@
                 </button>
               </span>
               <span class="menu-button main-button">
-                <a (click)="onDeleteData(row)" >
+                <a (click)="selectInactive(row)" >
                   <button type="button" class="btn btn-brand btn-danger">
                     <i class="fa fa-trash"></i><span>Delete</span>
                   </button>

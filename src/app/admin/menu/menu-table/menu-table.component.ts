@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
 
 import { Router, ActivatedRoute } from '@angular/router'
-import { NavigationService } from '../../../core/services/navigation.service'
+import { AdminMenuService } from '../menu-service/admin-menu.service'
 
 @Component({
   selector: 'cms-menu-table',
@@ -9,6 +9,8 @@ import { NavigationService } from '../../../core/services/navigation.service'
   styleUrls: ['./menu-table.component.css']
 })
 export class MenuTableComponent implements OnInit {
+  @ViewChild('activeTemplate', {static: true}) activeTemplate: TemplateRef<any>;
+  @ViewChild('statusTemplate', {static: true}) statusTemplate: TemplateRef<any>;
   @ViewChild('optionsTemplate', {static: true}) optionsTemplate: TemplateRef<any>;
 
   columns = [];
@@ -17,39 +19,57 @@ export class MenuTableComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private navigationService: NavigationService,
+    private adminMenuService: AdminMenuService,
     private activatedRoute: ActivatedRoute,
   ){}
 
   ngOnInit() {
     this.columns = [
       { name: 'Name' },
-      { name: 'URL' },
-
+      { name: 'Url' },
+      { name: 'Active', prop: 'activeFlag', cellTemplate: this.activeTemplate },
       { name: 'Options', prop: 'options', cellTemplate: this.optionsTemplate },
     ];
 
-    // this.navigationService.getMenu()
-    //   .subscribe(
-    //     (data) => {
-    //       const dataObject = JSON.parse(data['_body'])
-    //       this.rows = dataObject
-    //     }
-    //   )
+    this.adminMenuService.getAllMenu()
+      .subscribe(
+        (data) => { 
+          this.rows = data['content']
+        }
+      )
   }
 
-  onDeleteData(row) {
-    // this.menuService.deleteSingleData(row.id)
-    //   .subscribe(
-    //     (data) => {
-    //       const dataObject = JSON.parse(data['_body'])
+  selectInactive(row) {
+    this.adminMenuService.getMenu(row.id)
+      .subscribe(
+        (data) => {
+          let newFormValue = {
+            activeFlag: 'N',
+            name: data.name,
+            description: data.description,
+            url: data.url,
+            icon: data.icon,
+            orderNo: data.orderNo,
+            titleFlag: data.titleFlag,
+            parentId: data.parentId
+          }
 
-    //       for (let i = this.rows.length - 1; i >= 0; i--) {
-    //         if (this.rows[i].id === row.id) {
-    //           this.rows.splice(i, 1);
-    //         }
-    //       }
-    //     }
-    //   )
+          this.onUpdateData(row.id, newFormValue)
+        }
+      )
+  }
+
+  onUpdateData(id, menu) {
+    this.adminMenuService.editMenu(id, menu)
+      .subscribe(
+        (data) => {
+          for (let i = 0; i < this.rows.length; i++) {
+            if (this.rows[i].id === id) {
+              this.rows[i] = data
+              this.rows = [...this.rows]
+            }
+          }
+        }
+      )
   }
 }

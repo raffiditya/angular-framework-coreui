@@ -4,95 +4,100 @@
       <p>{{ title }} Menu</p>
     </div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="row mt-3 mr-3 ml-3">
+      <div class="row mt-4 mr-3 ml-3">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label required" for="name">Name</label>
-          <input [class.is-invalid]="isFieldInvalid('name')" name="name" type="text" class="form-control" formControlName="name" [readonly]="onDisabled()" required>
+          <input [class.is-invalid]="isFieldInvalid('name')" name="name" type="text" placeholder="Enter name" class="form-control" formControlName="name" [readonly]="onDisabled()" required>
           <div *ngIf="isFieldInvalid('name')" class="cms-form-error">
             <div *ngIf="form.get('name').hasError('required')">
               Name is required
             </div>
           </div>
         </div>
-        
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <label class="col-form-label required" for="url" required>url</label>
-          <input [class.is-invalid]="isFieldInvalid('url')" name="url" type="text" class="form-control" formControlName="url" [readonly]="onDisabled()" required>
+          <label class="col-form-label required" for="url" required>Url</label>
+          <input [class.is-invalid]="isFieldInvalid('url')" name="url" type="text" placeholder="Enter url" class="form-control" formControlName="url" [readonly]="onDisabled()" required>
           <div *ngIf="isFieldInvalid('url')" class="cms-form-error">
             <div *ngIf="form.get('url').hasError('required')">
               Url is required
             </div>
           </div>
         </div>
-        
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <label class="col-form-label" for="url">Icon</label>
-          <ng-select [items]="icons"
-                    bindLabel="name"
-                    bindValue="value"
-                    placeholder="Select icon"
-                    labelForId="icon"
-                    [virtualScroll]="true"
-                    formControlName="icon">
-            <ng-template ng-label-tmp let-item="item">
-                <i [class]="item.value"></i>
-                <span>{{item.name}}</span>
-            </ng-template>
-            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-                <i [class]="item.value"></i>
-                <span [ngOptionHighlight]="search">{{item.name}}</span>
-            </ng-template>
-          </ng-select>
+          <div class="row">
+            <div class="col form-group">
+              <label class="col-form-label" for="url">Icon</label>
+              <ng-select  [items]="icons"
+                          bindLabel="name"
+                          bindValue="value"
+                          placeholder="Select icon"
+                          labelForId="icon"
+                          [virtualScroll]="true"
+                          formControlName="icon">
+                <ng-template ng-label-tmp let-item="item">
+                  <i [class]="item.value"></i>
+                  <span>{{ item.name }}</span>
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                  <i [class]="item.value"> {{ item.name }}</i>
+                  <!-- <span [ngOptionHighlight]="searchTerm">{{ item.name }}</span> -->
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <label class="col-form-label" for="name">Order No</label>
+              <input name="orderNo" type="number" placeholder="Enter order number" class="form-control" formControlName="orderNo" [readonly]="onDisabled()">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <label class="col-form-label" for="parentId">Parent Menu</label>
+              <ng-select [items]="parentMenu" bindLabel="name"
+                bindValue="id" class="form-control" clearAllText="Clear" labelForId="parentId" placeholder="Select parent routes" formControlName="parentId" (search)="onChangeParent($event)">
+              </ng-select>
+            </div>
+          </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <label class="col-form-label" for="ParentIds">Parent Name</label>
-          <ng-select [items]="initialData" bindLabel="name"
-            bindValue="id" class="form-control" clearAllText="Clear" labelForId="ParentIds" placeholder="Select parent routes" formControlName="ParentIds">
-          </ng-select>
+          <label class="col-form-label" for="textarea-input">Description</label>
+          <textarea id="textarea-input" name="textarea-input" rows="9" class="form-control" placeholder="Enter Description" formControlName="description" [readonly]="onDisabled()"></textarea>
         </div>
       </div>
-      <div class="row mt-3 mr-3 ml-3">
-        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-12 form-group">
-          <div>
-            <label class="col-form-label" for="title">Title</label>
-          </div>
-          <div class="switch-button">
-            <label class="switch switch-pill switch-primary">
-              <input type="checkbox" class="switch-input form-control" formControlName="title" checked>
-              <span class="switch-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-12 form-group">
-          <div>
-            <label class="col-form-label" for="attributeDisabled">Disabled</label>
-          </div>
-          <div class="switch-button">
-            <label class="switch switch-pill switch-primary">
-              <input type="checkbox" class="switch-input form-control" formControlName="attributeDisabled" checked>
-              <span class="switch-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-12 form-group">
-          <div>
-            <label class="col-form-label" for="divider">Divider</label>
-          </div>
-          <div class="switch-button">
-            <label class="switch switch-pill switch-primary">
-              <input type="checkbox" class="switch-input form-control" formControlName="divider" checked>
-              <span class="switch-slider"></span>
+      <div class="row mt-4 mr-3 ml-3">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
+        <div class="row">
+          <label class="col-md-3 col-form-label" for="email-input">Active Flag</label>
+          <div class="col-9 active-pills">
+            <label class="switch switch-label switch-pill switch-primary">
+              <input *ngIf="path !== 'view'" type="checkbox" class="switch-input form-control" formControlName="activeFlag" checked>
+              <input *ngIf="path === 'view'" type="checkbox" class="switch-input form-control" formControlName="activeFlag" disabled checked>
+              <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
             </label>
           </div>
         </div>
       </div>
-      <div class="row mt-3 mr-3 ml-3 mb-5">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
+        <div class="row">
+          <label class="col-md-3 col-form-label" for="email-input">Title Flag</label>
+          <div class="col-9">
+            <label class="switch switch-label switch-pill switch-primary active-pills">
+              <input *ngIf="path !== 'view'" type="checkbox" class="switch-input form-control" formControlName="titleFlag" checked>
+              <input *ngIf="path === 'view'" type="checkbox" class="switch-input form-control" formControlName="titleFlag" disabled checked>
+              <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div *ngIf="path !== 'view'" class="row mt-3 mr-3 ml-3 mb-5">
         <div class="col form-group">
           <div class="form-actions submit-button mt-5">
-            <button *ngIf="title !== 'view'" class="btn btn-primary mr-1" type="submit">Submit</button>
-            <button class="btn btn-secondary option-buttons" type="button">
+            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
+            <button type="reset" class="btn btn-sm btn-secondary option-buttons"><i class="fa fa-ban"></i>
               <a routerLink="/menu" routerLinkActive="active">
-                Cancel
+               Cancel
               </a>
             </button>
           </div>
