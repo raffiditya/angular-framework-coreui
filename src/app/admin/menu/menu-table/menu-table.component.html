@@ -1,19 +1,6 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header cms-menu-header">
-      <div class="cms-title">
-        <p>CMS Routes</p>
-      </div>
-      <div class="cms-menu-right">
-        <div class="cms-menu-add-button">
-          <button type="button" class="btn">
-            <a routerLink="/admin/menu/add" routerLinkActive="active">
-              Add New
-            </a>
-          </button>
-        </div>
-      </div>
-    </div>
+    <table-header></table-header>
     <div class="card-body">
       <div class="row">
         <div class="col-12 col-xl mb-3 mb-xl-0">
@@ -46,42 +33,37 @@
           </ng-template>
           <ng-template #optionsTemplate let-row="row" let-rowIndex="rowIndex">
             <ng-container>
-              <span class="menu-button main-button">
-                <button
-                  [routerLink]="['/admin/menu', row.id]"
-                  type="button"
-                  class="btn btn-brand btn-primary"
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="View Menu"
-                >
-                  <i class="fa fa-sign-in fa-sm"></i>
-                </button>
-              </span>
-              <span class="menu-button main-button">
-                <button
-                  [routerLink]="['/admin/menu/edit', row.id]"
-                  type="button"
-                  class="btn btn-brand btn-default"
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="Edit Menu"
-                >
-                  <i class="fa fa-edit fa-sm"></i>
-                </button>
-              </span>
-              <span class="menu-button main-button">
-                <button
-                  (click)="selectInactive(row)"
-                  data-toggle="tooltip"
-                  data-placement="bottom"
-                  title="Delete Menu"
-                  type="button"
-                  class="btn btn-brand btn-danger"
-                >
-                  <i class="fa fa-trash fa-sm"></i>
-                </button>
-              </span>
+              <button
+                [routerLink]="['/admin/menu', row.id]"
+                type="button"
+                class="btn btn-primary"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="View Menu"
+              >
+                <i class="fa fa-sign-in fa-sm"></i>
+              </button>
+              <button
+                [routerLink]="['/admin/menu/edit', row.id]"
+                type="button"
+                class="btn btn-success"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="Edit Menu"
+              >
+                <i class="fa fa-edit fa-sm"></i>
+              </button>
+              <button
+                (click)="selectInactive(row)"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="Delete Menu"
+                type="button"
+                class="btn btn-danger"
+                [disabled]="onDisabled(row.activeFlag)"
+              >
+                <i class="fa fa-trash fa-sm"></i>
+              </button>
             </ng-container>
           </ng-template>
         </div>

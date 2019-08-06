@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core'
-import { RouterModule, Routes } from '@angular/router'
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import {
   DefaultLayoutComponent,
   P403Component,
   P404Component,
   P500Component,
-} from './views'
-import { AuthGuard } from './guard/auth.guard'
+} from './views';
+import { AuthGuard } from './guard/auth.guard';
 
 export const routes: Routes = [
   {
@@ -60,11 +60,12 @@ export const routes: Routes = [
         path: 'base',
         loadChildren: () =>
           import('./../views/base/base.module').then(m => m.BaseModule),
-      } /*,
+      },
       {
         path: 'buttons',
-        loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule)
-      },
+        loadChildren: () =>
+          import('../views/buttons/buttons.module').then(m => m.ButtonsModule),
+      } /*,
       {
         path: 'charts',
         loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
@@ -92,7 +93,7 @@ export const routes: Routes = [
     ],
   },
   { path: '**', component: P404Component },
-]
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

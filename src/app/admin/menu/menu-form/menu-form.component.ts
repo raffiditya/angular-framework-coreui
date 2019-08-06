@@ -1,18 +1,24 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 
-import { AdminMenuService } from '../menu-service/admin-menu.service'
-import { Router, ActivatedRoute, Params } from '@angular/router'
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
+import { AdminMenuService } from '../menu-service/admin-menu.service';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   templateUrl: './menu-form.component.html',
   styleUrls: ['./menu-form.component.css'],
 })
 export class MenuFormComponent implements OnInit {
-  id = 0
-  path = ''
-  parentMenu = null
-  form: FormGroup
+  id = 0;
+  path = '';
+  parentMenu = null;
+  open = false;
+  form: FormGroup;
   icons = [
     { value: 'icon-user', name: 'icon-user' },
     { value: 'icon-people', name: 'icon-people' },
@@ -46,7 +52,7 @@ export class MenuFormComponent implements OnInit {
     { value: 'icon-pencil', name: 'icon-pencil' },
     { value: 'icon-rocket', name: 'icon-rocket' },
     { value: 'icon-share', name: 'icon-share' },
-  ]
+  ];
 
   constructor(
     private router: Router,
@@ -63,125 +69,134 @@ export class MenuFormComponent implements OnInit {
       orderNo: new FormControl(0),
       titleFlag: new FormControl(false),
       parentId: new FormControl(null),
-    })
+    });
   }
 
   ngOnInit() {
-    this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'))
-    this.path = this.activatedRoute.snapshot.data.title
+    this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.path = this.activatedRoute.snapshot.data.title;
 
     if (this.id) {
       this.adminMenuService.getMenu(this.id).subscribe(data => {
         if (data['activeFlag'] === 'Y') {
-          this.form.get('activeFlag').setValue(true)
+          this.form.get('activeFlag').setValue(true);
         } else {
-          this.form.get('activeFlag').setValue(false)
+          this.form.get('activeFlag').setValue(false);
         }
 
-        this.form.get('name').setValue(data['name'])
-        this.form.get('description').setValue(data['description'])
-        this.form.get('url').setValue(data['url'])
-        this.form.get('icon').setValue(data['icon'])
-        this.form.get('orderNo').setValue(data['orderNo'])
+        this.form.get('name').setValue(data['name']);
+        this.form.get('description').setValue(data['description']);
+        this.form.get('url').setValue(data['url']);
+        this.form.get('icon').setValue(data['icon']);
+        this.form.get('orderNo').setValue(data['orderNo']);
 
         if (data['titleFlag'] === 'Y') {
-          this.form.get('titleFlag').setValue(true)
+          this.form.get('titleFlag').setValue(true);
         } else {
-          this.form.get('titleFlag').setValue(false)
+          this.form.get('titleFlag').setValue(false);
         }
 
-        this.setParent(data['parentId'])
-      })
+        this.setParent(data['parentId']);
+      });
     }
   }
 
   onDisabled() {
     if (this.path === 'View') {
-      return true
+      return true;
     } else {
-      return false
+      return false;
     }
   }
 
   onSelectDisabled() {
-    let icon = this.form.get('icon')
-    let parentId = this.form.get('parentId')
+    let icon = this.form.get('icon');
+    let parentId = this.form.get('parentId');
 
     if (this.path === 'View') {
-      icon.disable()
-      parentId.disable()
+      icon.disable();
+      parentId.disable();
     } else {
-      icon.enable()
-      parentId.enable()
+      icon.enable();
+      parentId.enable();
     }
   }
 
   isFieldInvalid(field: string) {
-    const fieldControl = this.form.get(field)
-    return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched)
+    const fieldControl = this.form.get(field);
+    return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
   }
 
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field)
+      const control = formGroup.get(field);
       if (control instanceof FormControl) {
-        control.markAsTouched({ onlySelf: true })
+        control.markAsTouched({ onlySelf: true });
       } else if (control instanceof FormGroup) {
-        this.validateAllFormFields(control)
+        this.validateAllFormFields(control);
       }
-    })
+    });
   }
 
   setParent(ParentId) {
     if (ParentId) {
       this.adminMenuService.getMenu(ParentId).subscribe(data => {
-        this.parentMenu = [data]
-        this.form.get('parentId').setValue(ParentId)
+        this.parentMenu = [data];
+        this.form.get('parentId').setValue(ParentId);
 
         if (this.path === 'View') {
-          this.onSelectDisabled()
+          this.onSelectDisabled();
         }
-      })
+      });
     } else {
-      this.form.get('parentId').setValue(ParentId)
+      this.form.get('parentId').setValue(ParentId);
 
       if (this.path === 'View') {
-        this.onSelectDisabled()
+        this.onSelectDisabled();
       }
     }
   }
 
   onChangeParent(text) {
-    let searchTerm: string = text.term
+    let searchTerm: string = text.term;
 
     if (!searchTerm || searchTerm.length < 3) {
-      this.parentMenu = []
-      return
+      this.parentMenu = null;
+      return;
     } else {
       this.adminMenuService.searchMenu(searchTerm).subscribe(data => {
-        this.parentMenu = data['content']
-      })
+        this.parentMenu = data['content'];
+        this.open = true;
+      });
+    }
+  }
+
+  onDropdown() {
+    if (this.parentMenu === null) {
+      return false;
+    } else {
+      return true;
     }
   }
 
   onSubmit() {
-    let activeFlagStatus = this.form.value.activeFlag
+    let activeFlagStatus = this.form.value.activeFlag;
 
     if (activeFlagStatus) {
-      this.form.get('activeFlag').setValue('Y')
+      this.form.get('activeFlag').setValue('Y');
     } else {
-      this.form.get('activeFlag').setValue('N')
+      this.form.get('activeFlag').setValue('N');
     }
 
-    let titleFlagStatus = this.form.value.titleFlag
+    let titleFlagStatus = this.form.value.titleFlag;
 
     if (titleFlagStatus) {
-      this.form.get('titleFlag').setValue('Y')
+      this.form.get('titleFlag').setValue('Y');
     } else {
-      this.form.get('titleFlag').setValue('N')
+      this.form.get('titleFlag').setValue('N');
     }
 
-    this.validateAllFormFields(this.form)
+    this.validateAllFormFields(this.form);
 
     if (this.id) {
       if (this.form.valid) {
@@ -189,14 +204,14 @@ export class MenuFormComponent implements OnInit {
           .editMenu(this.id, this.form.value)
           .subscribe(data => {
             // const dataObject = JSON.parse(data['_body'])
-            this.router.navigate(['/admin/menu'])
-          })
+            this.router.navigate(['/admin/menu']);
+          });
       }
     } else {
       if (this.form.valid) {
         this.adminMenuService.addMenu(this.form.value).subscribe(data => {
-          this.router.navigate(['/admin/menu'])
-        })
+          this.router.navigate(['/admin/menu']);
+        });
       }
     }
   }

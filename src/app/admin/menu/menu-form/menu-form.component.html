@@ -89,6 +89,7 @@
                 placeholder="Select parent routes"
                 formControlName="parentId"
                 (search)="onChangeParent($event)"
+                [isOpen]="onDropdown()"
               >
               </ng-select>
             </div>
@@ -183,7 +184,7 @@
               type="reset"
               class="btn btn-sm btn-secondary option-buttons"
             >
-              <a routerLink="/system-admin/menu" routerLinkActive="active">
+              <a [routerLink]="['../']" routerLinkActive="active">
                 <i class="fa fa-ban"></i>
                 Cancel
               </a>

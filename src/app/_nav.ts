@@ -1,32 +1,32 @@
 interface NavAttributes {
-  [propName: string]: any
+  [propName: string]: any;
 }
 interface NavWrapper {
-  attributes: NavAttributes
-  element: string
+  attributes: NavAttributes;
+  element: string;
 }
 interface NavBadge {
-  text: string
-  variant: string
+  text: string;
+  variant: string;
 }
 interface NavLabel {
-  class?: string
-  variant: string
+  class?: string;
+  variant: string;
 }
 
 export interface NavData {
-  name?: string
-  url?: string
-  icon?: string
-  badge?: NavBadge
-  title?: boolean
-  children?: NavData[]
-  variant?: string
-  attributes?: NavAttributes
-  divider?: boolean
-  class?: string
-  label?: NavLabel
-  wrapper?: NavWrapper
+  name?: string;
+  url?: string;
+  icon?: string;
+  badge?: NavBadge;
+  title?: boolean;
+  children?: NavData[];
+  variant?: string;
+  attributes?: NavAttributes;
+  divider?: boolean;
+  class?: string;
+  label?: NavLabel;
+  wrapper?: NavWrapper;
 }
 
 export const navItems: NavData[] = [
@@ -56,6 +56,28 @@ export const navItems: NavData[] = [
   {
     title: true,
     name: 'Components',
+  },
+  {
+    name: 'System Admin',
+    url: '/admin',
+    icon: 'icon-speedometer',
+    children: [
+      {
+        name: 'Menu',
+        url: '/admin/menu',
+        icon: 'icon-menu',
+      },
+      {
+        name: 'Users',
+        url: '/admin/users',
+        icon: 'icon-user',
+      },
+      {
+        name: 'Organizations',
+        url: '/admin/organizations',
+        icon: 'icon-flag',
+      },
+    ],
   },
   {
     name: 'Base',
@@ -312,4 +334,4 @@ export const navItems: NavData[] = [
     variant: 'danger',
     attributes: { target: '_blank', rel: 'noopener' },
   },
-]
+];
