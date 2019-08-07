@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { BlockUIService } from "ng-block-ui";
-import { NgForm } from "@angular/forms";
-import { AuthService } from "../../services/auth.service";
-import { Router } from "@angular/router";
+import {Component} from '@angular/core';
+import {BlockUIService} from 'ng-block-ui';
+import {NgForm} from '@angular/forms';
+import {AuthService} from '../../services/auth.service';
+import {Router} from '@angular/router';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,6 +11,8 @@ import { Router } from "@angular/router";
   styleUrls: ['login.component.scss']
 })
 export class LoginComponent {
+
+  wrongPassword: boolean = false;
 
   userLogin = {
     username: '',
@@ -21,16 +24,21 @@ export class LoginComponent {
   }
 
   onLogin(loginForm: NgForm) {
-    console.log(this.userLogin);
+    this.wrongPassword = false;
     if (!loginForm.form.valid) {
       return;
     }
 
     this.loadingService.start('appRoot');
 
-    this.authService.login(this.userLogin.username, this.userLogin.password).subscribe(() => {
-      this.loadingService.stop('appRoot');
-      this.router.navigateByUrl('/dashboard');
-    });
+    this.authService.login(this.userLogin.username, this.userLogin.password).subscribe(
+      () => this.router.navigateByUrl('/dashboard').then(() => this.loadingService.stop('appRoot')),
+      (error) => {
+        let errorResponse = error as HttpErrorResponse;
+        if (errorResponse.status === 401) {
+          this.wrongPassword = true;
+        }
+        this.loadingService.stop('appRoot');
+      });
   }
 }

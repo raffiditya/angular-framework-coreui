@@ -4,5 +4,10 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  // apiUrl: 'http://localhost:8080/coreui-api',
+  apiUrl: 'http://192.168.150.64:8080/coreui-api',
+  // apiUrl: 'http://10.70.10.215:8080/coreui-api',
+  basicUsername: 'core_client',
+  basicPassword: '@C0r3 Cl13nt'
 };

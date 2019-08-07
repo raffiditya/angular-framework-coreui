@@ -13,7 +13,8 @@
                     <span class="input-group-text"><i class="icon-user"></i></span>
                   </div>
                   <input #username="ngModel" [(ngModel)]="userLogin.username"
-                         [class.is-invalid]="loginForm.submitted && username.invalid" autocomplete="username" class="form-control"
+                         [class.is-invalid]="loginForm.submitted && username.invalid" autocomplete="username"
+                         class="form-control"
                          id="username" name="username" placeholder="Username" required type="text">
                   <ng-container *ngIf="loginForm.submitted && username.invalid">
                     <div *ngIf="username.errors.required" class="invalid-feedback">
@@ -42,6 +43,7 @@
                     <label class="custom-control-label" for="rememberMe">Remember Me</label>
                   </div>
                 </div>
+                <p [hidden]="!wrongPassword" class="text-danger">Wrong username or password.</p>
                 <div class="row">
                   <div class="col-12">
                     <button class="btn btn-block btn-primary px-4">Login</button>

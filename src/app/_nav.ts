@@ -30,7 +30,7 @@ export interface NavData {
 }
 
 export const navItems: NavData[] = [
-  {
+  /*{
     name: 'Dashboard',
     url: '/dashboard',
     icon: 'icon-speedometer',
@@ -38,7 +38,7 @@ export const navItems: NavData[] = [
       variant: 'info',
       text: 'NEW'
     }
-  },
+  },*/
   {
     title: true,
     name: 'Theme'
