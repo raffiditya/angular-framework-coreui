@@ -162,7 +162,7 @@ export class MenuFormComponent implements OnInit {
 
     if (!searchTerm || searchTerm.length < 3) {
       this.parentMenu = null;
-      return;
+      return false;
     } else {
       this.adminMenuService.searchMenu(searchTerm).subscribe(data => {
         this.parentMenu = data['content'];
@@ -172,7 +172,11 @@ export class MenuFormComponent implements OnInit {
   }
 
   onDropdown() {
+    let parentId = this.form.get('parentId').value;
+
     if (this.parentMenu === null) {
+      return false;
+    } else if (parentId !== null) {
       return false;
     } else {
       return true;

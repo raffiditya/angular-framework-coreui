@@ -9,6 +9,7 @@ import { AdminMenuService } from '../menu-service/admin-menu.service';
   styleUrls: ['./menu-table.component.css'],
 })
 export class MenuTableComponent implements OnInit {
+  @ViewChild('myTable', { static: false }) table: any;
   @ViewChild('activeTemplate', { static: true }) activeTemplate: TemplateRef<
     any
   >;
@@ -53,6 +54,11 @@ export class MenuTableComponent implements OnInit {
     } else {
       return true;
     }
+  }
+
+  toggleExpandRow(row) {
+    console.log('Toggled Expand Row!', row);
+    this.table.rowDetail.toggleExpandRow(row);
   }
 
   selectInactive(row) {
