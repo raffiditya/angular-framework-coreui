@@ -5,67 +5,151 @@
       <div class="row">
         <div class="col-12 col-xl mb-3 mb-xl-0">
           <ngx-datatable
+            #myTable
             class="bootstrap"
-            [columns]="columns"
             [columnMode]="'force'"
-            [rows]="rows"
             [headerHeight]="50"
             [footerHeight]="50"
-            [rowHeight]="'auto'"
-            [limit]="10"
+            [rowHeight]="50"
+            [rows]="rows"
+            [loadingIndicator]="loadingIndicator"
+            [limit]="5"
+            (page)="setPage($event)"
           >
+            <ngx-datatable-column name="Name" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-value="value" ngx-datatable-cell-template>
+                {{ value }}
+              </ng-template>
+            </ngx-datatable-column>
+            <!--  -->
+            <ngx-datatable-column name="Url" [flexGrow]="1">
+              <ng-template
+                let-column="column"
+                let-sort="sortFn"
+                ngx-datatable-header-template
+              >
+                <span class="url-hidden">{{ column.name }}</span>
+              </ng-template>
+              <ng-template
+                let-row="row"
+                let-value="value"
+                ngx-datatable-cell-template
+              >
+                <span class="url-hidden">{{ value }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <!--  -->
+            <ngx-datatable-column [flexGrow]="1">
+              <ng-template ngx-datatable-header-template>
+                <span class="title-hidden">Title</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="row.titleFlag">
+                  <span
+                    *ngSwitchCase="'Y'"
+                    class="badge badge-success title-hidden"
+                    >True</span
+                  >
+                  <span
+                    *ngSwitchCase="'N'"
+                    class="badge badge-danger title-hidden"
+                    >False</span
+                  >
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+            <!--  -->
+            <ngx-datatable-column [flexGrow]="1" class="d-sm-none">
+              <ng-template ngx-datatable-header-template>
+                <span class="active-hidden">Active</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="row.activeFlag">
+                  <span
+                    *ngSwitchCase="'Y'"
+                    class="badge badge-success active-hidden"
+                    >Active</span
+                  >
+                  <span
+                    *ngSwitchCase="'N'"
+                    class="badge badge-danger active-hidden"
+                    >Inactive</span
+                  >
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+            <!--  -->
+            <ngx-datatable-column [flexGrow]="1">
+              <ng-template ngx-datatable-header-template>
+                <span>Options</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container>
+                  <button
+                    [routerLink]="['/admin/menu', row.id]"
+                    type="button"
+                    class="btn btn-primary"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="View Menu"
+                  >
+                    <i class="fa fa-sign-in fa-sm"></i>
+                  </button>
+                  <button
+                    [routerLink]="['/admin/menu/edit', row.id]"
+                    type="button"
+                    class="btn btn-success"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Edit Menu"
+                  >
+                    <i class="fa fa-edit fa-sm"></i>
+                  </button>
+                  <button
+                    (click)="selectInactive(row)"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Delete Menu"
+                    type="button"
+                    class="btn btn-danger"
+                    [disabled]="onDisabled(row.activeFlag)"
+                  >
+                    <i class="fa fa-trash fa-sm"></i>
+                  </button>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-footer>
+              <ng-template
+                ngx-datatable-footer-template
+                let-rowCount="rowCount"
+                let-pageSize="pageSize"
+                let-selectedCount="selectedCount"
+                let-curPage="curPage"
+                let-offset="offset"
+                let-isVisible="isVisible"
+              >
+                <div class="page-count">
+                  <span *ngIf="selectedMessage">
+                    {{ selectedCount.toLocaleString() }} {{ selectedMessage }} /
+                  </span>
+                  {{ rowCount.toLocaleString() }} {{ totalMessage }}
+                </div>
+                <datatable-pager
+                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+                  [pagerRightArrowIcon]="'datatable-icon-right'"
+                  [pagerPreviousIcon]="'datatable-icon-prev'"
+                  [pagerNextIcon]="'datatable-icon-skip'"
+                  [page]="curPage"
+                  [size]="pageSize"
+                  [count]="rowCount"
+                  [hidden]="!(rowCount / pageSize > 1)"
+                  (change)="table.onFooterPage($event)"
+                >
+                </datatable-pager>
+              </ng-template>
+            </ngx-datatable-footer>
           </ngx-datatable>
-          <ng-template #activeTemplate let-row="row" let-rowIndex="rowIndex">
-            <ng-container [ngSwitch]="row.activeFlag">
-              <span *ngSwitchCase="'Y'" class="badge badge-success"
-                >Active</span
-              >
-              <span *ngSwitchCase="'N'" class="badge badge-danger"
-                >Inactive</span
-              >
-            </ng-container>
-          </ng-template>
-          <ng-template #titleFlagTemplate let-row="row" let-rowIndex="rowIndex">
-            <ng-container [ngSwitch]="row.titleFlag">
-              <span *ngSwitchCase="'Y'" class="badge badge-success">True</span>
-              <span *ngSwitchCase="'N'" class="badge badge-danger">False</span>
-            </ng-container>
-          </ng-template>
-          <ng-template #optionsTemplate let-row="row" let-rowIndex="rowIndex">
-            <ng-container>
-              <button
-                [routerLink]="['/admin/menu', row.id]"
-                type="button"
-                class="btn btn-primary"
-                data-toggle="tooltip"
-                data-placement="bottom"
-                title="View Menu"
-              >
-                <i class="fa fa-sign-in fa-sm"></i>
-              </button>
-              <button
-                [routerLink]="['/admin/menu/edit', row.id]"
-                type="button"
-                class="btn btn-success"
-                data-toggle="tooltip"
-                data-placement="bottom"
-                title="Edit Menu"
-              >
-                <i class="fa fa-edit fa-sm"></i>
-              </button>
-              <button
-                (click)="selectInactive(row)"
-                data-toggle="tooltip"
-                data-placement="bottom"
-                title="Delete Menu"
-                type="button"
-                class="btn btn-danger"
-                [disabled]="onDisabled(row.activeFlag)"
-              >
-                <i class="fa fa-trash fa-sm"></i>
-              </button>
-            </ng-container>
-          </ng-template>
         </div>
       </div>
     </div>

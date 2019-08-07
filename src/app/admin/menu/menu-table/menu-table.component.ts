@@ -6,22 +6,33 @@ import { AdminMenuService } from '../menu-service/admin-menu.service';
 @Component({
   selector: 'cms-menu-table',
   templateUrl: './menu-table.component.html',
-  styleUrls: ['./menu-table.component.css'],
+  styles: [
+    `
+      @media screen and (max-width: 1200px) {
+        .title-hidden {
+          display: none;
+        }
+      }
+      @media screen and (max-width: 992px) {
+        .url-hidden {
+          display: none;
+        }
+      }
+      @media screen and (max-width: 800px) {
+        .active-hidden {
+          display: none;
+        }
+      }
+    `,
+  ],
 })
 export class MenuTableComponent implements OnInit {
   @ViewChild('myTable', { static: false }) table: any;
-  @ViewChild('activeTemplate', { static: true }) activeTemplate: TemplateRef<
-    any
-  >;
-  @ViewChild('titleFlagTemplate', { static: true })
-  titleFlagTemplate: TemplateRef<any>;
-  @ViewChild('optionsTemplate', { static: true }) optionsTemplate: TemplateRef<
-    any
-  >;
 
-  columns = [];
-  rows = [];
-  selected = [];
+  rows: any[] = [];
+  expanded: any = {};
+  timeout: any;
+  loadingIndicator: boolean = true;
 
   constructor(
     private router: Router,
@@ -30,23 +41,12 @@ export class MenuTableComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.columns = [
-      { name: 'Name' },
-      { name: 'Url' },
-      {
-        name: 'Title Flag',
-        prop: 'titleFlag',
-        cellTemplate: this.titleFlagTemplate,
-      },
-      { name: 'Active', prop: 'activeFlag', cellTemplate: this.activeTemplate },
-      { name: 'Options', prop: 'options', cellTemplate: this.optionsTemplate },
-    ];
-
     this.adminMenuService.getAllMenu().subscribe(data => {
       this.rows = data['content'];
-      // console.log(this.rows)
     });
   }
+
+  setPage(event) {}
 
   onDisabled(activeStatus) {
     if (activeStatus === 'Y') {
@@ -54,11 +54,6 @@ export class MenuTableComponent implements OnInit {
     } else {
       return true;
     }
-  }
-
-  toggleExpandRow(row) {
-    console.log('Toggled Expand Row!', row);
-    this.table.rowDetail.toggleExpandRow(row);
   }
 
   selectInactive(row) {
