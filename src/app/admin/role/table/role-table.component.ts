@@ -1,11 +1,10 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-
 import { Router, ActivatedRoute } from '@angular/router';
-import { AdminMenuService } from '../menu-service/admin-menu.service';
+import { AdminRoleService } from '../admin-role.service';
 
 @Component({
-  selector: 'cms-menu-table',
-  templateUrl: './menu-table.component.html',
+  selector: 'role-menu-table',
+  templateUrl: './role-table.component.html',
   styles: [
     `
       @media screen and (max-width: 1200px) {
@@ -26,27 +25,45 @@ import { AdminMenuService } from '../menu-service/admin-menu.service';
     `,
   ],
 })
-export class MenuTableComponent implements OnInit {
-  @ViewChild('myTable', { static: false }) table: any;
+export class RoleTableComponent implements OnInit {
+  @ViewChild('roleTable', { static: false }) table: any;
 
-  rows: any[] = [];
+  page = {
+    size: 0,
+    totalElements: 0,
+    totalPages: 0,
+    pageNumber: 0,
+  };
+  rows = [];
   expanded: any = {};
   timeout: any;
-  loadingIndicator: boolean = true;
 
   constructor(
     private router: Router,
-    private adminMenuService: AdminMenuService,
+    private adminRoleService: AdminRoleService,
     private activatedRoute: ActivatedRoute,
-  ) {}
-
-  ngOnInit() {
-    this.adminMenuService.getAllMenu().subscribe(data => {
-      this.rows = data['content'];
-    });
+  ) {
+    this.page.pageNumber = 0;
+    this.page.size = 10;
   }
 
-  setPage(event) {}
+  ngOnInit() {
+    this.setPage({ offset: 0 });
+  }
+
+  setPage(pageInfo) {
+    this.page.pageNumber = pageInfo.offset;
+
+    this.adminRoleService
+      .getAllRoles(this.page.pageNumber, this.page.size)
+      .subscribe(data => {
+        this.page.totalElements = data.totalElements;
+        this.page.totalPages = data.totalPages;
+
+        this.rows = data['content'];
+        console.log(this.rows);
+      });
+  }
 
   onDisabled(activeStatus) {
     if (activeStatus === 'Y') {
@@ -57,7 +74,8 @@ export class MenuTableComponent implements OnInit {
   }
 
   selectInactive(row) {
-    this.adminMenuService.getMenu(row.id).subscribe(data => {
+    this.adminRoleService.deleteRole(row.id).subscribe(data => {
+      console.log(data);
       for (let i = 0; i < this.rows.length; i++) {
         if (this.rows[i].id === row.id) {
           this.rows[i] = data;

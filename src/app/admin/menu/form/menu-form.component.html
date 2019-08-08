@@ -117,18 +117,9 @@
             <div class="col-9 active-pills">
               <label class="switch switch-label switch-pill switch-primary">
                 <input
-                  *ngIf="path !== 'view'"
                   type="checkbox"
                   class="switch-input form-control"
                   formControlName="activeFlag"
-                  checked
-                />
-                <input
-                  *ngIf="path === 'view'"
-                  type="checkbox"
-                  class="switch-input form-control"
-                  formControlName="activeFlag"
-                  disabled
                   checked
                 />
                 <span
@@ -150,18 +141,10 @@
                 class="switch switch-label switch-pill switch-primary active-pills"
               >
                 <input
-                  *ngIf="path !== 'view'"
-                  type="checkbox"
-                  class="switch-input form-control"
-                  formControlName="titleFlag"
-                  checked
-                />
-                <input
                   *ngIf="path === 'view'"
                   type="checkbox"
                   class="switch-input form-control"
                   formControlName="titleFlag"
-                  disabled
                   checked
                 />
                 <span

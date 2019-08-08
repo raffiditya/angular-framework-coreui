@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
+import { Observable, pipe } from 'rxjs';
 import { constant } from '../../../../environments/constant';
-import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AdminMenuService {
   constructor(private http: HttpClient) {}
 
-  getAllMenu(): Observable<any> {
-    return this.http.get(`${constant.appUrl}/admin/menu`);
+  getAllMenu(page, size): Observable<any> {
+    return this.http.get(
+      `${constant.appUrl}/admin/menu?page=${page + 1}&size=${size}`,
+    );
   }
 
   searchMenu(menu): Observable<any> {
@@ -29,7 +29,7 @@ export class AdminMenuService {
     return this.http.put(`${constant.appUrl}/admin/menu/${id}`, menu);
   }
 
-  // deleteMenu(id): Observable<any> {
-  //   return this.http.delete(`${constant.appUrl}/admin/menu/${id}`);
-  // }
+  deleteMenu(id): Observable<any> {
+    return this.http.delete(`${constant.appUrl}/admin/menu/${id}`);
+  }
 }

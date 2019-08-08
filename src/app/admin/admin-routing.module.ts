@@ -2,12 +2,16 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 // admin menu component
-import { MenuTableComponent } from './menu/menu-table/menu-table.component';
-import { MenuFormComponent } from './menu/menu-form/menu-form.component';
+import { MenuTableComponent } from './menu/table/menu-table.component';
+import { MenuFormComponent } from './menu/form/menu-form.component';
 
 // admin organization component
 import { OrganizationTableComponent } from './organization/organization-table/organization-table.component';
 import { OrganizationFormComponent } from './organization/organization-form/organtization-form.component';
+
+// admin role component
+import { RoleTableComponent } from './role/table/role-table.component';
+import { RoleFormComponent } from './role/form/role-form.component';
 
 const routes: Routes = [
   {
@@ -87,6 +91,80 @@ const routes: Routes = [
           {
             path: 'edit/:id',
             component: OrganizationFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Edit',
+            },
+          },
+        ],
+      },
+      // {
+      //   path: 'menu',
+      //   children: [
+      //     {
+      //       path: '',
+      //       component: MenuTableComponent,
+      //       pathMatch: 'full',
+      //       data: {
+      //         title: 'Menu',
+      //       },
+      //     },
+      //     {
+      //       path: 'add',
+      //       component: MenuFormComponent,
+      //       pathMatch: 'full',
+      //       data: {
+      //         title: 'Add',
+      //       },
+      //     },
+      //     {
+      //       path: ':id',
+      //       component: MenuFormComponent,
+      //       pathMatch: 'full',
+      //       data: {
+      //         title: 'View',
+      //       },
+      //     },
+      //     {
+      //       path: 'edit/:id',
+      //       component: MenuFormComponent,
+      //       pathMatch: 'full',
+      //       data: {
+      //         title: 'Edit',
+      //       },
+      //     },
+      //   ],
+      // },
+      {
+        path: 'roles',
+        children: [
+          {
+            path: '',
+            component: RoleTableComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Menu',
+            },
+          },
+          {
+            path: 'add',
+            component: RoleFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Add',
+            },
+          },
+          {
+            path: ':id',
+            component: RoleFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'View',
+            },
+          },
+          {
+            path: 'edit/:id',
+            component: RoleFormComponent,
             pathMatch: 'full',
             data: {
               title: 'Edit',

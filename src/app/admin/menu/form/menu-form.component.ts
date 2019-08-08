@@ -112,13 +112,19 @@ export class MenuFormComponent implements OnInit {
   onSelectDisabled() {
     let icon = this.form.get('icon');
     let parentId = this.form.get('parentId');
+    let activeFlag = this.form.get('activeFlag');
+    let titleFlag = this.form.get('titleFlag');
 
     if (this.path === 'View') {
       icon.disable();
       parentId.disable();
+      activeFlag.disable();
+      titleFlag.disable();
     } else {
       icon.enable();
       parentId.enable();
+      activeFlag.enable();
+      titleFlag.enable();
     }
   }
 
