@@ -1,0 +1,131 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <table-header></table-header>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12 col-xl mb-3 mb-xl-0">
+          <ngx-datatable
+            #myTable
+            class="bootstrap"
+            [rows]="rows"
+            [columnMode]="'force'"
+            [headerHeight]="50"
+            [summaryRow]="true"
+            [summaryHeight]="'auto'"
+            [footerHeight]="50"
+            [rowHeight]="50"
+            [externalPaging]="true"
+            [count]="page.totalElements"
+            [offset]="page.pageNumber"
+            [limit]="page.size"
+            (page)="setPage($event)"
+          >
+            <ngx-datatable-column name="Name" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-value="value" ngx-datatable-cell-template>
+                {{ value }}
+              </ng-template>
+            </ngx-datatable-column>
+            <!--  -->
+            <ngx-datatable-column name="Url" [flexGrow]="1">
+              <ng-template
+                let-column="column"
+                let-sort="sortFn"
+                ngx-datatable-header-template
+              >
+                <span class="url-hidden">{{ column.name }}</span>
+              </ng-template>
+              <ng-template
+                let-row="row"
+                let-value="value"
+                ngx-datatable-cell-template
+              >
+                <span class="url-hidden">{{ value }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <!--  -->
+            <ngx-datatable-column [flexGrow]="1">
+              <ng-template ngx-datatable-header-template>
+                <span class="title-hidden">Title</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="row.titleFlag">
+                  <span
+                    *ngSwitchCase="'Y'"
+                    class="badge badge-success title-hidden"
+                    >True</span
+                  >
+                  <span
+                    *ngSwitchCase="'N'"
+                    class="badge badge-danger title-hidden"
+                    >False</span
+                  >
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+            <!--  -->
+            <ngx-datatable-column [flexGrow]="1" class="d-sm-none">
+              <ng-template ngx-datatable-header-template>
+                <span class="active-hidden">Active</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="row.activeFlag">
+                  <span
+                    *ngSwitchCase="'Y'"
+                    class="badge badge-success active-hidden"
+                    >Active</span
+                  >
+                  <span
+                    *ngSwitchCase="'N'"
+                    class="badge badge-danger active-hidden"
+                    >Inactive</span
+                  >
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+            <!--  -->
+            <ngx-datatable-column [flexGrow]="1">
+              <ng-template ngx-datatable-header-template>
+                <span>Options</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container>
+                  <button
+                    [routerLink]="['/admin/menu', row.id]"
+                    type="button"
+                    class="btn btn-primary"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="View Menu"
+                  >
+                    <i class="fa fa-sign-in fa-sm"></i>
+                  </button>
+                  <button
+                    [routerLink]="['/admin/menu/edit', row.id]"
+                    type="button"
+                    class="btn btn-success"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Edit Menu"
+                  >
+                    <i class="fa fa-edit fa-sm"></i>
+                  </button>
+                  <button
+                    (click)="selectInactive(row)"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Delete Menu"
+                    type="button"
+                    class="btn btn-danger"
+                    [disabled]="onDisabled(row.activeFlag)"
+                  >
+                    <i class="fa fa-trash fa-sm"></i>
+                  </button>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
