@@ -62,7 +62,7 @@
             [count]="page.totalElements"
             [offset]="page.pageNumber"
             [limit]="page.size"
-            (page)="setPage($event)"
+            (page)="getRole($event)"
             (sort)="onSort($event)"
           >
             <ngx-datatable-row-detail [rowHeight]="120" #myDetailRow>
