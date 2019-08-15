@@ -76,7 +76,7 @@ export class MenuTableComponent implements OnInit {
   }
 
   showSuccess() {
-    this.toastr.success('Menu is inactive');
+    this.toastr.success('Menu is inactivated', 'Delete Menu');
   }
 
   onSearchChange(search: any) {

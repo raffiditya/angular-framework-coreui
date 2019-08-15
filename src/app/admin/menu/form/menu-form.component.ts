@@ -8,6 +8,11 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { NormalizeFlag } from '../../../shared/util/normalizeFlag';
+import { FORMERR } from 'dns';
+import { Key } from 'protractor';
+import { isBoolean } from 'util';
 
 @Component({
   templateUrl: './menu-form.component.html',
@@ -59,7 +64,8 @@ export class MenuFormComponent implements OnInit {
     private adminMenuService: AdminMenuService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private _location: Location,
+    private location: Location,
+    private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({
       activeFlag: new FormControl(false, Validators.required),
@@ -134,17 +140,6 @@ export class MenuFormComponent implements OnInit {
     return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
   }
 
-  validateAllFormFields(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control instanceof FormControl) {
-        control.markAsTouched({ onlySelf: true });
-      } else if (control instanceof FormGroup) {
-        this.validateAllFormFields(control);
-      }
-    });
-  }
-
   setParent(ParentId) {
     if (ParentId) {
       this.adminMenuService.getMenu(ParentId).subscribe(data => {
@@ -184,47 +179,50 @@ export class MenuFormComponent implements OnInit {
     }
   }
 
-  checkFlag() {
-    let activeFlagStatus = this.form.value.activeFlag;
+  // normalizeFlag(form: FormGroup): any {
+  //   let copiedFormValue = Object.assign({}, form.value);
+  //   Object.keys(copiedFormValue).forEach(key => {
+  //     const value = copiedFormValue[key];
+  //     if (typeof value === 'boolean') {
+  //       copiedFormValue[key] = value ? 'Y' : 'N';
+  //     }
+  //   });
 
-    if (activeFlagStatus) {
-      this.form.get('activeFlag').setValue('Y');
-    } else {
-      this.form.get('activeFlag').setValue('N');
-    }
-
-    let titleFlagStatus = this.form.value.titleFlag;
-
-    if (titleFlagStatus) {
-      this.form.get('titleFlag').setValue('Y');
-    } else {
-      this.form.get('titleFlag').setValue('N');
-    }
-  }
+  //   return copiedFormValue;
+  // }
 
   cancelButton() {
-    this._location.back();
+    this.location.back();
   }
 
   onSubmit() {
-    this.checkFlag();
-    this.validateAllFormFields(this.form);
+    this.form.markAllAsTouched();
+    if (!this.form.valid) {
+      return;
+    }
+
+    let normalizedFormValue = NormalizeFlag(this.form);
 
     if (this.id) {
-      if (this.form.valid) {
-        this.adminMenuService
-          .editMenu(this.id, this.form.value)
-          .subscribe(data => {
-            // const dataObject = JSON.parse(data['_body'])
-            this.router.navigate(['/admin/menu']);
-          });
-      }
-    } else {
-      if (this.form.valid) {
-        this.adminMenuService.addMenu(this.form.value).subscribe(data => {
+      this.adminMenuService
+        .editMenu(this.id, normalizedFormValue)
+        .subscribe(data => {
           this.router.navigate(['/admin/menu']);
+          this.showSuccessEdit();
         });
-      }
+    } else {
+      this.adminMenuService.addMenu(normalizedFormValue).subscribe(data => {
+        this.router.navigate(['/admin/menu']);
+        this.showSuccessAdd();
+      });
     }
+  }
+
+  showSuccessEdit() {
+    this.toastr.success('Menu is edited', 'Edit Menu');
+  }
+
+  showSuccessAdd() {
+    this.toastr.success('Menu is successfully added', 'Add Menu');
   }
 }
