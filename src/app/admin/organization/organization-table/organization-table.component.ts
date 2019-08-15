@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 
 import { Router, ActivatedRoute } from '@angular/router';
-import { AdminOrganizationService } from '../organization-service/admin-organization.service';
+import { AdminOrganizationService } from '../admin-organization.service';
 
 @Component({
   selector: 'admin-organization-table',
@@ -13,6 +13,7 @@ export class OrganizationTableComponent implements OnInit {
     any
   >;
 
+  path = '';
   columns = [];
   rows = [];
   selected = [];
@@ -24,6 +25,8 @@ export class OrganizationTableComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.path = this.activatedRoute.snapshot.data.title;
+
     this.columns = [
       { name: 'Name' },
       { name: 'Code Name' },

@@ -11,7 +11,6 @@
             [class.is-invalid]="isFieldInvalid('name')"
             name="name"
             type="text"
-            placeholder="Enter name"
             class="form-control"
             formControlName="name"
             [readonly]="onDisabled()"
@@ -28,7 +27,6 @@
           <input
             name="url"
             type="text"
-            placeholder="Enter url"
             class="form-control"
             formControlName="url"
             [readonly]="onDisabled()"
@@ -69,7 +67,6 @@
               <input
                 name="orderNo"
                 type="number"
-                placeholder="Enter order number"
                 class="form-control"
                 formControlName="orderNo"
                 [readonly]="onDisabled()"
@@ -86,10 +83,9 @@
                 class="form-control"
                 clearAllText="Clear"
                 labelForId="parentId"
-                placeholder="Select parent routes"
                 formControlName="parentId"
                 (search)="onChangeParent($event)"
-                [isOpen]="onDropdown()"
+                [loading]="loading"
               >
               </ng-select>
             </div>
@@ -102,7 +98,6 @@
             name="textarea-input"
             rows="9"
             class="form-control"
-            placeholder="Enter Description"
             formControlName="description"
             [readonly]="onDisabled()"
           ></textarea>
@@ -120,7 +115,6 @@
                   type="checkbox"
                   class="switch-input form-control"
                   formControlName="activeFlag"
-                  checked
                 />
                 <span
                   class="switch-slider"
@@ -141,11 +135,9 @@
                 class="switch switch-label switch-pill switch-primary active-pills"
               >
                 <input
-                  *ngIf="path === 'view'"
                   type="checkbox"
                   class="switch-input form-control"
                   formControlName="titleFlag"
-                  checked
                 />
                 <span
                   class="switch-slider"
@@ -164,13 +156,12 @@
               <i class="fa fa-dot-circle-o"></i> Submit
             </button>
             <button
-              type="reset"
+              type="button"
               class="btn btn-sm btn-secondary option-buttons"
+              (click)="cancelButton()"
             >
-              <a [routerLink]="['../']" routerLinkActive="active">
-                <i class="fa fa-ban"></i>
-                Cancel
-              </a>
+              <i class="fa fa-ban"></i>
+              Cancel
             </button>
           </div>
         </div>

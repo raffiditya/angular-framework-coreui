@@ -77,11 +77,14 @@ export const routes: Routes = [
       {
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
-      },
+      },*/,
       {
         path: 'notifications',
-        loadChildren: () => import('./views/notifications/notifications.module').then(m => m.NotificationsModule)
-      },
+        loadChildren: () =>
+          import('../views/notifications/notifications.module').then(
+            m => m.NotificationsModule,
+          ),
+      } /*
       {
         path: 'theme',
         loadChildren: () => import('./views/theme/theme.module').then(m => m.ThemeModule)

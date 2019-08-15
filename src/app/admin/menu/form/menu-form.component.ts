@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-
-import { AdminMenuService } from '../menu-service/admin-menu.service';
+import { Location } from '@angular/common';
+import { AdminMenuService } from '../admin-menu.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {
   FormBuilder,
@@ -17,7 +17,7 @@ export class MenuFormComponent implements OnInit {
   id = 0;
   path = '';
   parentMenu = null;
-  open = false;
+  loading = false;
   form: FormGroup;
   icons = [
     { value: 'icon-user', name: 'icon-user' },
@@ -59,6 +59,7 @@ export class MenuFormComponent implements OnInit {
     private adminMenuService: AdminMenuService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
+    private _location: Location,
   ) {
     this.form = formBuilder.group({
       activeFlag: new FormControl(false, Validators.required),
@@ -166,30 +167,24 @@ export class MenuFormComponent implements OnInit {
   onChangeParent(text) {
     let searchTerm: string = text.term;
 
-    if (!searchTerm || searchTerm.length < 3) {
+    if (searchTerm.length === 0) {
+      this.loading = false;
+    } else if (
+      (searchTerm.length > 0 && searchTerm.length < 3) ||
+      !searchTerm
+    ) {
       this.parentMenu = null;
+      this.loading = true;
       return false;
     } else {
-      this.adminMenuService.searchMenu(searchTerm).subscribe(data => {
+      this.adminMenuService.selectMenu(searchTerm).subscribe(data => {
         this.parentMenu = data['content'];
-        this.open = true;
+        this.loading = false;
       });
     }
   }
 
-  onDropdown() {
-    let parentId = this.form.get('parentId').value;
-
-    if (this.parentMenu === null) {
-      return false;
-    } else if (parentId !== null) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  onSubmit() {
+  checkFlag() {
     let activeFlagStatus = this.form.value.activeFlag;
 
     if (activeFlagStatus) {
@@ -205,7 +200,14 @@ export class MenuFormComponent implements OnInit {
     } else {
       this.form.get('titleFlag').setValue('N');
     }
+  }
 
+  cancelButton() {
+    this._location.back();
+  }
+
+  onSubmit() {
+    this.checkFlag();
     this.validateAllFormFields(this.form);
 
     if (this.id) {

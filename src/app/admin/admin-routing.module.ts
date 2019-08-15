@@ -136,14 +136,14 @@ const routes: Routes = [
       //   ],
       // },
       {
-        path: 'roles',
+        path: 'role',
         children: [
           {
             path: '',
             component: RoleTableComponent,
             pathMatch: 'full',
             data: {
-              title: 'Menu',
+              title: 'Roles',
             },
           },
           {

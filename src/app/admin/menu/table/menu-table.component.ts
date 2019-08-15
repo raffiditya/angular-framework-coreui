@@ -1,7 +1,8 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-
-import { Router, ActivatedRoute } from '@angular/router';
-import { AdminMenuService } from '../menu-service/admin-menu.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { AdminMenuService } from '../admin-menu.service';
+import { Page } from '../../../core/model/page';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'cms-menu-table',
@@ -11,31 +12,27 @@ import { AdminMenuService } from '../menu-service/admin-menu.service';
 export class MenuTableComponent implements OnInit {
   @ViewChild('myTable', { static: false }) table: any;
 
-  page = {
-    size: 0,
-    totalElements: 0,
-    totalPages: 0,
-    pageNumber: 0,
-  };
+  page = new Page();
+  path = '';
   rows = [];
+  keyword = '';
   expanded: any = {};
-  timeout: any;
-  loadingIndicator: boolean = true;
 
   constructor(
-    private router: Router,
     private adminMenuService: AdminMenuService,
     private activatedRoute: ActivatedRoute,
+    private toastr: ToastrService,
   ) {
     this.page.pageNumber = 0;
     this.page.size = 10;
   }
 
   ngOnInit() {
-    this.setPage({ offset: 0 });
+    this.path = this.activatedRoute.snapshot.data.title;
+    this.getMenu({ offset: 0 });
   }
 
-  setPage(pageInfo) {
+  getMenu(pageInfo: { offset: any }) {
     this.page.pageNumber = pageInfo.offset;
 
     this.adminMenuService
@@ -48,7 +45,7 @@ export class MenuTableComponent implements OnInit {
       });
   }
 
-  onDisabled(activeStatus) {
+  onDisabled(activeStatus: string) {
     if (activeStatus === 'Y') {
       return false;
     } else {
@@ -56,14 +53,44 @@ export class MenuTableComponent implements OnInit {
     }
   }
 
-  selectInactive(row) {
-    this.adminMenuService.getMenu(row.id).subscribe(data => {
-      for (let i = 0; i < this.rows.length; i++) {
-        if (this.rows[i].id === row.id) {
-          this.rows[i] = data;
-          this.rows = [...this.rows];
-        }
-      }
+  toggleExpandRow(row: any) {
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+
+  selectInactive(row: { id: any }) {
+    this.adminMenuService.deleteMenu(row.id).subscribe(data => {
+      this.showSuccess();
+      this.getMenu({ offset: 0 });
     });
+  }
+
+  showSuccess() {
+    this.toastr.success('Menu is inactive');
+  }
+
+  onSearchChange(search: any) {
+    this.keyword = search;
+
+    this.adminMenuService.searchMenu(search).subscribe(data => {
+      this.reset();
+      this.rows = data['content'];
+    });
+  }
+
+  reset() {
+    this.table.sorts = [];
+  }
+
+  onSort(event: any) {
+    this.adminMenuService
+      .sortMenu(
+        this.keyword,
+        this.page.pageNumber,
+        event.column.prop,
+        event.newValue,
+      )
+      .subscribe(data => {
+        this.rows = data['content'];
+      });
   }
 }

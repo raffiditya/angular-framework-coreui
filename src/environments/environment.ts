@@ -9,6 +9,7 @@ export const environment = {
   apiUrl: 'http://192.168.150.64:8080/coreui-api',
   // apiUrl: 'http://10.70.10.215:8080/coreui-api',
   // apiUrl: 'http://10.70.131.217:8084/coreui-api',
+  // apiUrl: 'http://10.70.130.240:8080/coreui-api',
   basicUsername: 'core_client',
   basicPassword: '@C0r3 Cl13nt',
 };

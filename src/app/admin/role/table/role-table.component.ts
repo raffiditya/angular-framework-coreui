@@ -5,25 +5,7 @@ import { AdminRoleService } from '../admin-role.service';
 @Component({
   selector: 'role-menu-table',
   templateUrl: './role-table.component.html',
-  styles: [
-    `
-      @media screen and (max-width: 1200px) {
-        .title-hidden {
-          display: none;
-        }
-      }
-      @media screen and (max-width: 992px) {
-        .url-hidden {
-          display: none;
-        }
-      }
-      @media screen and (max-width: 800px) {
-        .active-hidden {
-          display: none;
-        }
-      }
-    `,
-  ],
+  styleUrls: ['./role-table.component.css'],
 })
 export class RoleTableComponent implements OnInit {
   @ViewChild('roleTable', { static: false }) table: any;
@@ -34,9 +16,11 @@ export class RoleTableComponent implements OnInit {
     totalPages: 0,
     pageNumber: 0,
   };
+  path = '';
   rows = [];
+  keyword = '';
   expanded: any = {};
-  timeout: any;
+  loadingIndicator: boolean = true;
 
   constructor(
     private router: Router,
@@ -48,6 +32,7 @@ export class RoleTableComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.path = this.activatedRoute.snapshot.data.title;
     this.setPage({ offset: 0 });
   }
 
@@ -61,7 +46,6 @@ export class RoleTableComponent implements OnInit {
         this.page.totalPages = data.totalPages;
 
         this.rows = data['content'];
-        console.log(this.rows);
       });
   }
 
@@ -73,15 +57,44 @@ export class RoleTableComponent implements OnInit {
     }
   }
 
+  toggleExpandRow(row) {
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+
   selectInactive(row) {
     this.adminRoleService.deleteRole(row.id).subscribe(data => {
-      console.log(data);
       for (let i = 0; i < this.rows.length; i++) {
         if (this.rows[i].id === row.id) {
-          this.rows[i] = data;
+          this.rows[i].activeFlag = 'N';
           this.rows = [...this.rows];
         }
       }
     });
+  }
+
+  onSearchChange(search: any) {
+    this.keyword = search;
+
+    this.adminRoleService.searchRole(search).subscribe(data => {
+      this.reset();
+      this.rows = data['content'];
+    });
+  }
+
+  reset() {
+    this.table.sorts = [];
+  }
+
+  onSort(event: any) {
+    this.adminRoleService
+      .sortRole(
+        this.keyword,
+        this.page.pageNumber,
+        event.column.prop,
+        event.newValue,
+      )
+      .subscribe(data => {
+        this.rows = data['content'];
+      });
   }
 }

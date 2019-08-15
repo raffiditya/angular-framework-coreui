@@ -9,9 +9,6 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { AdminRoutingModule } from './admin-routing.module';
 
-// table header
-import { TableHeaderComponent } from './table-header/table-header.component';
-
 // admin menu component
 import { MenuTableComponent } from './menu/table/menu-table.component';
 import { MenuFormComponent } from './menu/form/menu-form.component';
@@ -34,7 +31,6 @@ import { RoleFormComponent } from './role/form/role-form.component';
     NgxDatatableModule,
   ],
   declarations: [
-    TableHeaderComponent,
     MenuTableComponent,
     MenuFormComponent,
     OrganizationTableComponent,

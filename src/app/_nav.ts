@@ -79,7 +79,7 @@ export const navItems: NavData[] = [
       },
       {
         name: 'Roles',
-        url: '/admin/roles',
+        url: '/admin/role',
         icon: 'icon-badge',
       },
     ],
