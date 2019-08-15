@@ -9,7 +9,7 @@ export class AdminMenuService {
 
   getAllMenu(page: number, size: number): Observable<any> {
     return this.http.get(
-      `${constant.appUrl}/admin/menu?page=${page}&size=${size}`,
+      `${constant.appUrl}/admin/menu?page=${page + 1}&size=${size}`,
     );
   }
 
