@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 
 import { Router, ActivatedRoute } from '@angular/router';
-import { AdminOrganizationService } from '../organization-service/admin-organization.service';
+import { AdminOrganizationService } from '../admin-organization.service';
 import {
   FormBuilder,
   FormGroup,

@@ -1,7 +1,7 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { AdminRoleService } from '../admin-role.service';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {
   FormBuilder,
   FormGroup,
@@ -16,7 +16,6 @@ import {
 export class RoleFormComponent implements OnInit {
   id = 0;
   path = '';
-  parentMenu = null;
   open = false;
   form: FormGroup;
 
@@ -25,6 +24,7 @@ export class RoleFormComponent implements OnInit {
     private adminRoleService: AdminRoleService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
+    private _location: Location,
   ) {
     this.form = formBuilder.group({
       activeFlag: new FormControl(false, Validators.required),
@@ -87,6 +87,10 @@ export class RoleFormComponent implements OnInit {
     });
   }
 
+  cancelButton() {
+    this._location.back();
+  }
+
   onSubmit() {
     let activeFlagStatus = this.form.value.activeFlag;
 
@@ -103,14 +107,13 @@ export class RoleFormComponent implements OnInit {
         this.adminRoleService
           .editRole(this.id, this.form.value)
           .subscribe(data => {
-            // const dataObject = JSON.parse(data['_body'])
-            this.router.navigate(['/admin/roles']);
+            this.router.navigate(['/admin/role']);
           });
       }
     } else {
       if (this.form.valid) {
         this.adminRoleService.addRole(this.form.value).subscribe(data => {
-          this.router.navigate(['/admin/roles']);
+          this.router.navigate(['/admin/role']);
         });
       }
     }

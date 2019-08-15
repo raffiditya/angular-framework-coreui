@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { constant } from '../../../../environments/constant';
+import { constant } from '../../../environments/constant';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
