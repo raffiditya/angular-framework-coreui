@@ -1,6 +1,9 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AdminRoleService } from '../admin-role.service';
+import { Page } from '../../../core/model/page';
+import { ToastrService } from 'ngx-toastr';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'role-menu-table',
@@ -9,23 +12,21 @@ import { AdminRoleService } from '../admin-role.service';
 })
 export class RoleTableComponent implements OnInit {
   @ViewChild('roleTable', { static: false }) table: any;
+  @ViewChild('dangerModal', { static: false })
+  public dangerModal: ModalDirective;
 
-  page = {
-    size: 0,
-    totalElements: 0,
-    totalPages: 0,
-    pageNumber: 0,
-  };
+  page = new Page();
   path = '';
+  id_inactive = '';
   rows = [];
   keyword = '';
   expanded: any = {};
   loadingIndicator: boolean = true;
 
   constructor(
-    private router: Router,
     private adminRoleService: AdminRoleService,
     private activatedRoute: ActivatedRoute,
+    private toastr: ToastrService,
   ) {
     this.page.pageNumber = 0;
     this.page.size = 10;
@@ -33,10 +34,10 @@ export class RoleTableComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.activatedRoute.snapshot.data.title;
-    this.setPage({ offset: 0 });
+    this.getRole({ offset: 0 });
   }
 
-  setPage(pageInfo) {
+  getRole(pageInfo) {
     this.page.pageNumber = pageInfo.offset;
 
     this.adminRoleService
@@ -61,15 +62,22 @@ export class RoleTableComponent implements OnInit {
     this.table.rowDetail.toggleExpandRow(row);
   }
 
-  selectInactive(row) {
-    this.adminRoleService.deleteRole(row.id).subscribe(data => {
-      for (let i = 0; i < this.rows.length; i++) {
-        if (this.rows[i].id === row.id) {
-          this.rows[i].activeFlag = 'N';
-          this.rows = [...this.rows];
-        }
-      }
+  open(row: any) {
+    this.id_inactive = row.id;
+    this.dangerModal.show();
+  }
+
+  selectInactive() {
+    this.adminRoleService.deleteRole(this.id_inactive).subscribe(data => {
+      this.id_inactive = '';
+      this.dangerModal.hide();
+      this.showSuccess();
+      this.getRole({ offset: 0 });
     });
+  }
+
+  showSuccess() {
+    this.toastr.success('Role is inactive');
   }
 
   onSearchChange(search: any) {

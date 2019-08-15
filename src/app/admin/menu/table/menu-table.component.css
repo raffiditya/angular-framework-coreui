@@ -30,12 +30,11 @@
   display: none;
 }
 
-/* search 1 */
+/* search */
 
 .search {
   width: 100%;
   height: 30px;
-  /* position: relative; */
   display: flex;
   padding-right: 30px;
 }
@@ -48,12 +47,7 @@
   height: 35px;
   border-radius: 5px 0 0 5px;
   outline: none;
-  /* color: #9dbfaf; */
 }
-
-/* .searchTerm:focus {
-  color: black;
-} */
 
 .searchButton {
   width: 40px;
@@ -75,51 +69,23 @@
   padding-right: 10px;
 }
 
-/* Search 2 */
-.search-wrap {
-  text-align: right;
-  margin-bottom: 25px;
-}
+/* Modal */
 
-#search-container form {
-  float: right;
-  position: relative;
-  transition: width 0.5s;
-  width: 225px;
-  cursor: pointer;
-  height: 30px;
-  background: white;
-  box-sizing: border-box;
-  border-radius: 15px;
-  border: 4px solid white;
-}
-
-.form-input input {
-  position: absolute;
-  width: 100%;
-  height: 22.5px;
-  padding: 10px;
-  outline: 0;
-  border: 0;
-  display: block;
-  font-size: 1em;
-  border-radius: 20px;
-  border: 1px solid #4694a6;
-}
-
-.search-box form .fa {
-  box-sizing: border-box;
-  padding: 2.5px;
-  width: 23.5px;
-  height: 22.5px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-radius: 50%;
-  color: #4694a6;
+.modal-icon {
   text-align: center;
-  font-size: 1.2em;
-  transition: width 1s;
+}
+
+.modal-icon i {
+  font-size: 100px;
+}
+
+.modal-text {
+  text-align: center;
+}
+
+.modal-text p {
+  font-size: 20px;
+  font-weight: 500;
 }
 
 @media screen and (max-width: 1200px) {
@@ -152,6 +118,10 @@
 
   .search2 {
     display: initial;
+  }
+
+  .search {
+    padding-right: 0;
   }
 
   .search2-col {

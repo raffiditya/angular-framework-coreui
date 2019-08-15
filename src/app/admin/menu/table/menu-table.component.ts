@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AdminMenuService } from '../admin-menu.service';
 import { Page } from '../../../core/model/page';
 import { ToastrService } from 'ngx-toastr';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'cms-menu-table',
@@ -11,8 +12,11 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class MenuTableComponent implements OnInit {
   @ViewChild('myTable', { static: false }) table: any;
+  @ViewChild('dangerModal', { static: false })
+  public dangerModal: ModalDirective;
 
   page = new Page();
+  id_inactive = '';
   path = '';
   rows = [];
   keyword = '';
@@ -57,8 +61,15 @@ export class MenuTableComponent implements OnInit {
     this.table.rowDetail.toggleExpandRow(row);
   }
 
-  selectInactive(row: { id: any }) {
-    this.adminMenuService.deleteMenu(row.id).subscribe(data => {
+  open(row: any) {
+    this.id_inactive = row.id;
+    this.dangerModal.show();
+  }
+
+  selectInactive() {
+    this.adminMenuService.deleteMenu(this.id_inactive).subscribe(data => {
+      this.id_inactive = '';
+      this.dangerModal.hide();
       this.showSuccess();
       this.getMenu({ offset: 0 });
     });

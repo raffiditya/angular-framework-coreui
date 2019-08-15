@@ -9,6 +9,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { AdminRoutingModule } from './admin-routing.module';
 
+import { ModalModule } from 'ngx-bootstrap/modal';
+
 // admin menu component
 import { MenuTableComponent } from './menu/table/menu-table.component';
 import { MenuFormComponent } from './menu/form/menu-form.component';
@@ -29,6 +31,7 @@ import { RoleFormComponent } from './role/form/role-form.component';
     AdminRoutingModule,
     NgSelectModule,
     NgxDatatableModule,
+    ModalModule.forRoot(),
   ],
   declarations: [
     MenuTableComponent,

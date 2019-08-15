@@ -12,20 +12,35 @@
             </a>
           </button>
         </div>
+        <div class="wrap search1">
+          <div class="search">
+            <input
+              type="text"
+              class="searchTerm"
+              placeholder="What are you looking for?"
+              (input)="onSearchChange($event.target.value)"
+            />
+            <button type="submit" class="searchButton">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="card-body">
-      <div class="row search-wrap">
-        <div class="col-12 col-xl mb-3 mb-xl-0">
-          <div id="right-menu" class="search-box">
-            <div id="search-container">
-              <form action class="form-input">
-                <input
-                  type="search"
-                  (input)="onSearchChange($event.target.value)"
-                />
+      <div class="row search-wrap search2">
+        <div class="col-12 search2-col">
+          <div class="wrap search2">
+            <div class="search">
+              <input
+                type="text"
+                class="searchTerm"
+                placeholder="What are you looking for?"
+                (input)="onSearchChange($event.target.value)"
+              />
+              <button type="submit" class="searchButton">
                 <i class="fa fa-search"></i>
-              </form>
+              </button>
             </div>
           </div>
         </div>
@@ -144,11 +159,6 @@
               [sortable]="true"
               [flexGrow]="1"
             >
-              <!-- <ng-template ngx-datatable-header-template>
-                <span name="Active" prop="activeFlag" class="active-hidden"
-                  >Active</span
-                >
-              </ng-template> -->
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <ng-container [ngSwitch]="row.activeFlag">
                   <span
@@ -194,7 +204,7 @@
                     <i class="fa fa-edit fa-sm"></i>
                   </button>
                   <button
-                    (click)="selectInactive(row)"
+                    (click)="open(row)"
                     data-toggle="tooltip"
                     data-placement="bottom"
                     title="Delete Menu"
@@ -213,3 +223,52 @@
     </div>
   </div>
 </div>
+
+<div
+  bsModal
+  #dangerModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-danger" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Delete Menu</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="dangerModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-icon mt-3 mb-3">
+          <i class="fa fa-exclamation-triangle"></i>
+        </div>
+        <div class="modal-text">
+          <p>Are you sure ?</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="dangerModal.hide()"
+        >
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" (click)="selectInactive()">
+          Delete
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
