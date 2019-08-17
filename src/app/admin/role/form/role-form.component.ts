@@ -2,12 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AdminRoleService } from '../admin-role.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import {
-  FormBuilder,
-  FormGroup,
-  FormControl,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { normalizeFlag } from '../../../shared/util/normalizeFlag';
 
 @Component({
   templateUrl: './role-form.component.html',
@@ -24,7 +21,8 @@ export class RoleFormComponent implements OnInit {
     private adminRoleService: AdminRoleService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private _location: Location,
+    private location: Location,
+    private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({
       activeFlag: new FormControl(false, Validators.required),
@@ -39,6 +37,8 @@ export class RoleFormComponent implements OnInit {
 
     if (this.id) {
       this.adminRoleService.getRole(this.id).subscribe(data => {
+        this.form.patchValue(data);
+
         if (data['activeFlag'] === 'Y') {
           this.form.get('activeFlag').setValue(true);
         } else {
@@ -48,26 +48,16 @@ export class RoleFormComponent implements OnInit {
         this.form.get('name').setValue(data['name']);
         this.form.get('description').setValue(data['description']);
 
-        this.onSelectDisabled();
+        this.formDisabled();
       });
     }
   }
 
-  onDisabled() {
+  formDisabled() {
     if (this.path === 'View') {
-      return true;
+      this.form.disable()
     } else {
-      return false;
-    }
-  }
-
-  onSelectDisabled() {
-    let activeFlag = this.form.get('activeFlag');
-
-    if (this.path === 'View') {
-      activeFlag.disable();
-    } else {
-      activeFlag.enable();
+      this.form.enable()
     }
   }
 
@@ -76,44 +66,32 @@ export class RoleFormComponent implements OnInit {
     return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
   }
 
-  validateAllFormFields(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control instanceof FormControl) {
-        control.markAsTouched({ onlySelf: true });
-      } else if (control instanceof FormGroup) {
-        this.validateAllFormFields(control);
-      }
-    });
-  }
-
   cancelButton() {
-    this._location.back();
+    this.location.back();
   }
 
   onSubmit() {
-    let activeFlagStatus = this.form.value.activeFlag;
-
-    if (activeFlagStatus) {
-      this.form.get('activeFlag').setValue('Y');
-    } else {
-      this.form.get('activeFlag').setValue('N');
+    this.form.markAllAsTouched();
+    if (!this.form.valid) {
+      return;
     }
 
-    this.validateAllFormFields(this.form);
+    let normalizedFormValue = normalizeFlag(this.form);
 
     if (this.id) {
       if (this.form.valid) {
         this.adminRoleService
-          .editRole(this.id, this.form.value)
+          .editRole(this.id, normalizedFormValue)
           .subscribe(data => {
             this.router.navigate(['/admin/role']);
+            this.toastr.success(data.message, 'Edit Role');;
           });
       }
     } else {
       if (this.form.valid) {
-        this.adminRoleService.addRole(this.form.value).subscribe(data => {
+        this.adminRoleService.addRole(normalizedFormValue).subscribe(data => {
           this.router.navigate(['/admin/role']);
+          this.toastr.success(data.message, 'Add Role');;
         });
       }
     }

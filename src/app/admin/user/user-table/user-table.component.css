@@ -1,0 +1,136 @@
+.admin-users-header {
+  background-color: #4694a6;
+  display: flex;
+  height: 55px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-users-title p {
+  margin: 0;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.admin-users-add-button button a {
+  color: white;
+  text-decoration: none;
+}
+
+.desktop-hidden {
+  display: none;
+}
+
+.admin-users-right {
+  display: flex;
+}
+
+.search2 {
+  display: none;
+}
+
+/* search */
+
+.search {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  padding-right: 30px;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 3px solid #00b4cc;
+  border-right: none;
+  padding: 5px;
+  height: 35px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+}
+
+.searchButton {
+  width: 40px;
+  height: 35px;
+  border: 1px solid #00b4cc;
+  background: #00b4cc;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.wrap {
+  width: 300px;
+}
+
+.main-button {
+  padding-right: 10px;
+}
+
+/* Modal */
+
+.modal-icon {
+  text-align: center;
+}
+
+.modal-icon i {
+  font-size: 100px;
+}
+
+.modal-text {
+  text-align: center;
+}
+
+.modal-text p {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 1200px) {
+  .desktop-hidden {
+    display: initial;
+    cursor: pointer;
+  }
+
+  .provider-hidden {
+    display: none;
+  }
+
+  .description-hidden {
+    display: none;
+  }
+
+  .locked-hidden {
+    display: none;
+  }
+
+  .active-hidden {
+    display: none;
+  }
+
+  .options-hidden {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .search1 {
+    display: none;
+  }
+
+  .search2 {
+    display: initial;
+  }
+
+  .search {
+    padding-right: 0;
+  }
+
+  .search2-col {
+    height: 25px;
+    display: flex;
+    justify-content: center;
+  }
+}

@@ -49,10 +49,9 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
     BlockUIModule.forRoot({
       message: 'Loading...',
       template: BlockUiTemplateComponent,
-      delayStart: 300,
-      delayStop: 300,
+      delayStart: 500,
+      delayStop: 500,
     }),
-    BlockUIHttpModule.forRoot(),
     LoadingBarRouterModule,
     ToastrModule.forRoot({
       timeOut: 7000,

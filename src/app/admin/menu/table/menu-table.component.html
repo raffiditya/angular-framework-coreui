@@ -1,24 +1,24 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header table-header">
-      <div class="table-header-title">
+    <div class="card-header custom-card-header">
+      <div class="custom-card-header-title">
         <p>{{ path }} Table</p>
       </div>
-      <div class="table-header-right">
-        <div class="table-header-add-button">
+      <div class="custom-card-header-right">
+        <div class="custom-card-header-add-button">
           <button type="button" class="btn">
             <a [routerLink]="['../add']" routerLinkActive="active">
               Add New
             </a>
           </button>
         </div>
-        <div class="wrap search1">
+        <div class="wrap normal-search">
           <div class="search">
-            <input
-              type="text"
-              class="searchTerm"
+            <input 
+              type="text" 
+              class="searchTerm" 
               placeholder="What are you looking for?"
-              (input)="onSearchChange($event.target.value)"
+              (input)="onSearchChange($event.target.value)" 
             />
             <button type="submit" class="searchButton">
               <i class="fa fa-search"></i>
@@ -28,15 +28,15 @@
       </div>
     </div>
     <div class="card-body">
-      <div class="row search-wrap search2">
-        <div class="col-12 search2-col">
-          <div class="wrap search2">
+      <div class="row search-wrap responsive-search">
+        <div class="col-12 responsive-search-col">
+          <div class="wrap responsive-search">
             <div class="search">
-              <input
-                type="text"
-                class="searchTerm"
+              <input 
+                type="text" 
+                class="searchTerm" 
                 placeholder="What are you looking for?"
-                (input)="onSearchChange($event.target.value)"
+                (input)="onSearchChange($event.target.value)" 
               />
               <button type="submit" class="searchButton">
                 <i class="fa fa-search"></i>
@@ -47,73 +47,68 @@
       </div>
       <div class="row">
         <div class="col-12 col-xl mb-3 mb-xl-0">
-          <ngx-datatable
-            #myTable
-            class="bootstrap"
-            [rows]="rows"
-            [columnMode]="'force'"
+          <ngx-datatable 
+            #myTable 
+            class="bootstrap" 
+            [rows]="rows" 
+            [columnMode]="'force'" 
             [headerHeight]="50"
-            [summaryRow]="true"
-            [summaryHeight]="'auto'"
-            [footerHeight]="50"
-            [rowHeight]="50"
+            [summaryRow]="true" 
+            [summaryHeight]="'auto'" 
+            [footerHeight]="50" 
+            [rowHeight]="50" 
             [externalPaging]="true"
-            [count]="page.totalElements"
-            [offset]="page.pageNumber"
+            [count]="page.totalElements" 
+            [offset]="page.pageNumber - 1" 
             [limit]="page.size"
-            (page)="getMenu($event)"
-            (sort)="onSort($event)"
-          >
+            (page)="getMenuByPage($event)" 
+            (sort)="onSort($event)">
             >
             <!-- Row Detail Template -->
             <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
-              <ng-template
-                let-row="row"
-                let-expanded="expanded"
-                ngx-datatable-row-detail-template
-              >
+              <ng-template let-row="row" let-expanded="true" ngx-datatable-row-detail-template>
                 <div style="padding-left:60px; font-size:14px">
                   <div>{{ row.url }}</div>
                   <div class="mt-2">
                     <ng-container [ngSwitch]="row.activeFlag">
-                      <span *ngSwitchCase="'Y'" class="badge badge-success"
-                        >Active</span
-                      >
-                      <span *ngSwitchCase="'N'" class="badge badge-danger"
-                        >Inactive</span
-                      >
+                      <span *ngSwitchCase="'Y'" class="badge badge-success">
+                        Active
+                      </span>
+                      <span *ngSwitchCase="'N'" class="badge badge-danger">
+                        Inactive
+                      </span>
                     </ng-container>
                   </div>
                   <div class="mt-2">
                     <ng-container>
-                      <button
-                        [routerLink]="['/admin/menu', row.id]"
-                        type="button"
+                      <button 
+                        [routerLink]="['/admin/menu', row.id]" 
+                        type="button" 
                         class="btn btn-primary"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
+                        data-toggle="tooltip" 
+                        data-placement="bottom" 
                         title="View Menu"
                       >
                         <i class="fa fa-sign-in fa-sm"></i>
                       </button>
-                      <button
-                        [routerLink]="['/admin/menu/edit', row.id]"
-                        type="button"
+                      <button 
+                        [routerLink]="['/admin/menu/edit', row.id]" 
+                        type="button" 
                         class="btn btn-success"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
+                        data-toggle="tooltip" 
+                        data-placement="bottom" 
                         title="Edit Menu"
                       >
                         <i class="fa fa-edit fa-sm"></i>
                       </button>
-                      <button
-                        (click)="selectInactive(row)"
-                        data-toggle="tooltip"
+                      <button 
+                        (click)="openDeleteModal(row)" 
+                        data-toggle="tooltip" 
                         data-placement="bottom"
-                        title="Delete Menu"
-                        type="button"
+                        title="Delete Menu" 
+                        type="button" 
                         class="btn btn-danger"
-                        [disabled]="onDisabled(row.activeFlag)"
+                        [disabled]="disableDeleteButton(row.activeFlag)"
                       >
                         <i class="fa fa-trash fa-sm"></i>
                       </button>
@@ -125,25 +120,11 @@
 
             <!--  -->
 
-            <ngx-datatable-column
-              [width]="50"
-              [resizeable]="false"
-              [sortable]="false"
-              [draggable]="false"
-              [canAutoResize]="false"
-            >
-              <ng-template
-                let-row="row"
-                let-expanded="expanded"
-                ngx-datatable-cell-template
-              >
-                <a
-                  [class.datatable-icon-right]="!expanded"
-                  [class.datatable-icon-down]="expanded"
-                  title="Expand/Collapse Row"
-                  (click)="toggleExpandRow(row)"
-                  class="desktop-hidden"
-                >
+            <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false"
+              [canAutoResize]="false">
+              <ng-template let-row="row" let-expanded="true" ngx-datatable-cell-template>
+                <a [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded"
+                  title="Expand/Collapse Row" (click)="toggleExpandRow(row)" class="desktop-hidden">
                 </a>
               </ng-template>
             </ngx-datatable-column>
@@ -168,49 +149,22 @@
 
             <!--  -->
 
-            <ngx-datatable-column
-              name="Title"
-              prop="titleFlag"
-              [sortable]="true"
-              [flexGrow]="3"
-              [minWidth]="200"
-            >
+            <ngx-datatable-column name="Title" prop="titleFlag" [sortable]="true" [flexGrow]="3" [minWidth]="200">
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <ng-container [ngSwitch]="row.titleFlag">
-                  <span
-                    *ngSwitchCase="'Y'"
-                    class="badge badge-success title-hidden"
-                    >True</span
-                  >
-                  <span
-                    *ngSwitchCase="'N'"
-                    class="badge badge-danger title-hidden"
-                    >False</span
-                  >
+                  <span *ngSwitchCase="'Y'" class="badge badge-success title-hidden">True</span>
+                  <span *ngSwitchCase="'N'" class="badge badge-danger title-hidden">False</span>
                 </ng-container>
               </ng-template>
             </ngx-datatable-column>
 
             <!--  -->
 
-            <ngx-datatable-column
-              name="Active"
-              prop="activeFlag"
-              [sortable]="true"
-              [flexGrow]="1"
-            >
+            <ngx-datatable-column name="Active" prop="activeFlag" [sortable]="true" [flexGrow]="1">
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <ng-container [ngSwitch]="row.activeFlag">
-                  <span
-                    *ngSwitchCase="'Y'"
-                    class="badge badge-success active-hidden"
-                    >Active</span
-                  >
-                  <span
-                    *ngSwitchCase="'N'"
-                    class="badge badge-danger active-hidden"
-                    >Inactive</span
-                  >
+                  <span *ngSwitchCase="'Y'" class="badge badge-success active-hidden">Active</span>
+                  <span *ngSwitchCase="'N'" class="badge badge-danger active-hidden">Inactive</span>
                 </ng-container>
               </ng-template>
             </ngx-datatable-column>
@@ -223,35 +177,18 @@
               </ng-template>
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <ng-container>
-                  <button
-                    [routerLink]="['/admin/menu', row.id]"
-                    type="button"
-                    class="btn btn-primary options-hidden"
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="View Menu"
-                  >
+                  <button [routerLink]="['/admin/menu', row.id]" type="button" class="btn btn-primary options-hidden"
+                    data-toggle="tooltip" data-placement="bottom" title="View Menu">
                     <i class="fa fa-sign-in fa-sm"></i>
                   </button>
-                  <button
-                    [routerLink]="['/admin/menu/edit', row.id]"
-                    type="button"
-                    class="btn btn-success options-hidden"
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="Edit Menu"
-                  >
+                  <button [routerLink]="['/admin/menu/edit', row.id]" type="button"
+                    class="btn btn-success options-hidden" data-toggle="tooltip" data-placement="bottom"
+                    title="Edit Menu">
                     <i class="fa fa-edit fa-sm"></i>
                   </button>
-                  <button
-                    (click)="open(row)"
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="Delete Menu"
-                    type="button"
-                    class="btn btn-danger options-hidden"
-                    [disabled]="onDisabled(row.activeFlag)"
-                  >
+                  <button (click)="openDeleteModal(row)" data-toggle="tooltip" data-placement="bottom"
+                    title="Delete Menu" type="button" class="btn btn-danger options-hidden"
+                    [disabled]="disableDeleteButton(row.activeFlag)">
                     <i class="fa fa-trash fa-sm"></i>
                   </button>
                 </ng-container>
@@ -264,25 +201,13 @@
   </div>
 </div>
 
-<div
-  bsModal
-  #dangerModal="bs-modal"
-  class="modal fade"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="myModalLabel"
-  aria-hidden="true"
->
+<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-danger" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Delete Menu</h4>
-        <button
-          type="button"
-          class="close"
-          (click)="dangerModal.hide()"
-          aria-label="Close"
-        >
+        <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -295,11 +220,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="dangerModal.hide()"
-        >
+        <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">
           Cancel
         </button>
         <button type="button" class="btn btn-danger" (click)="selectInactive()">

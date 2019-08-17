@@ -1,22 +1,17 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header cms-form-header">
-      <p>{{ path }} Menu</p>
+    <div class="card-header custom-card-header">
+      <div class="custom-card-header-title">
+        <p>{{ path }} Menu</p>
+      </div>
     </div>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="row mt-4 mr-3 ml-3">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label required" for="name">Name</label>
-          <input
-            [class.is-invalid]="isFieldInvalid('name')"
-            name="name"
-            type="text"
-            class="form-control"
-            formControlName="name"
-            [readonly]="onDisabled()"
-            required
-          />
-          <div *ngIf="isFieldInvalid('name')" class="cms-form-error">
+          <input [class.is-invalid]="isFieldInvalid('name')" name="name" type="text" class="form-control"
+            formControlName="name" required />
+          <div *ngIf="isFieldInvalid('name')" class="text-form-error">
             <div *ngIf="form.get('name').hasError('required')">
               Name is required
             </div>
@@ -24,37 +19,19 @@
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label" for="url">Url</label>
-          <input
-            name="url"
-            type="text"
-            class="form-control"
-            formControlName="url"
-            [readonly]="onDisabled()"
-          />
+          <input name="url" type="text" class="form-control" formControlName="url" />
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <div class="row">
             <div class="col form-group">
               <label class="col-form-label" for="url">Icon</label>
-              <ng-select
-                [items]="icons"
-                bindLabel="name"
-                bindValue="value"
-                placeholder="Select icon"
-                labelForId="icon"
-                [virtualScroll]="true"
-                formControlName="icon"
-              >
+              <ng-select [items]="icons" bindLabel="name" bindValue="value" placeholder="Select icon" labelForId="icon"
+                [virtualScroll]="true" formControlName="icon">
                 <ng-template ng-label-tmp let-item="item">
                   <i [class]="item.value"></i>
                   <span>{{ item.name }}</span>
                 </ng-template>
-                <ng-template
-                  ng-option-tmp
-                  let-item="item"
-                  let-index="index"
-                  let-search="searchTerm"
-                >
+                <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
                   <i [class]="item.value"> {{ item.name }}</i>
                   <!-- <span [ngOptionHighlight]="searchTerm">{{ item.name }}</span> -->
                 </ng-template>
@@ -64,86 +41,66 @@
           <div class="row">
             <div class="col form-group">
               <label class="col-form-label" for="name">Order No</label>
-              <input
-                name="orderNo"
-                type="number"
-                class="form-control"
-                formControlName="orderNo"
-                [readonly]="onDisabled()"
-              />
+              <input name="orderNo" type="number" class="form-control" formControlName="orderNo" />
             </div>
           </div>
           <div class="row">
             <div class="col form-group">
               <label class="col-form-label" for="parentId">Parent Menu</label>
-              <ng-select
-                [items]="parentMenu"
-                bindLabel="name"
-                bindValue="id"
-                class="form-control"
-                clearAllText="Clear"
-                labelForId="parentId"
-                formControlName="parentId"
-                (search)="onChangeParent($event)"
-                [loading]="loading"
-              >
+              <ng-select 
+                  [multiple]="false"
+                  [items]="parentMenu"
+                  formControlName="parentId"
+                  placeholder="Select people"
+                  bindLabel="name"
+                  bindValue="id"
+                  [typeahead]="menuTypeahead"
+                  (search)="onChangeParent($event)"
+                >
+                <ng-template ng-typetosearch-tmp>
+                  <div class="ng-option disabled">
+                    Please insert 3 or more characters. Start typing "{{searchTerm}}"
+                  </div>
+                </ng-template>
+                <ng-template ng-notfound-tmp let-searchTerm="searchTerm">
+                  <div class="ng-option disabled">
+                      No data found for "{{searchTerm}}"
+                  </div>
+                </ng-template>
+                <ng-template ng-loadingtext-tmp let-searchTerm="searchTerm">
+                  <div class="ng-option disabled">
+                      Fetching data for "{{searchTerm}}"
+                  </div>
+                </ng-template>
               </ng-select>
             </div>
           </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label" for="textarea-input">Description</label>
-          <textarea
-            id="textarea-input"
-            name="textarea-input"
-            rows="9"
-            class="form-control"
-            formControlName="description"
-            [readonly]="onDisabled()"
-          ></textarea>
+          <textarea id="textarea-input" name="textarea-input" rows="9" class="form-control"
+            formControlName="description"></textarea>
         </div>
       </div>
       <div class="row mt-4 mr-3 ml-3">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <div class="row">
-            <label class="col-md-3 col-form-label" for="Active Flag"
-              >Active Flag</label
-            >
+            <label class="col-md-3 col-form-label" for="Active Flag">Active Flag</label>
             <div class="col-9 active-pills">
               <label class="switch switch-label switch-pill switch-primary">
-                <input
-                  type="checkbox"
-                  class="switch-input form-control"
-                  formControlName="activeFlag"
-                />
-                <span
-                  class="switch-slider"
-                  data-checked="On"
-                  data-unchecked="Off"
-                ></span>
+                <input type="checkbox" class="switch-input form-control" formControlName="activeFlag" />
+                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
               </label>
             </div>
           </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <div class="row">
-            <label class="col-md-3 col-form-label" for="email-input"
-              >Title Flag</label
-            >
+            <label class="col-md-3 col-form-label" for="email-input">Title Flag</label>
             <div class="col-9">
-              <label
-                class="switch switch-label switch-pill switch-primary active-pills"
-              >
-                <input
-                  type="checkbox"
-                  class="switch-input form-control"
-                  formControlName="titleFlag"
-                />
-                <span
-                  class="switch-slider"
-                  data-checked="On"
-                  data-unchecked="Off"
-                ></span>
+              <label class="switch switch-label switch-pill switch-primary active-pills">
+                <input type="checkbox" class="switch-input form-control" formControlName="titleFlag" />
+                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
               </label>
             </div>
           </div>
@@ -155,11 +112,7 @@
             <button type="submit" class="btn btn-sm btn-primary">
               <i class="fa fa-dot-circle-o"></i> Submit
             </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-secondary option-buttons"
-              (click)="cancelButton()"
-            >
+            <button type="button" class="btn btn-sm btn-secondary cancel-buttons" (click)="cancelButton()">
               <i class="fa fa-ban"></i>
               Cancel
             </button>

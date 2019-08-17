@@ -16,40 +16,35 @@ export class MenuTableComponent implements OnInit {
   public dangerModal: ModalDirective;
 
   page = new Page();
-  id_inactive = '';
-  path = '';
+  path = ''
+  idInactive = '';
   rows = [];
-  keyword = '';
-  expanded: any = {};
 
   constructor(
     private adminMenuService: AdminMenuService,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
-  ) {
-    this.page.pageNumber = 0;
-    this.page.size = 10;
-  }
+  ) { }
 
   ngOnInit() {
     this.path = this.activatedRoute.snapshot.data.title;
-    this.getMenu({ offset: 0 });
+    this.getMenuByPage({ offset: 0 });
   }
 
-  getMenu(pageInfo: { offset: any }) {
-    this.page.pageNumber = pageInfo.offset;
-
-    this.adminMenuService
-      .getAllMenu(this.page.pageNumber, this.page.size)
-      .subscribe(data => {
-        this.page.totalElements = data.totalElements;
-        this.page.totalPages = data.totalPages;
-
-        this.rows = data['content'];
-      });
+  getMenuByPage(pageInfo: { offset: any }) {
+    this.page.pageNumber = pageInfo.offset + 1;
+    this.getMenu();
   }
 
-  onDisabled(activeStatus: string) {
+  getMenu() {
+    this.adminMenuService.getMenus(this.page).subscribe(data => {
+      this.page.totalElements = data.totalElements;
+      this.page.totalPages = data.totalPages;
+      this.rows = data['content'];
+    });
+  }
+
+  disableDeleteButton(activeStatus: string) {
     if (activeStatus === 'Y') {
       return false;
     } else {
@@ -61,47 +56,36 @@ export class MenuTableComponent implements OnInit {
     this.table.rowDetail.toggleExpandRow(row);
   }
 
-  open(row: any) {
-    this.id_inactive = row.id;
+  openDeleteModal(row: any) {
+    this.idInactive = row.id;
     this.dangerModal.show();
   }
 
   selectInactive() {
-    this.adminMenuService.deleteMenu(this.id_inactive).subscribe(data => {
-      this.id_inactive = '';
+    this.adminMenuService.deleteMenu(this.idInactive).subscribe(data => {
+      this.idInactive = '';
       this.dangerModal.hide();
-      this.showSuccess();
-      this.getMenu({ offset: 0 });
+      this.toastr.success(data.message, 'Delete Menu');
+      this.getMenu();
     });
-  }
-
-  showSuccess() {
-    this.toastr.success('Menu is inactivated', 'Delete Menu');
   }
 
   onSearchChange(search: any) {
-    this.keyword = search;
-
-    this.adminMenuService.searchMenu(search).subscribe(data => {
-      this.reset();
-      this.rows = data['content'];
-    });
-  }
-
-  reset() {
     this.table.sorts = [];
+    this.rows = [];
+
+    if (search.length >= 3) {
+      this.page.searchTerm = search;
+      this.getMenu();
+    } else if (search.length === 0) {
+      this.page.searchTerm = '';
+      this.getMenu();
+    }
   }
 
   onSort(event: any) {
-    this.adminMenuService
-      .sortMenu(
-        this.keyword,
-        this.page.pageNumber,
-        event.column.prop,
-        event.newValue,
-      )
-      .subscribe(data => {
-        this.rows = data['content'];
-      });
+    this.page.pageNumber = 1;
+    this.page.sort = `${event.column.prop}, ${event.newValue}`;
+    this.getMenu();
   }
 }

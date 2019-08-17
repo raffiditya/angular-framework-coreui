@@ -1,4 +1,4 @@
-export function NormalizeFlag(form: any) {
+export function normalizeFlag(form: any) {
   let copiedFormValue = Object.assign({}, form.value);
   Object.keys(copiedFormValue).forEach(key => {
     const value = copiedFormValue[key];
@@ -10,4 +10,4 @@ export function NormalizeFlag(form: any) {
   return copiedFormValue;
 }
 
-export class bar {}
+// export class bar { }

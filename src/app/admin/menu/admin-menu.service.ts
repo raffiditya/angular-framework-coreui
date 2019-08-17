@@ -2,19 +2,33 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, pipe } from 'rxjs';
 import { constant } from '../../../environments/constant';
+import { Page } from '../../core/model/page';
 
 @Injectable({ providedIn: 'root' })
 export class AdminMenuService {
   constructor(private http: HttpClient) {}
 
-  getAllMenu(page: number, size: number): Observable<any> {
-    return this.http.get(
-      `${constant.appUrl}/admin/menu?page=${page + 1}&size=${size}`,
-    );
-  }
+  getMenus(page?: Page): Observable<any> {
+    if (!page) {
+      page = {
+        size: 10,
+        pageNumber: 1,
+      };
+    }
 
-  selectMenu(menu: string): Observable<any> {
-    return this.http.get(`${constant.appUrl}/admin/menu?name=${menu}&&size=3`);
+    let request: string = `${constant.appUrl}/admin/menu?page=${
+      page.pageNumber
+    }&size=${page.size}`;
+
+    if (page.searchTerm) {
+      request += `&name=${page.searchTerm}&url=${page.searchTerm}`;
+    }
+
+    if (page.sort) {
+      request += `&sort=${page.sort}`;
+    }
+
+    return this.http.get(request);
   }
 
   getMenu(id: number): Observable<any> {
@@ -31,19 +45,5 @@ export class AdminMenuService {
 
   deleteMenu(id: any): Observable<any> {
     return this.http.delete(`${constant.appUrl}/admin/menu/${id}`);
-  }
-
-  searchMenu(keyword: any): Observable<any> {
-    return this.http.get(
-      `${constant.appUrl}/admin/menu?name=${keyword}&url=${keyword}`,
-    );
-  }
-
-  sortMenu(keyword: any, page: any, sort: any, type: any): Observable<any> {
-    return this.http.get(
-      `${
-        constant.appUrl
-      }/admin/menu?name=${keyword}&url=${keyword}&page=${page}&sort=${sort},${type}`,
-    );
   }
 }

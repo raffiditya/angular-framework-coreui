@@ -13,6 +13,10 @@ import { OrganizationFormComponent } from './organization/organization-form/orga
 import { RoleTableComponent } from './role/table/role-table.component';
 import { RoleFormComponent } from './role/form/role-form.component';
 
+// admin user component
+import { UserTableComponent } from './user/user-table/user-table.component';
+import { UserFormComponent } from './user/user-form/user-form.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -98,43 +102,43 @@ const routes: Routes = [
           },
         ],
       },
-      // {
-      //   path: 'menu',
-      //   children: [
-      //     {
-      //       path: '',
-      //       component: MenuTableComponent,
-      //       pathMatch: 'full',
-      //       data: {
-      //         title: 'Menu',
-      //       },
-      //     },
-      //     {
-      //       path: 'add',
-      //       component: MenuFormComponent,
-      //       pathMatch: 'full',
-      //       data: {
-      //         title: 'Add',
-      //       },
-      //     },
-      //     {
-      //       path: ':id',
-      //       component: MenuFormComponent,
-      //       pathMatch: 'full',
-      //       data: {
-      //         title: 'View',
-      //       },
-      //     },
-      //     {
-      //       path: 'edit/:id',
-      //       component: MenuFormComponent,
-      //       pathMatch: 'full',
-      //       data: {
-      //         title: 'Edit',
-      //       },
-      //     },
-      //   ],
-      // },
+      {
+        path: 'user',
+        children: [
+          {
+            path: '',
+            component: UserTableComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Users',
+            },
+          },
+          {
+            path: 'add',
+            component: UserFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Add',
+            },
+          },
+          {
+            path: 'view/:id',
+            component: UserFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'View',
+            },
+          },
+          {
+            path: 'edit/:id',
+            component: UserFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Edit',
+            },
+          },
+        ],
+      },
       {
         path: 'role',
         children: [
