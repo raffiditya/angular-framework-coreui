@@ -69,7 +69,7 @@ export const navItems: NavData[] = [
       },
       {
         name: 'Users',
-        url: '/admin/users',
+        url: '/admin/user',
         icon: 'icon-user',
       },
       {

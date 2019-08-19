@@ -1,6 +1,9 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AdminRoleService } from '../admin-role.service';
+import { Page } from '../../../core/model/page';
+import { ToastrService } from 'ngx-toastr';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'role-menu-table',
@@ -9,47 +12,39 @@ import { AdminRoleService } from '../admin-role.service';
 })
 export class RoleTableComponent implements OnInit {
   @ViewChild('roleTable', { static: false }) table: any;
+  @ViewChild('dangerModal', { static: false })
+  public dangerModal: ModalDirective;
 
-  page = {
-    size: 0,
-    totalElements: 0,
-    totalPages: 0,
-    pageNumber: 0,
-  };
+  page = new Page();
   path = '';
+  idInactive = '';
   rows = [];
-  keyword = '';
-  expanded: any = {};
-  loadingIndicator: boolean = true;
 
   constructor(
-    private router: Router,
     private adminRoleService: AdminRoleService,
     private activatedRoute: ActivatedRoute,
-  ) {
-    this.page.pageNumber = 0;
-    this.page.size = 10;
-  }
+    private toastr: ToastrService,
+  ) { }
 
   ngOnInit() {
     this.path = this.activatedRoute.snapshot.data.title;
-    this.setPage({ offset: 0 });
+    this.getRole();
   }
 
-  setPage(pageInfo) {
-    this.page.pageNumber = pageInfo.offset;
-
-    this.adminRoleService
-      .getAllRoles(this.page.pageNumber, this.page.size)
-      .subscribe(data => {
-        this.page.totalElements = data.totalElements;
-        this.page.totalPages = data.totalPages;
-
-        this.rows = data['content'];
-      });
+  getRoleByPahe(pageInfo: { offset: any }) {
+    this.page.pageNumber = pageInfo.offset + 1;
+    this.getRole();
   }
 
-  onDisabled(activeStatus) {
+  getRole() {
+    this.adminRoleService.getRoles(this.page).subscribe(data => {
+      this.page.totalElements = data.totalElements;
+      this.page.totalPages = data.totalPages;
+      this.rows = data['content'];
+    });
+  }
+
+  disableDeleteButton(activeStatus: string) {
     if (activeStatus === 'Y') {
       return false;
     } else {
@@ -57,44 +52,40 @@ export class RoleTableComponent implements OnInit {
     }
   }
 
-  toggleExpandRow(row) {
+  toggleExpandRow(row: any) {
     this.table.rowDetail.toggleExpandRow(row);
   }
 
-  selectInactive(row) {
-    this.adminRoleService.deleteRole(row.id).subscribe(data => {
-      for (let i = 0; i < this.rows.length; i++) {
-        if (this.rows[i].id === row.id) {
-          this.rows[i].activeFlag = 'N';
-          this.rows = [...this.rows];
-        }
-      }
+  openDeleteModal(row: any) {
+    this.idInactive = row.id;
+    this.dangerModal.show();
+  }
+
+  onDeleteRole() {
+    this.adminRoleService.deleteRole(this.idInactive).subscribe(data => {
+      this.idInactive = '';
+      this.dangerModal.hide();
+      this.toastr.success(data.message, 'Delete Role');
+      this.getRole();
     });
   }
 
   onSearchChange(search: any) {
-    this.keyword = search;
-
-    this.adminRoleService.searchRole(search).subscribe(data => {
-      this.reset();
-      this.rows = data['content'];
-    });
-  }
-
-  reset() {
     this.table.sorts = [];
+    this.rows = []
+
+    if (search.length >= 3) {
+      this.page.searchTerm = search
+      this.getRole()
+    } else if (search.length === 0) {
+      this.page.searchTerm = '';
+      this.getRole()
+    }
   }
 
   onSort(event: any) {
-    this.adminRoleService
-      .sortRole(
-        this.keyword,
-        this.page.pageNumber,
-        event.column.prop,
-        event.newValue,
-      )
-      .subscribe(data => {
-        this.rows = data['content'];
-      });
+    this.page.pageNumber = 1
+    this.page.sort = `${event.column.prop}, ${event.newValue}`
+    this.getRole()
   }
 }

@@ -9,6 +9,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { AdminRoutingModule } from './admin-routing.module';
 
+import { ModalModule } from 'ngx-bootstrap/modal';
+
 // admin menu component
 import { MenuTableComponent } from './menu/table/menu-table.component';
 import { MenuFormComponent } from './menu/form/menu-form.component';
@@ -21,6 +23,10 @@ import { OrganizationFormComponent } from './organization/organization-form/orga
 import { RoleTableComponent } from './role/table/role-table.component';
 import { RoleFormComponent } from './role/form/role-form.component';
 
+// admin user component
+import { UserTableComponent } from './user/user-table/user-table.component';
+import { UserFormComponent } from './user/user-form/user-form.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -29,6 +35,7 @@ import { RoleFormComponent } from './role/form/role-form.component';
     AdminRoutingModule,
     NgSelectModule,
     NgxDatatableModule,
+    ModalModule.forRoot(),
   ],
   declarations: [
     MenuTableComponent,
@@ -37,6 +44,8 @@ import { RoleFormComponent } from './role/form/role-form.component';
     OrganizationFormComponent,
     RoleTableComponent,
     RoleFormComponent,
+    UserTableComponent,
+    UserFormComponent,
   ],
 })
 export class AdminModule {}

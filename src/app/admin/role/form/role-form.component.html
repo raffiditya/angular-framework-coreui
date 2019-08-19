@@ -16,7 +16,6 @@
                 placeholder="Enter name"
                 class="form-control"
                 formControlName="name"
-                [readonly]="onDisabled()"
                 required
               />
               <div *ngIf="isFieldInvalid('name')" class="cms-form-error">
@@ -56,7 +55,6 @@
             class="form-control"
             placeholder="Enter Description"
             formControlName="description"
-            [readonly]="onDisabled()"
           ></textarea>
         </div>
       </div>

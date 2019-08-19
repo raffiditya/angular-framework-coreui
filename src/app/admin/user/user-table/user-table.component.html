@@ -1,13 +1,13 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header table-header">
-      <div class="table-header-title">
-        <p>{{ path }} Table</p>
+    <div class="card-header admin-users-header">
+      <div class="admin-users-title">
+        <p>Admin Users</p>
       </div>
-      <div class="table-header-right">
-        <div class="table-header-add-button">
+      <div class="admin-users-right">
+        <div class="admin-users-add-button">
           <button type="button" class="btn">
-            <a [routerLink]="['../add']" routerLinkActive="active">
+            <a routerLink="/admin/user/add" routerLinkActive="active">
               Add New
             </a>
           </button>
@@ -48,9 +48,9 @@
       <div class="row">
         <div class="col-12 col-xl mb-3 mb-xl-0">
           <ngx-datatable
-            #roleTable
-            class="bootstrap"
+            #userTable
             [rows]="rows"
+            class="bootstrap"
             [columnMode]="'force'"
             [headerHeight]="50"
             [summaryRow]="true"
@@ -59,31 +59,42 @@
             [rowHeight]="50"
             [externalPaging]="true"
             [count]="page.totalElements"
-            [offset]="page.pageNumber - 1"
+            [offset]="page.pageNumber"
             [limit]="page.size"
-            (page)="getMenuByPage($event)"
+            (page)="getUser($event)"
             (sort)="onSort($event)"
           >
-            <ngx-datatable-row-detail [rowHeight]="120" #myDetailRow>
+            <ngx-datatable-row-detail [rowHeight]="130" #myDetailRow>
               <ng-template
                 let-row="row"
                 let-expanded="expanded"
                 ngx-datatable-row-detail-template
               >
                 <div style="padding-left:60px; font-size:14px">
-                  <div>{{ row.url }}</div>
+                  <div>{{ row.authProvider }}</div>
+                  <div class="mt-2">
+                    <ng-container [ngSwitch]="row.locked">
+                      <span *ngSwitchCase="'N'" class="badge badge-success"
+                        >Unlocked</span
+                      >
+                      <span *ngSwitchCase="'Y'" class="badge badge-danger"
+                        >Locked</span
+                      >
+                    </ng-container>
+                  </div>
                   <div class="mt-2">
                     <ng-container [ngSwitch]="row.activeFlag">
-                      <span *ngSwitchCase="'Y'" class="badge badge-success">
-                        Active
-                      </span>
-                      <span *ngSwitchCase="'N'" class="badge badge-danger">
-                        Inactive</span>
+                      <span *ngSwitchCase="'Y'" class="badge badge-success"
+                        >Active</span
+                      >
+                      <span *ngSwitchCase="'N'" class="badge badge-danger"
+                        >Inactive</span
+                      >
                     </ng-container>
                   </div>
                   <div class="mt-2">
                     <button
-                      [routerLink]="['/admin/role', row.id]"
+                      [routerLink]="['/admin/user/view', row.id]"
                       type="button"
                       class="btn btn-primary"
                       data-toggle="tooltip"
@@ -93,7 +104,7 @@
                       <i class="fa fa-sign-in fa-sm"></i>
                     </button>
                     <button
-                      [routerLink]="['/admin/role/edit', row.id]"
+                      [routerLink]="['/admin/user/edit', row.id]"
                       type="button"
                       class="btn btn-success"
                       data-toggle="tooltip"
@@ -103,13 +114,13 @@
                       <i class="fa fa-edit fa-sm"></i>
                     </button>
                     <button
-                      (click)="openDeleteModal(row)"
+                      (click)="selectInactive(row)"
                       data-toggle="tooltip"
                       data-placement="bottom"
                       title="Delete Menu"
                       type="button"
                       class="btn btn-danger"
-                      [disabled]="disableDeleteButton(row.activeFlag)"
+                      [disabled]="onDisabled(row.activeFlag)"
                     >
                       <i class="fa fa-trash fa-sm"></i>
                     </button>
@@ -145,9 +156,58 @@
 
             <!--  -->
 
-            <ngx-datatable-column name="Name" [flexGrow]="3" [minWidth]="200">
+            <ngx-datatable-column
+              name="Username"
+              [flexGrow]="3"
+              [minWidth]="200"
+            >
               <ng-template let-value="value" ngx-datatable-cell-template>
                 {{ value }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!--  -->
+
+            <ngx-datatable-column name="Provider" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container>
+                  <span class="provider-hidden">{{ row.authProvider }}</span>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!--  -->
+
+            <ngx-datatable-column name="Description" [flexGrow]="1">
+              <ng-template let-value="value" ngx-datatable-cell-template>
+                <span class="description-hidden">
+                  {{ value }}
+                </span>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!--  -->
+
+            <ngx-datatable-column
+              name="Locked"
+              prop="locked"
+              [sortable]="true"
+              [flexGrow]="3"
+              [minWidth]="200"
+            >
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="row.locked">
+                  <span
+                    *ngSwitchCase="'N'"
+                    class="badge badge-success locked-hidden"
+                    >Unlocked</span
+                  >
+                  <span
+                    *ngSwitchCase="'Y'"
+                    class="badge badge-danger locked-hidden"
+                    >Locked</span
+                  >
+                </ng-container>
               </ng-template>
             </ngx-datatable-column>
 
@@ -184,7 +244,7 @@
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <ng-container>
                   <button
-                    [routerLink]="['/admin/role', row.id]"
+                    [routerLink]="['/admin/user/view', row.id]"
                     type="button"
                     class="btn btn-primary options-hidden"
                     data-toggle="tooltip"
@@ -194,7 +254,7 @@
                     <i class="fa fa-sign-in fa-sm"></i>
                   </button>
                   <button
-                    [routerLink]="['/admin/role/edit', row.id]"
+                    [routerLink]="['/admin/user/edit', row.id]"
                     type="button"
                     class="btn btn-success options-hidden"
                     data-toggle="tooltip"
@@ -204,13 +264,13 @@
                     <i class="fa fa-edit fa-sm"></i>
                   </button>
                   <button
-                    (click)="openDeleteModal(row)"
+                    (click)="open(row)"
                     data-toggle="tooltip"
                     data-placement="bottom"
                     title="Delete Menu"
                     type="button"
                     class="btn btn-danger options-hidden"
-                    [disabled]="disableDeleteButton(row.activeFlag)"
+                    [disabled]="onDisabled(row.activeFlag)"
                   >
                     <i class="fa fa-trash fa-sm"></i>
                   </button>
@@ -262,10 +322,13 @@
         >
           Cancel
         </button>
-        <button type="button" class="btn btn-danger" (click)="onDeleteRole()">
+        <button type="button" class="btn btn-danger" (click)="selectInactive()">
           Delete
         </button>
       </div>
     </div>
+    <!-- /.modal-content -->
   </div>
+  <!-- /.modal-dialog -->
 </div>
+<!-- /.modal -->

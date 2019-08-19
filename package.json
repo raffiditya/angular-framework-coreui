@@ -53,7 +53,7 @@
     "font-awesome": "^4.7.0",
     "moment": "^2.24.0",
     "mutationobserver-shim": "^0.3.3",
-    "ng-block-ui": "^2.1.6",
+    "ng-block-ui": "^2.1.7",
     "ng2-charts": "^2.3.0",
     "ngx-bootstrap": "^5.0.0",
     "ngx-perfect-scrollbar": "^8.0.0",

@@ -1,0 +1,148 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header user-form-header">
+      <p>{{ path }} Users</p>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="row mt-4 mr-3 ml-3">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
+          <div class="row">
+            <div class="col form-group">
+              <label class="col-form-label required" for="username"
+                >Username</label
+              >
+              <input
+                [class.is-invalid]="isFieldInvalid('username')"
+                name="username"
+                type="text"
+                placeholder="Enter username"
+                class="form-control"
+                formControlName="username"
+                [readonly]="onDisabled()"
+                required
+              />
+              <div *ngIf="isFieldInvalid('username')" class="user-form-error">
+                <div *ngIf="form.get('username').hasError('required')">
+                  Username is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <label class="col-form-label required" for="password"
+                >Password</label
+              >
+              <input
+                [class.is-invalid]="isFieldInvalid('password')"
+                name="pasword"
+                type="password"
+                placeholder="Enter password"
+                class="form-control"
+                formControlName="password"
+                [readonly]="onDisabled()"
+                required
+              />
+              <div *ngIf="isFieldInvalid('password')" class="user-form-error">
+                <div *ngIf="form.get('password').hasError('required')">
+                  Password is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <label class="col-form-label required" for="authProvider"
+                >Auth Provider</label
+              >
+              <input
+                [class.is-invalid]="isFieldInvalid('password')"
+                name="authProvider"
+                type="text"
+                placeholder="Enter password"
+                class="form-control"
+                formControlName="authProvider"
+                [readonly]="onDisabled()"
+                required
+              />
+              <div
+                *ngIf="isFieldInvalid('authProvider')"
+                class="user-form-error"
+              >
+                <div *ngIf="form.get('authProvider').hasError('required')">
+                  AuthProvider is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label class="col-form-label" for="activeFlag">Active Flag</label>
+              <div class="col-9 active-pills">
+                <label class="switch switch-label switch-pill switch-primary">
+                  <input
+                    type="checkbox"
+                    class="switch-input form-control"
+                    formControlName="activeFlag"
+                  />
+                  <span
+                    class="switch-slider"
+                    data-checked="On"
+                    data-unchecked="Off"
+                  ></span>
+                </label>
+              </div>
+            </div>
+            <div class="col">
+              <label class="col-form-label" for="locked">Locked</label>
+              <div class="col-9 active-pills">
+                <label class="switch switch-label switch-pill switch-primary">
+                  <input
+                    type="checkbox"
+                    class="switch-input form-control"
+                    formControlName="locked"
+                  />
+                  <span
+                    class="switch-slider"
+                    data-checked="On"
+                    data-unchecked="Off"
+                  ></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
+          <label class="col-form-label" for="textarea-input">Description</label>
+          <textarea
+            id="textarea-input"
+            name="textarea-input"
+            rows="9"
+            class="form-control"
+            placeholder="Enter Description"
+            formControlName="description"
+            [readonly]="onDisabled()"
+          ></textarea>
+        </div>
+      </div>
+      <div *ngIf="path !== 'View'" class="row mt-3 mr-3 ml-3 mb-5">
+        <div class="col form-group">
+          <div class="form-actions submit-button mt-5">
+            <button type="submit" class="btn btn-sm btn-primary">
+              <i class="fa fa-dot-circle-o"></i> Submit
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary option-buttons"
+            >
+              <a routerLink="/system-admin/users" routerLinkActive="active">
+                <i class="fa fa-ban"></i>
+                Cancel
+              </a>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

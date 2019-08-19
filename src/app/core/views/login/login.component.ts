@@ -20,10 +20,10 @@ export class LoginComponent {
   };
 
   constructor(
-    private loadingService: BlockUIService,
+    // private loadingService: BlockUIService,
     private authService: AuthService,
     private router: Router,
-  ) {}
+  ) { }
 
   onLogin(loginForm: NgForm) {
     this.wrongPassword = false;
@@ -31,22 +31,21 @@ export class LoginComponent {
       return;
     }
 
-    this.loadingService.start('appRoot');
+    // this.loadingService.start('appRoot');
 
     this.authService
       .login(this.userLogin.username, this.userLogin.password)
       .subscribe(
-        () =>
+        _ =>
           this.router
-            .navigateByUrl('/dashboard')
-            .then(() => this.loadingService.stop('appRoot')),
-        error => {
+            .navigateByUrl('/dashboard'),
+        (error: HttpErrorResponse) => {
           let errorResponse = error as HttpErrorResponse;
           if (errorResponse.status === 401) {
             this.wrongPassword = true;
           }
-          this.loadingService.stop('appRoot');
-        },
+          // this.loadingService.reset('appRoot');
+        }
       );
   }
 }
