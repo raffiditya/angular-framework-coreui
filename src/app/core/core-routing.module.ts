@@ -1,12 +1,7 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import {
-  DefaultLayoutComponent,
-  P403Component,
-  P404Component,
-  P500Component,
-} from './views';
-import { AuthGuard } from './guard/auth.guard';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {DefaultLayoutComponent, P403Component, P404Component, P500Component,} from './views';
+import {AuthGuard} from './guard/auth.guard';
 
 export const routes: Routes = [
   {
@@ -37,7 +32,7 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: './views/login/login.module#LoginModule',
+    loadChildren: () => import('./views/login/login.module').then(mod => mod.LoginModule)
   },
   {
     path: '',
@@ -49,57 +44,55 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: 'app/dashboard/dashboard.module#DashboardModule',
+        loadChildren: () => import('../dashboard/dashboard.module').then(mod => mod.DashboardModule)
       },
       {
         path: 'admin',
-        loadChildren: () =>
-          import('../admin/admin.module').then(m => m.AdminModule),
+        loadChildren: () => import('../admin/admin.module').then(mod => mod.AdminModule),
       },
       {
         path: 'base',
-        loadChildren: () =>
-          import('./../views/base/base.module').then(m => m.BaseModule),
+        loadChildren: () => import('../views/base/base.module').then(mod => mod.BaseModule),
       },
       {
         path: 'buttons',
-        loadChildren: () =>
-          import('../views/buttons/buttons.module').then(m => m.ButtonsModule),
-      } /*,
+        loadChildren: () => import('../views/buttons/buttons.module').then(mod => mod.ButtonsModule),
+      },
       {
         path: 'charts',
-        loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
+        loadChildren: () => import('../views/chartjs/chartjs.module').then(mod => mod.ChartJSModule)
       },
       {
         path: 'dashboard',
-        loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+        loadChildren: () => import('../views/dashboard/dashboard.module').then(mod => mod.DashboardModule)
       },
       {
         path: 'icons',
-        loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
-      },*/,
+        loadChildren: () => import('../views/icons/icons.module').then(mod => mod.IconsModule)
+      },
       {
         path: 'notifications',
         loadChildren: () =>
           import('../views/notifications/notifications.module').then(
-            m => m.NotificationsModule,
+            mod => mod.NotificationsModule,
           ),
-      } /*
+      },
       {
         path: 'theme',
-        loadChildren: () => import('./views/theme/theme.module').then(m => m.ThemeModule)
+        loadChildren: () => import('../views/theme/theme.module').then(mod => mod.ThemeModule)
       },
       {
         path: 'widgets',
-        loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
-      }*/,
+        loadChildren: () => import('../views/widgets/widgets.module').then(mod => mod.WidgetsModule)
+      },
     ],
   },
-  { path: '**', component: P404Component },
+  {path: '**', component: P404Component},
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class CoreRoutingModule {}
+export class CoreRoutingModule {
+}

@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
-import { AdminRoleService } from '../admin-role.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
-import { normalizeFlag } from '../../../shared/util/normalizeFlag';
+import {Component, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
+import {AdminRoleService} from '../admin-role.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {ToastrService} from 'ngx-toastr';
+import {normalizeFlag} from '../../../shared/util/normalize-flag';
 
 @Component({
   templateUrl: './role-form.component.html',

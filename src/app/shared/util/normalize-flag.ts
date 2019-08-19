@@ -9,5 +9,3 @@ export function normalizeFlag(form: any) {
 
   return copiedFormValue;
 }
-
-// export class bar { }
