@@ -5,6 +5,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { MenuTableComponent } from './menu/table/menu-table.component';
 import { MenuFormComponent } from './menu/form/menu-form.component';
 
+// admin organization component
+import { OrganizationTableComponent } from './organization/table/organization-table.component';
+import { OrganizationFormComponent } from './organization/form/organization-form.component';
+
 // admin role component
 import { RoleTableComponent } from './role/table/role-table.component';
 import { RoleFormComponent } from './role/form/role-form.component';
@@ -24,10 +28,6 @@ const routes: Routes = [
       title: 'Admin',
     },
     children: [
-      // {
-      //   path: '',
-      //   redirectTo: 'menu',
-      // },
       {
         path: 'menu',
         children: [
@@ -58,6 +58,43 @@ const routes: Routes = [
           {
             path: 'edit/:id',
             component: MenuFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Edit',
+            },
+          },
+        ],
+      },
+      {
+        path: 'organizations',
+        children: [
+          {
+            path: '',
+            component: OrganizationTableComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Organization',
+            },
+          },
+          {
+            path: 'add',
+            component: OrganizationFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Add',
+            },
+          },
+          {
+            path: ':id',
+            component: OrganizationFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'View',
+            },
+          },
+          {
+            path: 'edit/:id',
+            component: OrganizationFormComponent,
             pathMatch: 'full',
             data: {
               title: 'Edit',

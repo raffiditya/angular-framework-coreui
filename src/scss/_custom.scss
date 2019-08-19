@@ -180,6 +180,41 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
   justify-content: flex-start;
 }
 
+@media screen and (max-width: 1200px) {
+  .active-hidden {
+    display: none;
+  }
+  
+  .description-hidden{
+    display: none;
+  }
+
+  .desktop-hidden {
+    display: initial;
+    cursor: pointer;
+  }
+
+  .locked-hidden{
+    display: none;
+  }
+
+  .options-hidden {
+    display: none;
+  }
+
+  .provider-hidden{
+    display: none;
+  }
+
+  .title-hidden {
+    display: none;
+  }
+
+  .url-hidden {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 576px) {
   .normal-search {
     display: none;
@@ -189,13 +224,13 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
     display: initial;
   }
 
-  .search {
-    padding-right: 0;
-  }
-
-  .responsive-search-col {
+  .responsive-search-col{
     height: 25px;
     display: flex;
     justify-content: center;
+  }
+  
+  .search {
+    padding-right: 0;
   }
 }

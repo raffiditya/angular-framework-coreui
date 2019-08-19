@@ -18,6 +18,10 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { MenuTableComponent } from './menu/table/menu-table.component';
 import { MenuFormComponent } from './menu/form/menu-form.component';
 
+// admin organization component
+import { OrganizationTableComponent } from './organization/table/organization-table.component';
+import { OrganizationFormComponent} from './organization/form/organization-form.component'
+
 // admin role component
 import { RoleTableComponent } from './role/table/role-table.component';
 import { RoleFormComponent } from './role/form/role-form.component';
@@ -44,6 +48,8 @@ import { RolePrivilegeFormComponent } from './role/role-privilege/form/role-priv
   declarations: [
     MenuTableComponent,
     MenuFormComponent,
+    OrganizationTableComponent,
+    OrganizationFormComponent,
     RoleTableComponent,
     RoleFormComponent,
     RoleMenuTableComponent,
