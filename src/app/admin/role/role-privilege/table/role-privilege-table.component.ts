@@ -12,8 +12,6 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 })
 export class RolePrivilegeTableComponent implements OnInit {
   @ViewChild('rolePrivilege', { static: false }) table: any;
-  @ViewChild('dangerModal', { static: false })
-  public dangerModal: ModalDirective;
 
   id: number = 0;
   page = new Page();
@@ -40,9 +38,8 @@ export class RolePrivilegeTableComponent implements OnInit {
   }
 
   getRolePrivilage() {
-    this.page.roleId = this.id;
     this.adminRolePrivilegeService
-      .getAssignedPrivilege(this.page)
+      .getAssignedPrivilege(this.id, this.page)
       .subscribe(data => {
         this.page.totalElements = data.totalElements;
         this.page.totalPages = data.totalPages;

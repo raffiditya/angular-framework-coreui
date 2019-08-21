@@ -15,7 +15,8 @@
         <div class="wrap normal-search">
           <form>
             <div class="search">
-              <input type="text" class="searchTerm" placeholder="Search or enter role" name="search" onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
+              <input type="text" class="searchTerm" placeholder="Search or enter role" name="search"
+                onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
               <button type="submit" class="searchButton">
                 <i class="fa fa-search"></i>
               </button>
@@ -29,7 +30,8 @@
         <div class="col-12 responsive-search-col">
           <div class="wrap responsive-search">
             <div class="search">
-              <input type="text" class="searchTerm" placeholder="What are you looking for?" name="search" onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
+              <input type="text" class="searchTerm" placeholder="What are you looking for?" name="search"
+                onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
               <button type="submit" class="searchButton">
                 <i class="fa fa-search"></i>
               </button>
@@ -42,7 +44,7 @@
           <ngx-datatable #roleTable class="bootstrap" [rows]="rows" [columnMode]="'force'" [headerHeight]="50"
             [summaryRow]="true" [summaryHeight]="'auto'" [footerHeight]="50" [rowHeight]="50" [externalPaging]="true"
             [externalSorting]="true" [count]="page.totalElements" [offset]="page.pageNumber - 1" [limit]="page.size"
-            (page)="getMenuByPage($event)" (sort)="onSort($event)">
+            (page)="getRoleByPage($event)" (sort)="onSort($event)">
             <ngx-datatable-row-detail [rowHeight]="120" #myDetailRow>
               <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
                 <div style="padding-left:60px; font-size:14px">
@@ -137,13 +139,13 @@
   </div>
 </div>
 
-<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div bsModal #deleteRoleModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog modal-danger" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Delete Menu</h4>
-        <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+        <button type="button" class="close" (click)="deleteRoleModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -156,11 +158,11 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">
-          Cancel
-        </button>
         <button type="button" class="btn btn-danger" (click)="onDeleteRole()">
           Delete
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="deleteRoleModal.hide()">
+          Cancel
         </button>
       </div>
     </div>

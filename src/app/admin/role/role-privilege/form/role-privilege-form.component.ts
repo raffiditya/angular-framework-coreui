@@ -48,6 +48,7 @@ export class RolePrivilegeFormComponent implements OnInit {
     );
     this.path = this.activatedRoute.snapshot.data.title;
     this.editable = this.path !== 'View';
+    this.searchPrivilege();
 
     if (this.assignedPrivilegeId === 0 && this.path === 'Add') {
       this.adminRolePrivilegeService.getRole(this.roleId).subscribe(data => {
@@ -84,13 +85,12 @@ export class RolePrivilegeFormComponent implements OnInit {
     return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
   }
 
-  onChangeParent(text: { term: any }) {
+  searchPrivilege() {
     this.privileges = [];
 
-    this.page.searchTerm = text.term;
     this.menuTypeahead
       .pipe(
-        filter(t => t && t.length > 2),
+        filter(t => t && t.length >= 2),
         distinctUntilChanged(),
         debounceTime(300),
         switchMap(term =>
@@ -98,7 +98,7 @@ export class RolePrivilegeFormComponent implements OnInit {
         ),
       )
       .subscribe(data => {
-        this.privileges = data;
+        this.privileges = data['content'];
       });
   }
 
@@ -118,8 +118,8 @@ export class RolePrivilegeFormComponent implements OnInit {
       this.adminRolePrivilegeService
         .addAssignedPrivilege(normalizeFlag(this.form))
         .subscribe(data => {
-          this.router.navigate(['/admin/role']);
           this.toastr.success(data.message, 'Assign Privilege to Role');
+          this.location.back();
         });
     } else {
       this.adminRolePrivilegeService
@@ -128,8 +128,8 @@ export class RolePrivilegeFormComponent implements OnInit {
           normalizeFlag(this.form),
         )
         .subscribe(data => {
-          this.router.navigate(['/admin/role']);
           this.toastr.success(data.message, 'Assign Privilege to Role');
+          this.location.back();
         });
     }
   }

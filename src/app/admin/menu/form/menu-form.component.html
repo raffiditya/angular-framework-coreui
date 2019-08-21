@@ -9,15 +9,8 @@
       <div class="row mt-4 mr-3 ml-3">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label required" for="name">Name</label>
-          <input
-            [class.is-invalid]="isFieldInvalid('name')"
-            class="form-control"
-            formControlName="name"
-            id="name"
-            name="name"
-            required
-            type="text"
-          />
+          <input [class.is-invalid]="isFieldInvalid('name')" class="form-control" formControlName="name" id="name"
+            name="name" required type="text" />
           <div *ngIf="isFieldInvalid('name')" class="text-form-error">
             <div *ngIf="form.get('name').hasError('required')">
               Name is required
@@ -26,37 +19,19 @@
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label" for="url">Url</label>
-          <input
-            class="form-control"
-            formControlName="url"
-            id="url"
-            name="url"
-            type="text"
-          />
+          <input class="form-control" formControlName="url" id="url" name="url" type="text" />
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <div class="row">
             <div class="col form-group">
               <label class="col-form-label" for="url">Icon</label>
-              <ng-select
-                [items]="icons"
-                [virtualScroll]="true"
-                bindLabel="name"
-                bindValue="value"
-                formControlName="icon"
-                labelForId="icon"
-                placeholder="Select icon"
-              >
+              <ng-select [items]="icons" [virtualScroll]="true" bindLabel="name" bindValue="value"
+                formControlName="icon" labelForId="icon" placeholder="Select icon">
                 <ng-template let-item="item" ng-label-tmp>
                   <i [class]="item.value"></i>
                   <span>{{ item.name }}</span>
                 </ng-template>
-                <ng-template
-                  let-index="index"
-                  let-item="item"
-                  let-search="searchTerm"
-                  ng-option-tmp
-                >
+                <ng-template let-index="index" let-item="item" let-search="searchTerm" ng-option-tmp>
                   <i [class]="item.value"> {{ item.name }}</i>
                   <!-- <span [ngOptionHighlight]="searchTerm">{{ item.name }}</span> -->
                 </ng-template>
@@ -66,29 +41,15 @@
           <div class="row">
             <div class="col form-group">
               <label class="col-form-label" for="name">Order No</label>
-              <input
-                class="form-control"
-                formControlName="orderNo"
-                name="orderNo"
-                type="number"
-              />
+              <input class="form-control" formControlName="orderNo" name="orderNo" type="number" />
             </div>
           </div>
           <div class="row">
             <div class="col form-group">
               <label class="col-form-label" for="parent-id">Parent Menu</label>
-              <ng-select
-                id="parent-id"
-                (search)="onChangeParent($event)"
-                (clear)="onParentClear()"
-                [items]="parentMenu"
-                [multiple]="false"
-                [typeahead]="menuTypeahead"
-                bindLabel="name"
-                bindValue="id"
-                formControlName="parentId"
-                placeholder="Select parent"
-              >
+              <ng-select id="parent-id" (search)="this.page.searchTerm = $event.term" [items]="parentMenu"
+                [multiple]="false" [typeahead]="menuTypeahead" bindLabel="name" bindValue="id"
+                formControlName="parentId" placeholder="Select parent">
                 <ng-template ng-typetosearch-tmp>
                   <div class="ng-option disabled">
                     Please type 2 or more characters
@@ -110,56 +71,30 @@
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label" for="textarea-input">Description</label>
-          <textarea
-            class="form-control"
-            formControlName="description"
-            id="textarea-input"
-            name="textarea-input"
-            rows="9"
-          ></textarea>
+          <textarea class="form-control" formControlName="description" id="textarea-input" name="textarea-input"
+            rows="9"></textarea>
         </div>
       </div>
       <div class="row mt-4 mr-3 ml-3">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <div class="row">
-            <label class="col-md-3 col-form-label" for="active-flag"
-              >Active Flag</label
-            >
+            <label class="col-md-3 col-form-label" for="active-flag">Active Flag</label>
             <div class="col-9 col-form-label">
               <label class="switch switch-label switch-pill switch-primary">
-                <input
-                  class="switch-input form-control"
-                  formControlName="activeFlag"
-                  id="active-flag"
-                  type="checkbox"
-                />
-                <span
-                  class="switch-slider"
-                  data-checked="On"
-                  data-unchecked="Off"
-                ></span>
+                <input class="switch-input form-control" formControlName="activeFlag" id="active-flag"
+                  type="checkbox" />
+                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
               </label>
             </div>
           </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <div class="row">
-            <label class="col-md-3 col-form-label" for="email-input"
-              >Title Flag</label
-            >
+            <label class="col-md-3 col-form-label" for="email-input">Title Flag</label>
             <div class="col-9 col-form-label">
               <label class="switch switch-label switch-pill switch-primary">
-                <input
-                  class="switch-input form-control"
-                  id="email-input"
-                  formControlName="titleFlag"
-                  type="checkbox"
-                />
-                <span
-                  class="switch-slider"
-                  data-checked="On"
-                  data-unchecked="Off"
-                ></span>
+                <input class="switch-input form-control" id="email-input" formControlName="titleFlag" type="checkbox" />
+                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
               </label>
             </div>
           </div>
@@ -171,11 +106,7 @@
             <button class="btn btn-sm btn-primary" type="submit">
               <i class="fa fa-dot-circle-o"></i> Submit
             </button>
-            <button
-              (click)="cancelButton()"
-              class="btn btn-sm btn-secondary cancel-buttons"
-              type="button"
-            >
+            <button (click)="cancelButton()" class="btn btn-sm btn-secondary cancel-buttons" type="button">
               <i class="fa fa-ban"></i>
               Cancel
             </button>

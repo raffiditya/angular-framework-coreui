@@ -52,6 +52,7 @@ export class RoleMenuFormComponent implements OnInit {
     );
     this.path = this.activatedRoute.snapshot.data.title;
     this.editable = this.path !== 'View';
+    this.searchMenu();
 
     if (this.assignedMenuId === 0 && this.path === 'Add') {
       this.adminRoleMenuService.getRole(this.roleId).subscribe(data => {
@@ -87,16 +88,17 @@ export class RoleMenuFormComponent implements OnInit {
     return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
   }
 
-  onChangeParent(text: { term: any }) {
+  searchMenu() {
     this.menus = [];
 
-    this.page.searchTerm = text.term;
     this.menuTypeahead
       .pipe(
-        filter(t => t && t.length > 2),
+        filter(t => t && t.length >= 2),
         distinctUntilChanged(),
         debounceTime(300),
-        switchMap(term => this.adminRoleMenuService.getMenus(this.page)),
+        switchMap(term => {
+          return this.adminRoleMenuService.getMenus(this.page);
+        }),
       )
       .subscribe(data => {
         this.menus = data['content'];
@@ -119,15 +121,15 @@ export class RoleMenuFormComponent implements OnInit {
       this.adminRoleMenuService
         .addAssignedMenu(normalizeFlag(this.form))
         .subscribe(data => {
-          this.router.navigate(['/admin/role']);
           this.toastr.success(data.message, 'Assign Menu to Role');
+          this.location.back();
         });
     } else {
       this.adminRoleMenuService
         .editAssignedMenu(this.assignedMenuId, normalizeFlag(this.form))
         .subscribe(data => {
-          this.router.navigate(['/admin/role']);
           this.toastr.success(data.message, 'Edit Assign Menu to Role');
+          this.location.back();
         });
     }
   }

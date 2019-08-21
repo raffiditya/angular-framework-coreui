@@ -15,8 +15,8 @@
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label required" for="menus">List Menu</label>
-          <ng-select id="menus" (search)="onChangeParent($event)" (clear)="onParentClear()" [items]="menus"
-            [multiple]="false" [typeahead]="menuTypeahead" bindLabel="name" bindValue="id" formControlName="menuId">
+          <ng-select id="menus" (search)="this.page.searchTerm = $event.term" [items]="menus" [multiple]="false"
+            [typeahead]="menuTypeahead" bindLabel="name" bindValue="id" formControlName="menuId">
             <ng-template ng-typetosearch-tmp>
               <div class="ng-option disabled">
                 Please type 2 or more characters

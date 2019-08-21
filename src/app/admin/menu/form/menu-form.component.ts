@@ -88,6 +88,7 @@ export class MenuFormComponent implements OnInit {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
     this.path = this.activatedRoute.snapshot.data.title;
     this.editable = this.path !== 'View';
+    this.searchMenu();
 
     if (this.id) {
       this.adminMenuService.getMenu(this.id).subscribe(data => {
@@ -120,13 +121,12 @@ export class MenuFormComponent implements OnInit {
     return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
   }
 
-  onChangeParent(text: { term: any }) {
+  searchMenu() {
     this.parentMenu = [];
 
-    this.page.searchTerm = text.term;
     this.menuTypeahead
       .pipe(
-        filter(t => t && t.length > 2),
+        filter(t => t && t.length >= 2),
         distinctUntilChanged(),
         debounceTime(300),
         switchMap(term => this.adminMenuService.getMenus(this.page)),

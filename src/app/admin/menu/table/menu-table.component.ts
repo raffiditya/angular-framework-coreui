@@ -11,13 +11,13 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 })
 export class MenuTableComponent implements OnInit {
   @ViewChild('myTable', { static: false }) table: any;
-  @ViewChild('dangerModal', { static: false })
-  public dangerModal: ModalDirective;
+  @ViewChild('deleteMenuModal', { static: false })
+  public deleteMenuModal: ModalDirective;
 
   page = new Page();
-  path = '';
-  idInactive = '';
-  rows: any[] = [];
+  path: string = '';
+  idInactive: string = '';
+  rows: any = [];
 
   constructor(
     private adminMenuService: AdminMenuService,
@@ -57,13 +57,13 @@ export class MenuTableComponent implements OnInit {
 
   openDeleteModal(row: any) {
     this.idInactive = row.id;
-    this.dangerModal.show();
+    this.deleteMenuModal.show();
   }
 
   selectInactive() {
     this.adminMenuService.deleteMenu(this.idInactive).subscribe(data => {
       this.idInactive = '';
-      this.dangerModal.hide();
+      this.deleteMenuModal.hide();
       this.toastr.success(data.message, 'Delete Menu');
       this.getMenu();
     });

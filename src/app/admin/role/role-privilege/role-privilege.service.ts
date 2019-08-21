@@ -8,7 +8,7 @@ import { Page } from '../../../core/model/page';
 export class AdminRolePrivilegeService {
   constructor(private http: HttpClient) { }
 
-  getAssignedPrivilege(page?: Page): Observable<any> {
+  getAssignedPrivilege(id: number, page?: Page): Observable<any> {
     if (!page) {
       page = {
         size: 10,
@@ -16,7 +16,7 @@ export class AdminRolePrivilegeService {
       };
     }
 
-    let request: string = `${constant.appUrl}/admin/role-prev?role.id=${page.roleId}&page=${page.pageNumber}&size=${page.size}`;
+    let request: string = `${constant.appUrl}/admin/role-privilege?role.id=${id}&page=${page.pageNumber}&size=${page.size}`;
 
     if (page.searchTerm) {
       request += `&privilege.name=${page.searchTerm}`;
@@ -30,7 +30,7 @@ export class AdminRolePrivilegeService {
   }
 
   getPrivileges(page?: Page): Observable<any> {
-    return this.http.get(`${constant.appUrl}/admin/role-prev/prev?name=${page.searchTerm}`);
+    return this.http.get(`${constant.appUrl}/admin/privilege?name=${page.searchTerm}&size=3`);
   }
 
   getRole(id: number): Observable<any> {
@@ -38,14 +38,14 @@ export class AdminRolePrivilegeService {
   }
 
   getPrivilege(id: number): Observable<any> {
-    return this.http.get(`${constant.appUrl}/admin/role-prev/${id}`);
+    return this.http.get(`${constant.appUrl}/admin/role-privilege/${id}`);
   }
 
   addAssignedPrivilege(assignedPrivilege: any): Observable<any> {
-    return this.http.post(`${constant.appUrl}/admin/role-prev`, assignedPrivilege);
+    return this.http.post(`${constant.appUrl}/admin/role-privilege`, assignedPrivilege);
   }
 
   editAssignedPrivilege(id: number, assignedPrivilege: any): Observable<any> {
-    return this.http.put(`${constant.appUrl}/admin/role-prev/${id}`, assignedPrivilege);
+    return this.http.put(`${constant.appUrl}/admin/role-privilege/${id}`, assignedPrivilege);
   }
 }

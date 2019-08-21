@@ -20,24 +20,26 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col">
-              <div class="row">
-                <label class="col-md-3 col-form-label" for="activeFlag">Active Flag</label>
-                <div class="col-9 col-form-label">
-                  <label class="switch switch-label switch-pill switch-primary">
-                    <input type="checkbox" class="switch-input form-control" formControlName="activeFlag" checked />
-                    <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <label class="col-form-label" for="textarea-input">Description</label>
-          <textarea class="form-control" formControlName="description" id="textarea-input" name="textarea-input"
-            rows="9"></textarea>
+          <div class="row">
+            <label class="col-form-label" for="textarea-input">Description</label>
+            <textarea class="form-control" formControlName="description" id="textarea-input" name="textarea-input"
+              rows="9"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4 mr-3 ml-3">
+        <div class="col">
+          <div class="row">
+            <label class="col-md-3 col-form-label" for="activeFlag">Active Flag</label>
+            <div class="col-9 col-form-label">
+              <label class="switch switch-label switch-pill switch-primary">
+                <input type="checkbox" class="switch-input form-control" formControlName="activeFlag" checked />
+                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
       <div *ngIf="path !== 'View'" class="row mt-3 mr-3 ml-3 mb-5">
@@ -59,4 +61,4 @@
 
 <role-menu-table *ngIf="path !== 'Add'"></role-menu-table>
 
-<!-- <role-privilege-table *ngIf="path !== 'Add'"></role-privilege-table> -->
+<role-privilege-table *ngIf="path !== 'Add'"></role-privilege-table>

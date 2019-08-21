@@ -18,10 +18,6 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { MenuTableComponent } from './menu/table/menu-table.component';
 import { MenuFormComponent } from './menu/form/menu-form.component';
 
-// admin organization component
-import { OrganizationTableComponent } from './organization/organization-table/organization-table.component';
-import { OrganizationFormComponent } from './organization/organization-form/organtization-form.component';
-
 // admin role component
 import { RoleTableComponent } from './role/table/role-table.component';
 import { RoleFormComponent } from './role/form/role-form.component';
@@ -33,10 +29,6 @@ import { RoleMenuFormComponent } from './role/role-menu/form/role-menu-form.comp
 // role privilege assignment
 import { RolePrivilegeTableComponent } from './role/role-privilege/table/role-privilege-table.component';
 import { RolePrivilegeFormComponent } from './role/role-privilege/form/role-privilege-form.component';
-
-// admin user component
-import { UserTableComponent } from './user/user-table/user-table.component';
-import { UserFormComponent } from './user/user-form/user-form.component';
 
 @NgModule({
   imports: [
@@ -52,16 +44,12 @@ import { UserFormComponent } from './user/user-form/user-form.component';
   declarations: [
     MenuTableComponent,
     MenuFormComponent,
-    OrganizationTableComponent,
-    OrganizationFormComponent,
     RoleTableComponent,
     RoleFormComponent,
     RoleMenuTableComponent,
     RoleMenuFormComponent,
     RolePrivilegeTableComponent,
     RolePrivilegeFormComponent,
-    UserTableComponent,
-    UserFormComponent,
   ],
 })
-export class AdminModule {}
+export class AdminModule { }

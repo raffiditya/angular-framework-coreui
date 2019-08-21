@@ -9,7 +9,7 @@ import { Page } from '../../../core/model/page';
 export class AdminRoleMenuService {
   constructor(private http: HttpClient) { }
 
-  getAssignedMenus(page?: Page): Observable<any> {
+  getAssignedMenus(id: number, page?: Page): Observable<any> {
     if (!page) {
       page = {
         size: 10,
@@ -17,7 +17,7 @@ export class AdminRoleMenuService {
       };
     }
 
-    let request: string = `${constant.appUrl}/admin/role-menu?role.id=${page.roleId}&page=${page.pageNumber}&size=${page.size}`;
+    let request: string = `${constant.appUrl}/admin/role-menu?role.id=${id}&page=${page.pageNumber}&size=${page.size}`;
 
     if (page.searchTerm) {
       request += `&menu.name=${page.searchTerm}`;
@@ -35,7 +35,7 @@ export class AdminRoleMenuService {
   }
 
   getMenus(page?: Page): Observable<any> {
-    let request: string = `${constant.appUrl}/admin/menu?page=${page.pageNumber}&size=${page.size}`;
+    let request: string = `${constant.appUrl}/admin/menu?size=3`;
 
     if (page.searchTerm) {
       request += `&name=${page.searchTerm}&url=${page.searchTerm}`;
