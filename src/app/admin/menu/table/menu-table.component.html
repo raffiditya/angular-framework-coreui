@@ -14,12 +14,7 @@
         </div>
         <div class="wrap normal-search">
           <div class="search">
-            <input 
-              type="text" 
-              class="searchTerm" 
-              placeholder="What are you looking for?"
-              (input)="onSearchChange($event.target.value)" 
-            />
+            <input type="text" class="searchTerm" placeholder="Search or enter menu name" name="search" onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
             <button type="submit" class="searchButton">
               <i class="fa fa-search"></i>
             </button>
@@ -32,12 +27,7 @@
         <div class="col-12 responsive-search-col">
           <div class="wrap responsive-search">
             <div class="search">
-              <input 
-                type="text" 
-                class="searchTerm" 
-                placeholder="What are you looking for?"
-                (input)="onSearchChange($event.target.value)" 
-              />
+              <input type="text" class="searchTerm" placeholder="Search or enter menu name" name="search"  onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
               <button type="submit" class="searchButton">
                 <i class="fa fa-search"></i>
               </button>
@@ -47,23 +37,10 @@
       </div>
       <div class="row">
         <div class="col-12 col-xl mb-3 mb-xl-0">
-          <ngx-datatable 
-            #myTable 
-            class="bootstrap" 
-            [rows]="rows" 
-            [columnMode]="'force'" 
-            [headerHeight]="50"
-            [summaryRow]="true" 
-            [summaryHeight]="'auto'" 
-            [footerHeight]="50" 
-            [rowHeight]="50" 
-            [externalPaging]="true"
-            [count]="page.totalElements" 
-            [offset]="page.pageNumber - 1" 
-            [limit]="page.size"
-            (page)="getMenuByPage($event)" 
-            (sort)="onSort($event)">
-            >
+          <ngx-datatable #myTable class="bootstrap" [rows]="rows" [columnMode]="'force'" [headerHeight]="50"
+            [summaryRow]="true" [summaryHeight]="'auto'" [footerHeight]="50" [rowHeight]="50" [externalPaging]="true"
+            [externalSorting]="true" [count]="page.totalElements" [offset]="page.pageNumber - 1" [limit]="page.size"
+            (page)="getMenuByPage($event)" (sort)="onSort($event)">
             <!-- Row Detail Template -->
             <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
               <ng-template let-row="row" let-expanded="true" ngx-datatable-row-detail-template>
@@ -81,35 +58,17 @@
                   </div>
                   <div class="mt-2">
                     <ng-container>
-                      <button 
-                        [routerLink]="['/admin/menu', row.id]" 
-                        type="button" 
-                        class="btn btn-primary"
-                        data-toggle="tooltip" 
-                        data-placement="bottom" 
-                        title="View Menu"
-                      >
+                      <button [routerLink]="['/admin/menu', row.id]" type="button" class="btn btn-primary"
+                        data-toggle="tooltip" data-placement="bottom" title="View Menu">
                         <i class="fa fa-sign-in fa-sm"></i>
                       </button>
-                      <button 
-                        [routerLink]="['/admin/menu/edit', row.id]" 
-                        type="button" 
-                        class="btn btn-success"
-                        data-toggle="tooltip" 
-                        data-placement="bottom" 
-                        title="Edit Menu"
-                      >
+                      <button [routerLink]="['/admin/menu/edit', row.id]" type="button" class="btn btn-success"
+                        data-toggle="tooltip" data-placement="bottom" title="Edit Menu">
                         <i class="fa fa-edit fa-sm"></i>
                       </button>
-                      <button 
-                        (click)="openDeleteModal(row)" 
-                        data-toggle="tooltip" 
-                        data-placement="bottom"
-                        title="Delete Menu" 
-                        type="button" 
-                        class="btn btn-danger"
-                        [disabled]="disableDeleteButton(row.activeFlag)"
-                      >
+                      <button (click)="openDeleteModal(row)" data-toggle="tooltip" data-placement="bottom"
+                        title="Delete Menu" type="button" class="btn btn-danger"
+                        [disabled]="disableDeleteButton(row.activeFlag)">
                         <i class="fa fa-trash fa-sm"></i>
                       </button>
                     </ng-container>
@@ -151,9 +110,12 @@
 
             <ngx-datatable-column name="Title" prop="titleFlag" [sortable]="true" [flexGrow]="3" [minWidth]="200">
               <ng-template let-row="row" ngx-datatable-cell-template>
-                <ng-container [ngSwitch]="row.titleFlag">
-                  <span *ngSwitchCase="'Y'" class="badge badge-success title-hidden">True</span>
-                  <span *ngSwitchCase="'N'" class="badge badge-danger title-hidden">False</span>
+                <ng-container>
+                  <span *ngIf="row.titleFlag === 'Y'; else falseTitle"
+                    class="badge badge-success title-hidden">True</span>
+                  <ng-template #falseTitle>
+                    <span class="badge badge-danger title-hidden">False</span>
+                  </ng-template>
                 </ng-container>
               </ng-template>
             </ngx-datatable-column>
@@ -165,6 +127,7 @@
                 <ng-container [ngSwitch]="row.activeFlag">
                   <span *ngSwitchCase="'Y'" class="badge badge-success active-hidden">Active</span>
                   <span *ngSwitchCase="'N'" class="badge badge-danger active-hidden">Inactive</span>
+                  <span *ngSwitchDefault class="badge badge-danger active-hidden">Inactive</span>
                 </ng-container>
               </ng-template>
             </ngx-datatable-column>
@@ -173,7 +136,7 @@
 
             <ngx-datatable-column [flexGrow]="1">
               <ng-template ngx-datatable-header-template>
-                <span class="options-hidden">Options</span>
+                <span class="options-hidden">Actions</span>
               </ng-template>
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <ng-container>
@@ -216,7 +179,7 @@
           <i class="fa fa-exclamation-triangle"></i>
         </div>
         <div class="modal-text">
-          <p>Are you sure ?</p>
+          <p>Do you want to inactivate this menu ?</p>
         </div>
       </div>
       <div class="modal-footer">
@@ -228,8 +191,5 @@
         </button>
       </div>
     </div>
-    <!-- /.modal-content -->
   </div>
-  <!-- /.modal-dialog -->
 </div>
-<!-- /.modal -->

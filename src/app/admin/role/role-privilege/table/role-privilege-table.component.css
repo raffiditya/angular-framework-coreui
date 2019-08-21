@@ -23,15 +23,19 @@
     cursor: pointer;
   }
 
-  .title-hidden {
+  .can-create-hidden {
     display: none;
   }
 
-  .url-hidden {
+  .can-read-hidden {
     display: none;
   }
 
-  .active-hidden {
+  .can-update-hidden {
+    display: none;
+  }
+
+  .can-delete-hidden {
     display: none;
   }
 

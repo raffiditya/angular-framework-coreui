@@ -1,42 +1,46 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AdminMenuService } from '../admin-menu.service';
-import { Page } from '../../../core/model/page';
+import { AdminRoleMenuService } from '../role-menu.service';
+import { Page } from '../../../../core/model/page';
 import { ToastrService } from 'ngx-toastr';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
-  templateUrl: './menu-table.component.html',
-  styleUrls: ['./menu-table.component.css'],
+  selector: 'role-menu-table',
+  templateUrl: './role-menu-table.component.html',
+  styleUrls: ['./role-menu-table.component.css'],
 })
-export class MenuTableComponent implements OnInit {
-  @ViewChild('myTable', { static: false }) table: any;
+export class RoleMenuTableComponent implements OnInit {
+  @ViewChild('roleTable', { static: false }) table: any;
   @ViewChild('dangerModal', { static: false })
   public dangerModal: ModalDirective;
 
+  id: number = 0;
   page = new Page();
-  path = '';
-  idInactive = '';
-  rows: any[] = [];
+  path: string = '';
+  idInactive: string = '';
+  rows: any = [];
 
   constructor(
-    private adminMenuService: AdminMenuService,
+    private adminRoleMenuService: AdminRoleMenuService,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
-  ) { }
+  ) {}
 
   ngOnInit() {
+    this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
     this.path = this.activatedRoute.snapshot.data.title;
-    this.getMenuByPage({ offset: 0 });
+    this.getRoleMenuByPage({ offset: 0 });
   }
 
-  getMenuByPage(pageInfo: { offset: any }) {
+  getRoleMenuByPage(pageInfo: { offset: any }) {
     this.page.pageNumber = pageInfo.offset + 1;
-    this.getMenu();
+    this.getRoleMenu();
   }
 
-  getMenu() {
-    this.adminMenuService.getMenus(this.page).subscribe(data => {
+  getRoleMenu() {
+    this.page.roleId = this.id;
+    this.adminRoleMenuService.getAssignedMenus(this.page).subscribe(data => {
       this.page.totalElements = data.totalElements;
       this.page.totalPages = data.totalPages;
       this.rows = data['content'];
@@ -61,12 +65,14 @@ export class MenuTableComponent implements OnInit {
   }
 
   selectInactive() {
-    this.adminMenuService.deleteMenu(this.idInactive).subscribe(data => {
-      this.idInactive = '';
-      this.dangerModal.hide();
-      this.toastr.success(data.message, 'Delete Menu');
-      this.getMenu();
-    });
+    this.adminRoleMenuService
+      .deleteAssignedMenu(this.idInactive)
+      .subscribe(data => {
+        this.idInactive = '';
+        this.dangerModal.hide();
+        this.toastr.success(data.message, 'Delete Menu');
+        this.getRoleMenu();
+      });
   }
 
   onSearchChange(search: any) {
@@ -83,12 +89,12 @@ export class MenuTableComponent implements OnInit {
     }
 
     this.page.searchTerm = search;
-    this.getMenu();
+    this.getRoleMenu();
   }
 
   onSort(event: any) {
     this.page.pageNumber = 1;
     this.page.sort = `${event.column.prop},${event.newValue}`;
-    this.getMenu();
+    this.getRoleMenu();
   }
 }

@@ -1,0 +1,90 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header custom-card-header">
+      <div class="custom-card-header-title">
+        <p>Role Menu Assignment Form</p>
+      </div>
+    </div>
+    <form (ngSubmit)="onSubmit()" [formGroup]="form">
+      <div class="row mt-4 mr-3 ml-3">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
+          <label class="col-form-label required" for="role">Role</label>
+          <ng-select id="roleId" [items]="role" [multiple]="false" bindLabel="name" bindValue="id"
+            formControlName="roleId">
+          </ng-select>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
+          <label class="col-form-label required" for="role">Privilege</label>
+          <ng-select id="privilegeId" (search)="onChangeParent($event)" (clear)="onParentClear()" [items]="privileges"
+            [multiple]="false" [typeahead]="menuTypeahead" bindLabel="name" bindValue="id"
+            formControlName="privilegeId">
+          </ng-select>
+          <div *ngIf="isFieldInvalid('privilegeId')" class="text-form-error">
+            <div *ngIf="form.get('privilegeId').hasError('required')">
+              Privilage is required
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4 mr-3 ml-3">
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 form-group">
+          <div class="row">
+            <label class="col-md-6 col-form-label" for="canCreate">Create</label>
+            <div class="col-6 col-form-label">
+              <label class="switch switch-label switch-pill switch-primary">
+                <input class="switch-input form-control" formControlName="canCreate" id="canCreate" type="checkbox" />
+                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 form-group">
+          <div class="row">
+            <label class="col-md-6 col-form-label" for="canRead">Read</label>
+            <div class="col-6 col-form-label">
+              <label class="switch switch-label switch-pill switch-primary">
+                <input class="switch-input form-control" formControlName="canRead" id="canRead" type="checkbox" />
+                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 form-group">
+          <div class="row">
+            <label class="col-md-6 col-form-label" for="canUpdate">Update</label>
+            <div class="col-6 col-form-label">
+              <label class="switch switch-label switch-pill switch-primary">
+                <input class="switch-input form-control" formControlName="canUpdate" id="canUpdate" type="checkbox" />
+                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 form-group">
+          <div class="row">
+            <label class="col-md-6 col-form-label" for="canDelete">Delete</label>
+            <div class="col-6 col-form-label">
+              <label class="switch switch-label switch-pill switch-primary">
+                <input class="switch-input form-control" formControlName="canDelete" id="canDelete" type="checkbox" />
+                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="editable" class="row mt-3 mr-3 ml-3 mb-5">
+        <div class="col form-group">
+          <div class="form-actions submit-button mt-5">
+            <button class="btn btn-sm btn-primary" type="submit">
+              <i class="fa fa-dot-circle-o"></i> Submit
+            </button>
+            <button (click)="cancelButton()" class="btn btn-sm btn-secondary cancel-buttons" type="button">
+              <i class="fa fa-ban"></i>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

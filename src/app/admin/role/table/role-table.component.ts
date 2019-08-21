@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AdminRoleService } from '../admin-role.service';
 import { Page } from '../../../core/model/page';
@@ -6,19 +6,20 @@ import { ToastrService } from 'ngx-toastr';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
-  selector: 'role-menu-table',
   templateUrl: './role-table.component.html',
   styleUrls: ['./role-table.component.css'],
 })
 export class RoleTableComponent implements OnInit {
   @ViewChild('roleTable', { static: false }) table: any;
   @ViewChild('dangerModal', { static: false })
+  @ViewChild('searchInput', { static: false })
   public dangerModal: ModalDirective;
 
   page = new Page();
-  path = '';
-  idInactive = '';
-  rows = [];
+  path: string = '';
+  idInactive: string = '';
+  rows: any[] = [];
+  searchTerm: string = '';
 
   constructor(
     private adminRoleService: AdminRoleService,
@@ -28,10 +29,10 @@ export class RoleTableComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.activatedRoute.snapshot.data.title;
-    this.getRole();
+    this.getRoleByPage({ offset: 0 });
   }
 
-  getRoleByPahe(pageInfo: { offset: any }) {
+  getRoleByPage(pageInfo: { offset: any }) {
     this.page.pageNumber = pageInfo.offset + 1;
     this.getRole();
   }
@@ -70,22 +71,29 @@ export class RoleTableComponent implements OnInit {
     });
   }
 
-  onSearchChange(search: any) {
-    this.table.sorts = [];
-    this.rows = []
-
-    if (search.length >= 3) {
-      this.page.searchTerm = search
-      this.getRole()
-    } else if (search.length === 0) {
-      this.page.searchTerm = '';
-      this.getRole()
+  onSearchChange(search: string) {
+    if (search.length > 0 && search.length < 3) {
+      return;
     }
+
+    this.table.sorts = [];
+    this.page.sort = '';
+    this.rows = [];
+
+    if (search.match(/[^a-zA-Z ]/g)) {
+      this.searchTerm = '';
+      this.page.searchTerm = this.searchTerm;
+      this.getRole();
+      return;
+    }
+
+    this.page.searchTerm = search;
+    this.getRole();
   }
 
   onSort(event: any) {
-    this.page.pageNumber = 1
-    this.page.sort = `${event.column.prop}, ${event.newValue}`
-    this.getRole()
+    this.page.pageNumber = 1;
+    this.page.sort = `${event.column.prop},${event.newValue}`;
+    this.getRole();
   }
 }

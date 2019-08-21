@@ -23,11 +23,11 @@
     cursor: pointer;
   }
 
-  .title-hidden {
+  .start-date-hidden {
     display: none;
   }
 
-  .url-hidden {
+  .end-date-hidden {
     display: none;
   }
 

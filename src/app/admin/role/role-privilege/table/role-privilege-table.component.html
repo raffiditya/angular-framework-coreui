@@ -1,0 +1,180 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header custom-card-header">
+      <div class="custom-card-header-title">
+        <p>Role Privilege Assignment Table</p>
+      </div>
+      <div class="custom-card-header-right">
+        <div class="custom-card-header-add-button" *ngIf="path !== 'View'">
+          <button type="button" class="btn">
+            <a [routerLink]="['../add-assigned-privilege']" routerLinkActive="active">
+              Add New
+            </a>
+          </button>
+        </div>
+        <div class="wrap normal-search">
+          <div class="search">
+            <input type="text" class="searchTerm" placeholder="Search or enter assigned privilege" name="search" onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
+            <button type="submit" class="searchButton">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row search-wrap responsive-search">
+        <div class="col-12 responsive-search-col">
+          <div class="wrap responsive-search">
+            <div class="search">
+              <input type="text" class="searchTerm" placeholder="Search or enter assigned privilege" name="search" onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
+              <button type="submit" class="searchButton">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-xl mb-3 mb-xl-0">
+          <ngx-datatable #rolePrivilege class="bootstrap" [rows]="rows" [columnMode]="'force'" [headerHeight]="50"
+            [summaryRow]="true" [summaryHeight]="'auto'" [footerHeight]="50" [rowHeight]="50" [externalPaging]="true"
+            [externalSorting]="true" [count]="page.totalElements" [offset]="page.pageNumber - 1" [limit]="page.size"
+            (page)="getMenuByPage($event)" (sort)="onSort($event)">
+            <!-- Row Detail Template -->
+            <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
+              <ng-template let-row="row" let-expanded="true" ngx-datatable-row-detail-template>
+                <div style="padding-left:60px; font-size:14px">
+                  <div>
+                    <ng-container [ngSwitch]="row.canCreate">
+                      Create
+                      <span *ngSwitchCase="'Y'" class="badge badge-success">Can Create</span>
+                      <span *ngSwitchCase="'N'" class="badge badge-danger">Can't Create</span>
+                    </ng-container>
+                  </div>
+                  <div class="mt-2">
+                    <ng-container [ngSwitch]="row.canRead">
+                      <span *ngSwitchCase="'Y'" class="badge badge-success can-read-hidden">Can Read</span>
+                      <span *ngSwitchCase="'N'" class="badge badge-danger can-read-hidden">Can't Read</span>
+                    </ng-container>
+                  </div>
+                  <div class="mt-2">
+                    <ng-container [ngSwitch]="row.canUpdate">
+                      <span *ngSwitchCase="'Y'" class="badge badge-success can-update-hidden">Can Update</span>
+                      <span *ngSwitchCase="'N'" class="badge badge-danger can-update-hidden">Can't Update</span>
+                    </ng-container>
+                  </div>
+                  <div class="mt-2">
+                    <ng-container [ngSwitch]="row.canDelete">
+                      <span *ngSwitchCase="'Y'" class="badge badge-success can-delete-hidden">Can Delete</span>
+                      <span *ngSwitchCase="'N'" class="badge badge-danger can-delete-hidden">Can't Delete</span>
+                    </ng-container>
+                  </div> 
+                  <div class="mt-2">
+                    <ng-container>
+                      <button [routerLink]="['../view-assigned-privilege', row.id]" type="button" class="btn btn-primary"
+                        data-toggle="tooltip" data-placement="bottom" title="View Menu">
+                        <i class="fa fa-sign-in fa-sm"></i>
+                      </button>
+                      <button [routerLink]="['../edit-assigned-privilege', row.id]" type="button" class="btn btn-success"
+                        data-toggle="tooltip" data-placement="bottom" title="Edit Menu">
+                        <i class="fa fa-edit fa-sm"></i>
+                      </button>
+                    </ng-container>
+                  </div>
+                </div>
+              </ng-template>
+            </ngx-datatable-row-detail>
+
+            <!--  -->
+
+            <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false"
+              [canAutoResize]="false">
+              <ng-template let-row="row" let-expanded="true" ngx-datatable-cell-template>
+                <a [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded"
+                  title="Expand/Collapse Row" (click)="toggleExpandRow(row)" class="desktop-hidden">
+                </a>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!--  -->
+
+            <ngx-datatable-column name="Privilege Name" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container>
+                  <span class="title-hidden">{{ row.privilege.name }}</span>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- Create  -->
+
+            <ngx-datatable-column name="Create" prop="canCreate" [sortable]="true" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="row.canCreate">
+                  <span *ngSwitchCase="'Y'" class="badge badge-success can-create-hidden">True</span>
+                  <span *ngSwitchCase="'N'" class="badge badge-danger can-create-hidden">False</span>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- Read -->
+
+            <ngx-datatable-column name="Read" prop="canRead" [sortable]="true" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="row.canRead">
+                  <span *ngSwitchCase="'Y'" class="badge badge-success can-read-hidden">True</span>
+                  <span *ngSwitchCase="'N'" class="badge badge-danger can-read-hidden">False</span>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- Update -->
+
+            <ngx-datatable-column name="Update" prop="canUpdate" [sortable]="true" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="row.canUpdate">
+                  <span *ngSwitchCase="'Y'" class="badge badge-success can-update-hidden">True</span>
+                  <span *ngSwitchCase="'N'" class="badge badge-danger can-update-hidden">False</span>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- Delete -->
+
+            <ngx-datatable-column name="Delete" prop="canDelete" [sortable]="true" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="row.canDelete">
+                  <span *ngSwitchCase="'Y'" class="badge badge-success can-delete-hidden">True</span>
+                  <span *ngSwitchCase="'N'" class="badge badge-danger can-delete-hidden">False</span>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!--  -->
+
+            <ngx-datatable-column [flexGrow]="1" *ngIf="path !== 'View'">
+              <ng-template ngx-datatable-header-template>
+                <span class="options-hidden">Actions</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container>
+                  <button [routerLink]="['../view-assigned-privilege', row.id]" type="button"
+                    class="btn btn-primary options-hidden" data-toggle="tooltip" data-placement="bottom"
+                    title="View Menu">
+                    <i class="fa fa-sign-in fa-sm"></i>
+                  </button>
+                  <button [routerLink]="['../edit-assigned-privilege', row.id]" type="button"
+                    class="btn btn-success options-hidden" data-toggle="tooltip" data-placement="bottom"
+                    title="Edit Menu">
+                    <i class="fa fa-edit fa-sm"></i>
+                  </button>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

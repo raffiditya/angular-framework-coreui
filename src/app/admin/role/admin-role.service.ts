@@ -46,17 +46,11 @@ export class AdminRoleService {
     return this.http.delete(`${constant.appUrl}/admin/role/${id}`);
   }
 
-  // searchRole(keyword: any): Observable<any> {
-  //   return this.http.get(
-  //     `${constant.appUrl}/admin/role?name=${keyword}&url=${keyword}`,
-  //   );
-  // }
+  searchRole(keyword: any): Observable<any> {
+    return this.http.get(`${constant.appUrl}/admin/role?name=${keyword}&url=${keyword}`);
+  }
 
-  // sortRole(keyword: any, page: any, sort: any, type: any): Observable<any> {
-  //   return this.http.get(
-  //     `${
-  //     constant.appUrl
-  //     }/admin/role?name=${keyword}&url=${keyword}&page=${page}&sort=${sort},${type}`,
-  //   );
-  // }
+  sortRole(keyword: any, page: any, sort: any, type: any): Observable<any> {
+    return this.http.get(`${constant.appUrl}/admin/role?name=${keyword}&url=${keyword}&page=${page}&sort=${sort},${type}`);
+  }
 }
