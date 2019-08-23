@@ -1,24 +1,19 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header role-form-header">
-      <p>{{ path }} Role</p>
+    <div class="card-header custom-card-header">
+      <div class="custom-card-header-title">
+        <p>{{ path }} Role</p>
+      </div>
     </div>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" [formGroup]="form">
       <div class="row mt-4 mr-3 ml-3">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <div class="row">
             <div class="col form-group">
               <label class="col-form-label required" for="name">Name</label>
-              <input
-                [class.is-invalid]="isFieldInvalid('name')"
-                name="name"
-                type="text"
-                placeholder="Enter name"
-                class="form-control"
-                formControlName="name"
-                required
-              />
-              <div *ngIf="isFieldInvalid('name')" class="cms-form-error">
+              <input [class.is-invalid]="isFieldInvalid('name')" class="form-control" name="name" formControlName="name"
+                id="name" required type="text" />
+              <div *ngIf="isFieldInvalid('name')" class="text-form-error">
                 <div *ngIf="form.get('name').hasError('required')">
                   Name is required
                 </div>
@@ -27,48 +22,31 @@
           </div>
           <div class="row">
             <div class="col">
-              <label class="col-form-label" for="activeFlag">Active Flag</label>
-              <div class="col-9 active-pills">
-                <label class="switch switch-label switch-pill switch-primary">
-                  <input
-                    type="checkbox"
-                    class="switch-input form-control"
-                    formControlName="activeFlag"
-                    checked
-                  />
-                  <span
-                    class="switch-slider"
-                    data-checked="On"
-                    data-unchecked="Off"
-                  ></span>
-                </label>
+              <div class="row">
+                <label class="col-md-3 col-form-label" for="activeFlag">Active Flag</label>
+                <div class="col-9 col-form-label">
+                  <label class="switch switch-label switch-pill switch-primary">
+                    <input type="checkbox" class="switch-input form-control" formControlName="activeFlag" checked />
+                    <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label" for="textarea-input">Description</label>
-          <textarea
-            id="textarea-input"
-            name="textarea-input"
-            rows="9"
-            class="form-control"
-            placeholder="Enter Description"
-            formControlName="description"
-          ></textarea>
+          <textarea class="form-control" formControlName="description" id="textarea-input" name="textarea-input"
+            rows="9"></textarea>
         </div>
       </div>
       <div *ngIf="path !== 'View'" class="row mt-3 mr-3 ml-3 mb-5">
         <div class="col form-group">
           <div class="form-actions submit-button mt-5">
-            <button type="submit" class="btn btn-sm btn-primary">
+            <button class="btn btn-sm btn-primary" type="submit">
               <i class="fa fa-dot-circle-o"></i> Submit
             </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-secondary option-buttons"
-              (click)="cancelButton()"
-            >
+            <button (click)="cancelButton()" class="btn btn-sm btn-secondary option-buttons" type="button">
               <i class="fa fa-ban"></i>
               Cancel
             </button>
@@ -78,3 +56,7 @@
     </form>
   </div>
 </div>
+
+<role-menu-table *ngIf="path !== 'Add'"></role-menu-table>
+
+<!-- <role-privilege-table *ngIf="path !== 'Add'"></role-privilege-table> -->

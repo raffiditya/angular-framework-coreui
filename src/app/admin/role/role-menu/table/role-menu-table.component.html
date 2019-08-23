@@ -2,25 +2,23 @@
   <div class="card">
     <div class="card-header custom-card-header">
       <div class="custom-card-header-title">
-        <p>{{ path }} Table</p>
+        <p>Role Menu Assignment Table</p>
       </div>
       <div class="custom-card-header-right">
-        <div class="custom-card-header-add-button">
+        <div class="custom-card-header-add-button" *ngIf="path !== 'View'">
           <button type="button" class="btn">
-            <a [routerLink]="['../add']" routerLinkActive="active">
+            <a [routerLink]="['../add-assigned-menu']" routerLinkActive="active">
               Add New
             </a>
           </button>
         </div>
         <div class="wrap normal-search">
-          <form>
-            <div class="search">
-              <input type="text" class="searchTerm" placeholder="Search or enter role" name="search" onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
-              <button type="submit" class="searchButton">
-                <i class="fa fa-search"></i>
-              </button>
-            </div>
-          </form>
+          <div class="search">
+            <input type="text" class="searchTerm" placeholder="Search or enter assigned menu" name="search" onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
+            <button type="submit" class="searchButton">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -29,7 +27,7 @@
         <div class="col-12 responsive-search-col">
           <div class="wrap responsive-search">
             <div class="search">
-              <input type="text" class="searchTerm" placeholder="What are you looking for?" name="search" onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
+              <input type="text" class="searchTerm" placeholder="Search or enter assigned menu" name="search" onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
               <button type="submit" class="searchButton">
                 <i class="fa fa-search"></i>
               </button>
@@ -43,10 +41,19 @@
             [summaryRow]="true" [summaryHeight]="'auto'" [footerHeight]="50" [rowHeight]="50" [externalPaging]="true"
             [externalSorting]="true" [count]="page.totalElements" [offset]="page.pageNumber - 1" [limit]="page.size"
             (page)="getMenuByPage($event)" (sort)="onSort($event)">
-            <ngx-datatable-row-detail [rowHeight]="120" #myDetailRow>
+            <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
               <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
                 <div style="padding-left:60px; font-size:14px">
-                  <div>{{ row.url }}</div>
+                  <div>
+                    <ng-container>
+                      <span>{{ row.startDate }}</span>
+                    </ng-container>
+                  </div>
+                  <div class="mt-2">
+                    <ng-container>
+                      <span>{{ row.endDate }}</span>
+                    </ng-container>
+                  </div>
                   <div class="mt-2">
                     <ng-container [ngSwitch]="row.activeFlag">
                       <span *ngSwitchCase="'Y'" class="badge badge-success">
@@ -57,11 +64,11 @@
                     </ng-container>
                   </div>
                   <div class="mt-2">
-                    <button [routerLink]="['/admin/role', row.id]" type="button" class="btn btn-primary"
+                    <button [routerLink]="['../view-assigned-menu', row.id]" type="button" class="btn btn-primary"
                       data-toggle="tooltip" data-placement="bottom" title="View Menu">
                       <i class="fa fa-sign-in fa-sm"></i>
                     </button>
-                    <button [routerLink]="['/admin/role/edit', row.id]" type="button" class="btn btn-success"
+                    <button [routerLink]="['../edit-assigned-menu', row.id]" type="button" class="btn btn-success"
                       data-toggle="tooltip" data-placement="bottom" title="Edit Menu">
                       <i class="fa fa-edit fa-sm"></i>
                     </button>
@@ -79,7 +86,7 @@
 
             <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false"
               [canAutoResize]="false">
-              <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+              <ng-template let-row="row" let-expanded="true" ngx-datatable-cell-template>
                 <a [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded"
                   title="Expand/Collapse Row" (click)="toggleExpandRow(row)" class="desktop-hidden">
                 </a>
@@ -88,9 +95,31 @@
 
             <!--  -->
 
-            <ngx-datatable-column name="Name" [flexGrow]="3" [minWidth]="200">
-              <ng-template let-value="value" ngx-datatable-cell-template>
-                {{ value }}
+            <ngx-datatable-column name="Menu Name" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container>
+                  <span class="title-hidden">{{ row.menu.name }}</span>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!--  -->
+
+            <ngx-datatable-column name="Start Date" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container>
+                  <span class="start-date-hidden">{{ row.startDate }}</span>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!--  -->
+
+            <ngx-datatable-column name="End Date" [flexGrow]="3" [minWidth]="200">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-container>
+                  <span class="end-date-hidden">{{ row.endDate }}</span>
+                </ng-container>
               </ng-template>
             </ngx-datatable-column>
 
@@ -107,17 +136,18 @@
 
             <!--  -->
 
-            <ngx-datatable-column [flexGrow]="1">
+            <ngx-datatable-column [flexGrow]="1" *ngIf="path !== 'View'">
               <ng-template ngx-datatable-header-template>
                 <span class="options-hidden">Actions</span>
               </ng-template>
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <ng-container>
-                  <button [routerLink]="['/admin/role', row.id]" type="button" class="btn btn-primary options-hidden"
-                    data-toggle="tooltip" data-placement="bottom" title="View Menu">
+                  <button [routerLink]="['../view-assigned-menu', row.id]" type="button"
+                    class="btn btn-primary options-hidden" data-toggle="tooltip" data-placement="bottom"
+                    title="View Menu">
                     <i class="fa fa-sign-in fa-sm"></i>
                   </button>
-                  <button [routerLink]="['/admin/role/edit', row.id]" type="button"
+                  <button [routerLink]="['../edit-assigned-menu', row.id]" type="button"
                     class="btn btn-success options-hidden" data-toggle="tooltip" data-placement="bottom"
                     title="Edit Menu">
                     <i class="fa fa-edit fa-sm"></i>
@@ -152,14 +182,14 @@
           <i class="fa fa-exclamation-triangle"></i>
         </div>
         <div class="modal-text">
-          <p>Do you want to inactivate this menu? ?</p>
+          <p>Do you want to inactivate this ?</p>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">
           Cancel
         </button>
-        <button type="button" class="btn btn-danger" (click)="onDeleteRole()">
+        <button type="button" class="btn btn-danger" (click)="selectInactive()">
           Delete
         </button>
       </div>

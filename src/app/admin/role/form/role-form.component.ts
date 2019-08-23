@@ -1,19 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {Location} from '@angular/common';
-import {AdminRoleService} from '../admin-role.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ToastrService} from 'ngx-toastr';
-import {normalizeFlag} from '../../../shared/util/normalize-flag';
+import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { AdminRoleService } from '../admin-role.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { normalizeFlag } from '../../../shared/util/normalize-flag';
 
 @Component({
   templateUrl: './role-form.component.html',
-  styleUrls: ['./role-form.component.css'],
 })
 export class RoleFormComponent implements OnInit {
-  id = 0;
-  path = '';
-  open = false;
+  editable: boolean = false;
+  id: number = 0;
+  path: string = '';
   form: FormGroup;
 
   constructor(
@@ -34,6 +33,7 @@ export class RoleFormComponent implements OnInit {
   ngOnInit() {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
     this.path = this.activatedRoute.snapshot.data.title;
+    this.editable = this.path !== 'View';
 
     if (this.id) {
       this.adminRoleService.getRole(this.id).subscribe(data => {
@@ -48,16 +48,12 @@ export class RoleFormComponent implements OnInit {
         this.form.get('name').setValue(data['name']);
         this.form.get('description').setValue(data['description']);
 
-        this.formDisabled();
+        if (this.editable) {
+          this.form.enable();
+        } else {
+          this.form.disable();
+        }
       });
-    }
-  }
-
-  formDisabled() {
-    if (this.path === 'View') {
-      this.form.disable()
-    } else {
-      this.form.enable()
     }
   }
 
@@ -84,14 +80,14 @@ export class RoleFormComponent implements OnInit {
           .editRole(this.id, normalizedFormValue)
           .subscribe(data => {
             this.router.navigate(['/admin/role']);
-            this.toastr.success(data.message, 'Edit Role');;
+            this.toastr.success(data.message, 'Edit Role');
           });
       }
     } else {
       if (this.form.valid) {
         this.adminRoleService.addRole(normalizedFormValue).subscribe(data => {
           this.router.navigate(['/admin/role']);
-          this.toastr.success(data.message, 'Add Role');;
+          this.toastr.success(data.message, 'Add Role');
         });
       }
     }

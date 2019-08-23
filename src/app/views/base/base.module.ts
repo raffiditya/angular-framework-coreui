@@ -14,7 +14,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { CollapsesComponent } from './collapses.component';
 
 // Datatable Component
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { DataTableComponent } from './data-table.component';
 
 // Forms Component
@@ -22,13 +22,13 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { FormsComponent } from './forms.component';
 
 // Form NG Component
-import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
-import { NgSelectModule } from "@ng-select/ng-select";
-import { TextMaskModule } from "angular2-text-mask";
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { TextMaskModule } from 'angular2-text-mask';
 import { FormsNgComponent } from './forms-ng.component';
 
 // Loading Spinner
-import { BlockUIModule } from "ng-block-ui";
+import { BlockUIModule } from 'ng-block-ui';
 import { LoadingSpinnerComponent } from './loading-spinner.component';
 
 // Pagination Component
@@ -77,8 +77,8 @@ import { BaseRoutingModule } from './base-routing.module';
     NgSelectModule,
     BsDatepickerModule.forRoot(),
     BlockUIModule.forRoot({
-      message: 'Loading...'
-    })
+      message: 'Loading...',
+    }),
   ],
   declarations: [
     CardsComponent,
@@ -94,7 +94,7 @@ import { BaseRoutingModule } from './base-routing.module';
     TooltipsComponent,
     DataTableComponent,
     FormsNgComponent,
-    LoadingSpinnerComponent
-  ]
+    LoadingSpinnerComponent,
+  ],
 })
-export class BaseModule { }
+export class BaseModule {}

@@ -1,18 +1,27 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
-import {Location} from '@angular/common';
-import {AdminMenuService} from '../admin-menu.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ToastrService} from 'ngx-toastr';
-import {normalizeFlag} from '../../../shared/util/normalize-flag';
-import {debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
-import {Page} from '../../../core/model/page';
+import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { AdminMenuService } from '../admin-menu.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { normalizeFlag } from '../../../shared/util/normalize-flag';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  switchMap,
+} from 'rxjs/operators';
+import { Page } from '../../../core/model/page';
 
 @Component({
-  templateUrl: './menu-form.component.html'
+  templateUrl: './menu-form.component.html',
 })
 export class MenuFormComponent implements OnInit {
-
   editable: boolean = false;
   id: number = 0;
   path: string = '';
@@ -21,38 +30,38 @@ export class MenuFormComponent implements OnInit {
   menuTypeahead: EventEmitter<string> = new EventEmitter<string>();
   form: FormGroup;
   icons: any[] = [
-    {value: 'icon-user', name: 'icon-user'},
-    {value: 'icon-people', name: 'icon-people'},
-    {value: 'icon-user-female', name: 'icon-user-female'},
-    {value: 'icon-phone', name: 'icon-phone'},
-    {value: 'icon-login', name: 'icon-login'},
-    {value: 'icon-logout', name: 'icon-logout'},
-    {value: 'icon-menu', name: 'icon-menu'},
-    {value: 'icon-list', name: 'icon-list'},
-    {value: 'icon-options-vertical', name: 'icon-options-vertical'},
-    {value: 'icon-options', name: 'icon-options'},
-    {value: 'icon-cursor', name: 'icon-cursor'},
-    {value: 'icon-speedometer', name: 'icon-speedometer'},
-    {value: 'icon-shield', name: 'icon-shield'},
-    {value: 'icon-screen-desktop', name: 'icon-screen-desktop'},
-    {value: 'icon-envelope-open', name: 'icon-envelope-open'},
-    {value: 'icon-wallet', name: 'icon-wallet'},
-    {value: 'icon-speech', name: 'icon-speech'},
-    {value: 'icon-puzzle', name: 'icon-puzzle'},
-    {value: 'icon-printer', name: 'icon-printer'},
-    {value: 'icon-credit-card', name: 'icon-credit-card'},
-    {value: 'icon-star', name: 'icon-star'},
-    {value: 'icon-settings', name: 'icon-settings'},
-    {value: 'icon-power', name: 'icon-power'},
-    {value: 'icon-magnifier-add', name: 'icon-magnifier-add'},
-    {value: 'icon-link', name: 'icon-link'},
-    {value: 'icon-cloud-download', name: 'icon-cloud-download'},
-    {value: 'icon-paper-plane', name: 'icon-paper-plane'},
-    {value: 'icon-grid', name: 'icon-grid'},
-    {value: 'icon-home', name: 'icon-home'},
-    {value: 'icon-pencil', name: 'icon-pencil'},
-    {value: 'icon-rocket', name: 'icon-rocket'},
-    {value: 'icon-share', name: 'icon-share'},
+    { value: 'icon-user', name: 'icon-user' },
+    { value: 'icon-people', name: 'icon-people' },
+    { value: 'icon-user-female', name: 'icon-user-female' },
+    { value: 'icon-phone', name: 'icon-phone' },
+    { value: 'icon-login', name: 'icon-login' },
+    { value: 'icon-logout', name: 'icon-logout' },
+    { value: 'icon-menu', name: 'icon-menu' },
+    { value: 'icon-list', name: 'icon-list' },
+    { value: 'icon-options-vertical', name: 'icon-options-vertical' },
+    { value: 'icon-options', name: 'icon-options' },
+    { value: 'icon-cursor', name: 'icon-cursor' },
+    { value: 'icon-speedometer', name: 'icon-speedometer' },
+    { value: 'icon-shield', name: 'icon-shield' },
+    { value: 'icon-screen-desktop', name: 'icon-screen-desktop' },
+    { value: 'icon-envelope-open', name: 'icon-envelope-open' },
+    { value: 'icon-wallet', name: 'icon-wallet' },
+    { value: 'icon-speech', name: 'icon-speech' },
+    { value: 'icon-puzzle', name: 'icon-puzzle' },
+    { value: 'icon-printer', name: 'icon-printer' },
+    { value: 'icon-credit-card', name: 'icon-credit-card' },
+    { value: 'icon-star', name: 'icon-star' },
+    { value: 'icon-settings', name: 'icon-settings' },
+    { value: 'icon-power', name: 'icon-power' },
+    { value: 'icon-magnifier-add', name: 'icon-magnifier-add' },
+    { value: 'icon-link', name: 'icon-link' },
+    { value: 'icon-cloud-download', name: 'icon-cloud-download' },
+    { value: 'icon-paper-plane', name: 'icon-paper-plane' },
+    { value: 'icon-grid', name: 'icon-grid' },
+    { value: 'icon-home', name: 'icon-home' },
+    { value: 'icon-pencil', name: 'icon-pencil' },
+    { value: 'icon-rocket', name: 'icon-rocket' },
+    { value: 'icon-share', name: 'icon-share' },
   ];
 
   constructor(
@@ -111,22 +120,20 @@ export class MenuFormComponent implements OnInit {
     return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
   }
 
-  onChangeParent(text: { term: any; }) {
+  onChangeParent(text: { term: any }) {
     this.parentMenu = [];
 
     this.page.searchTerm = text.term;
-    this.menuTypeahead.pipe(
-      filter(t => t && t.length > 2),
-      distinctUntilChanged(),
-      debounceTime(300),
-      switchMap(term => this.adminMenuService.getMenus(this.page))
-    ).subscribe(data => {
-      this.parentMenu = data['content'];
-    });
-  }
-
-  onParentClear() {
-    this.parentMenu = [];
+    this.menuTypeahead
+      .pipe(
+        filter(t => t && t.length > 2),
+        distinctUntilChanged(),
+        debounceTime(300),
+        switchMap(term => this.adminMenuService.getMenus(this.page)),
+      )
+      .subscribe(data => {
+        this.parentMenu = data['content'];
+      });
   }
 
   cancelButton() {

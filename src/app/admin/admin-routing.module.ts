@@ -13,6 +13,14 @@ import { OrganizationFormComponent } from './organization/organization-form/orga
 import { RoleTableComponent } from './role/table/role-table.component';
 import { RoleFormComponent } from './role/form/role-form.component';
 
+// role menu assignment
+import { RoleMenuTableComponent } from './role/role-menu/table/role-menu-table.component';
+import { RoleMenuFormComponent } from './role/role-menu/form/role-menu-form.component';
+
+// role privilege assignment
+import { RolePrivilegeTableComponent } from './role/role-privilege/table/role-privilege-table.component';
+import { RolePrivilegeFormComponent } from './role/role-privilege/form/role-privilege-form.component';
+
 // admin user component
 import { UserTableComponent } from './user/user-table/user-table.component';
 import { UserFormComponent } from './user/user-form/user-form.component';
@@ -147,7 +155,7 @@ const routes: Routes = [
             component: RoleTableComponent,
             pathMatch: 'full',
             data: {
-              title: 'Roles',
+              title: 'Role',
             },
           },
           {
@@ -168,11 +176,64 @@ const routes: Routes = [
           },
           {
             path: 'edit/:id',
-            component: RoleFormComponent,
-            pathMatch: 'full',
-            data: {
-              title: 'Edit',
-            },
+            children: [
+              {
+                path: '',
+                component: RoleFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Edit',
+                },
+              },
+              {
+                path: 'add-assigned-menu',
+                component: RoleMenuFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Add',
+                },
+              },
+              {
+                path: 'view-assigned-menu/:menuid',
+                component: RoleMenuFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'View',
+                },
+              },
+              {
+                path: 'edit-assigned-menu/:menuid',
+                component: RoleMenuFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Edit',
+                },
+              },
+              {
+                path: 'add-assigned-privilege',
+                component: RolePrivilegeFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Add',
+                },
+              },
+              {
+                path: 'view-assigned-privilege/:privilegeid',
+                component: RolePrivilegeFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'View',
+                },
+              },
+              {
+                path: 'edit-assigned-privilege/:privilegeid',
+                component: RolePrivilegeFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Edit',
+                },
+              },
+            ],
           },
         ],
       },

@@ -62,10 +62,10 @@
 @import '~@swimlane/ngx-datatable/release/assets/icons.css';
 
 // Import ng-select
-@import "~@ng-select/ng-select/themes/default.theme.css";
+@import '~@ng-select/ng-select/themes/default.theme.css';
 
 // Import DatePicker
-@import "~ngx-bootstrap/datepicker/bs-datepicker.css";
+@import '~ngx-bootstrap/datepicker/bs-datepicker.css';
 
 // Import NGX Toastr
 @import '~ngx-toastr/toastr-bs4-alert';
@@ -168,4 +168,28 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
 
 .main-button {
   padding-right: 10px;
+}
+
+.responsive-search {
+  display: none;
+}
+
+@media screen and (max-width: 576px) {
+  .normal-search {
+    display: none;
+  }
+
+  .responsive-search {
+    display: initial;
+  }
+
+  .search {
+    padding-right: 0;
+  }
+
+  .responsive-search-col {
+    height: 25px;
+    display: flex;
+    justify-content: center;
+  }
 }
