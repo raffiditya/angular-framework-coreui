@@ -1,4 +1,3 @@
-/* Modal */
 
 .modal-icon {
     text-align: center;
@@ -21,14 +20,6 @@
     .desktop-hidden {
       display: initial;
       cursor: pointer;
-    }
-  
-    .title-hidden {
-      display: none;
-    }
-  
-    .url-hidden {
-      display: none;
     }
   
     .active-hidden {
