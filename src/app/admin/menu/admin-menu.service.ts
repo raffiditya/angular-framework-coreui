@@ -6,7 +6,7 @@ import { Page } from '../../core/model/page';
 
 @Injectable({ providedIn: 'root' })
 export class AdminMenuService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getMenus(page?: Page): Observable<any> {
     if (!page) {
@@ -18,10 +18,10 @@ export class AdminMenuService {
 
     let request: string = `${constant.appUrl}/admin/menu?page=${
       page.pageNumber
-    }&size=${page.size}`;
+      }&size=${page.size}`;
 
     if (page.searchTerm) {
-      request += `&name=${page.searchTerm}&url=${page.searchTerm}`;
+      request += `&name=${page.searchTerm}&url=${page.searchTerm}&size=3`;
     }
 
     if (page.sort) {

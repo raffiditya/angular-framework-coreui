@@ -12,8 +12,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 })
 export class RoleMenuTableComponent implements OnInit {
   @ViewChild('roleTable', { static: false }) table: any;
-  @ViewChild('dangerModal', { static: false })
-  public dangerModal: ModalDirective;
+  @ViewChild('deleteRoleMenuModal', { static: false })
+  public deleteRoleMenuModal: ModalDirective;
 
   id: number = 0;
   page = new Page();
@@ -25,7 +25,7 @@ export class RoleMenuTableComponent implements OnInit {
     private adminRoleMenuService: AdminRoleMenuService,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
@@ -39,8 +39,7 @@ export class RoleMenuTableComponent implements OnInit {
   }
 
   getRoleMenu() {
-    this.page.roleId = this.id;
-    this.adminRoleMenuService.getAssignedMenus(this.page).subscribe(data => {
+    this.adminRoleMenuService.getAssignedMenus(this.id, this.page).subscribe(data => {
       this.page.totalElements = data.totalElements;
       this.page.totalPages = data.totalPages;
       this.rows = data['content'];
@@ -61,7 +60,7 @@ export class RoleMenuTableComponent implements OnInit {
 
   openDeleteModal(row: any) {
     this.idInactive = row.id;
-    this.dangerModal.show();
+    this.deleteRoleMenuModal.show();
   }
 
   selectInactive() {
@@ -69,7 +68,7 @@ export class RoleMenuTableComponent implements OnInit {
       .deleteAssignedMenu(this.idInactive)
       .subscribe(data => {
         this.idInactive = '';
-        this.dangerModal.hide();
+        this.deleteRoleMenuModal.hide();
         this.toastr.success(data.message, 'Delete Menu');
         this.getRoleMenu();
       });

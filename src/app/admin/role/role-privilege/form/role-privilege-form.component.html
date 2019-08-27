@@ -15,9 +15,24 @@
         </div>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
           <label class="col-form-label required" for="role">Privilege</label>
-          <ng-select id="privilegeId" (search)="onChangeParent($event)" (clear)="onParentClear()" [items]="privileges"
+          <ng-select id="privilegeId" (search)="this.page.searchTerm = $event.term" [items]="privileges"
             [multiple]="false" [typeahead]="menuTypeahead" bindLabel="name" bindValue="id"
             formControlName="privilegeId">
+            <ng-template ng-typetosearch-tmp>
+              <div class="ng-option disabled">
+                Please type 2 or more characters
+              </div>
+            </ng-template>
+            <ng-template let-searchTerm="searchTerm" ng-notfound-tmp>
+              <div class="ng-option disabled">
+                No data found for "{{ searchTerm }}"
+              </div>
+            </ng-template>
+            <ng-template let-searchTerm="searchTerm" ng-loadingtext-tmp>
+              <div class="ng-option disabled">
+                Fetching data for "{{ searchTerm }}"
+              </div>
+            </ng-template>
           </ng-select>
           <div *ngIf="isFieldInvalid('privilegeId')" class="text-form-error">
             <div *ngIf="form.get('privilegeId').hasError('required')">

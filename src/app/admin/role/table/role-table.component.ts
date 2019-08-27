@@ -11,9 +11,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 })
 export class RoleTableComponent implements OnInit {
   @ViewChild('roleTable', { static: false }) table: any;
-  @ViewChild('dangerModal', { static: false })
-  @ViewChild('searchInput', { static: false })
-  public dangerModal: ModalDirective;
+  @ViewChild('deleteRoleModal', { static: false })
+  public deleteRoleModal: ModalDirective;
 
   page = new Page();
   path: string = '';
@@ -59,13 +58,13 @@ export class RoleTableComponent implements OnInit {
 
   openDeleteModal(row: any) {
     this.idInactive = row.id;
-    this.dangerModal.show();
+    this.deleteRoleModal.show();
   }
 
   onDeleteRole() {
     this.adminRoleService.deleteRole(this.idInactive).subscribe(data => {
       this.idInactive = '';
-      this.dangerModal.hide();
+      this.deleteRoleModal.hide();
       this.toastr.success(data.message, 'Delete Role');
       this.getRole();
     });

@@ -174,6 +174,12 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
   display: none;
 }
 
+// modal footer 
+.modal-footer {
+  display: flex;
+  justify-content: flex-start;
+}
+
 @media screen and (max-width: 576px) {
   .normal-search {
     display: none;
