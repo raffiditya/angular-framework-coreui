@@ -21,6 +21,18 @@ import { RoleMenuFormComponent } from './role/role-menu/form/role-menu-form.comp
 import { RolePrivilegeTableComponent } from './role/role-privilege/table/role-privilege-table.component';
 import { RolePrivilegeFormComponent } from './role/role-privilege/form/role-privilege-form.component';
 
+//User Component
+import { UserTableComponent } from './user/table/user-table.component';
+import { UserFormComponent } from './user/form/user-form.component';
+
+//User Role Assignment
+import { UserRoleTableComponent } from './user/user-role/table/user-role-table.component';
+import { UserRoleFormComponent} from './user/user-role/form/user-role-form.component';
+
+//User Organization Assignment
+import { UserOrganizationTableComponent} from './user/user-organization/table/user-organization-table.component';
+import { UserOrganizationFormComponent} from './user/user-organization/form/user-organization-form.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -183,6 +195,96 @@ const routes: Routes = [
               {
                 path: 'edit-assigned-privilege/:privilegeid',
                 component: RolePrivilegeFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Edit',
+                },
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: 'user',
+        children: [
+          {
+            path: '',
+            component: UserTableComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'User',
+            },
+          },
+          {
+            path: 'add',
+            component: UserFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'Add',
+            },
+          },
+          {
+            path: ':id',
+            component: UserFormComponent,
+            pathMatch: 'full',
+            data: {
+              title: 'View',
+            },
+          },
+          {
+            path: 'edit/:id',
+            children: [
+              {
+                path: '',
+                component: UserFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Edit',
+                },
+              },
+              {
+                path: 'add-assigned-role',
+                component: UserRoleFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Add',
+                },
+              },
+              {
+                path: 'view-assigned-role/:roleid',
+                component: UserRoleFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'View',
+                },
+              },
+              {
+                path: 'edit-assigned-role/:roleid',
+                component: UserRoleFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Edit',
+                },
+              },
+              {
+                path: 'add-assigned-organization',
+                component: UserOrganizationFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'Add',
+                },
+              },
+              {
+                path: 'view-assigned-organization/:organizationid',
+                component: UserOrganizationFormComponent,
+                pathMatch: 'full',
+                data: {
+                  title: 'View',
+                },
+              },
+              {
+                path: 'edit-assigned-organization/:organizationid',
+                component: UserOrganizationFormComponent,
                 pathMatch: 'full',
                 data: {
                   title: 'Edit',

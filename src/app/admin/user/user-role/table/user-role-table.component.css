@@ -1,0 +1,42 @@
+/* Modal */
+
+.modal-icon {
+    text-align: center;
+  }
+  
+  .modal-icon i {
+    font-size: 100px;
+  }
+  
+  .modal-text {
+    text-align: center;
+  }
+  
+  .modal-text p {
+    font-size: 20px;
+    font-weight: 500;
+  }
+  
+  @media screen and (max-width: 1200px) {
+    .desktop-hidden {
+      display: initial;
+      cursor: pointer;
+    }
+  
+    .start-date-hidden {
+      display: none;
+    }
+  
+    .end-date-hidden {
+      display: none;
+    }
+  
+    .active-hidden {
+      display: none;
+    }
+  
+    .options-hidden {
+      display: none;
+    }
+  }
+  
