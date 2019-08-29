@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import {
   HttpErrorResponse,
   HttpHandler,
@@ -10,12 +9,13 @@ import {
   HttpSentEvent,
   HttpUserEvent
 } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { AuthService } from '../auth.service';
-import { catchError, filter, finalize, switchMap, take, tap } from 'rxjs/operators';
-import { ToastrService } from 'ngx-toastr';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BlockUIService } from 'ng-block-ui';
+import { ToastrService } from 'ngx-toastr';
+import { BehaviorSubject, EMPTY, Observable, throwError } from 'rxjs';
+import { catchError, filter, finalize, switchMap, take, tap } from 'rxjs/operators';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class TokenInterceptorService implements HttpInterceptor {
@@ -23,7 +23,11 @@ export class TokenInterceptorService implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
-  constructor(private auth: AuthService, private toastr: ToastrService, private router: Router, private blockUiService: BlockUIService, ) {
+  constructor(
+    private auth: AuthService,
+    private toastr: ToastrService,
+    private router: Router,
+    private blockUiService: BlockUIService,) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpSentEvent | HttpHeaderResponse | HttpProgressEvent
@@ -34,7 +38,7 @@ export class TokenInterceptorService implements HttpInterceptor {
       return next.handle(req);
     } else if (!this.auth.isAuthenticated()) {
       this.toastr.error('Please log in.', 'Session Timed Out');
-      this.router.navigateByUrl('/login');
+      this.router.navigateByUrl('/login').then();
       this.blockUiService.reset('appRoot');
       return;
     }
@@ -47,7 +51,8 @@ export class TokenInterceptorService implements HttpInterceptor {
             if (errorResponse.status === 401 && errorResponse.url !== AuthService.loginUrl) {
               return this.doRefreshToken(req, next);
             } else {
-              this.toastr.error(`${err.message}`, 'Error HTTP Request');
+              this.toastr.error(`${err.error.message}`, 'Error HTTP Request');
+              return EMPTY;
             }
           } else {
             return throwError(err);
@@ -82,12 +87,16 @@ export class TokenInterceptorService implements HttpInterceptor {
             this.refreshTokenSubject.next(response.access_token);
             return next.handle(this.addToken(req));
           }),
-          catchError(err => {
+          catchError(() => {
             this.auth.clearCredentials();
             this.toastr.error('Please log in.', 'Session Timed Out');
-            return throwError(err);
+            this.router.navigateByUrl('/login').then();
+            return EMPTY;
           }),
-          finalize(() => this.isRefreshing = false)
+          finalize(() => {
+            this.isRefreshing = false;
+            this.blockUiService.reset('appRoot');
+          })
         );
     }
   }

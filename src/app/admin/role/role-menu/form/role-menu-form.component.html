@@ -1,104 +1,155 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header custom-card-header">
-      <div class="custom-card-header-title">
-        <p>Role Menu Assignment Form</p>
-      </div>
+    <div class="card-header-blue">
+      <span class="font-weight-bold mt-2">
+        {{ path }}
+      </span>
     </div>
-    <form (ngSubmit)="onSubmit()" [formGroup]="form">
-      <div class="row mt-4 mr-3 ml-3">
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <label class="col-form-label required" for="role">Role</label>
-          <ng-select id="menus" [items]="role" [multiple]="false" bindLabel="name" bindValue="id"
-            formControlName="roleId">
-          </ng-select>
-        </div>
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <label class="col-form-label required" for="menus">List Menu</label>
-          <ng-select id="menus" (search)="this.page.searchTerm = $event.term" [items]="menus" [multiple]="false"
-            [typeahead]="menuTypeahead" bindLabel="name" bindValue="id" formControlName="menuId">
-            <ng-template ng-typetosearch-tmp>
-              <div class="ng-option disabled">
-                Please type 2 or more characters
-              </div>
-            </ng-template>
-            <ng-template let-searchTerm="searchTerm" ng-notfound-tmp>
-              <div class="ng-option disabled">
-                No data found for "{{ searchTerm }}"
-              </div>
-            </ng-template>
-            <ng-template let-searchTerm="searchTerm" ng-loadingtext-tmp>
-              <div class="ng-option disabled">
-                Fetching data for "{{ searchTerm }}"
-              </div>
-            </ng-template>
-          </ng-select>
-          <div *ngIf="isFieldInvalid('menuId')" class="text-form-error">
-            <div *ngIf="form.get('menuId').hasError('required')">
-              Menu is required
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <fieldset class="form-group">
-            <label class="form-col-form-label required" for="startDate">Start Date</label>
-            <div class="input-group">
-              <span class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-calendar"></i>
-                </span>
-              </span>
-              <input [class.is-invalid]="isFieldInvalid('startDate')" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                [maxDate]="maxDate" [minDate]="minDate" bsDatepicker class="form-control" formControlName="startDate"
-                id="startDate" />
-              <div *ngIf="isFieldInvalid('startDate')" class="text-form-error">
-                <div *ngIf="form.get('startDate').hasError('required')">
-                  Start Date is required
+    <div class="card-body">
+      <form
+        (ngSubmit)="onSubmit()"
+        [formGroup]="form"
+      >
+        <div class="row">
+
+          <!-- Menu -->
+          <fieldset class="col-12 form-group">
+            <label class="col-form-label required" for="menu">Menu</label>
+            <ng-select
+              [class.is-invalid]="isFieldInvalid(form, 'menuId')"
+              [items]="menus"
+              [typeahead]="menuTypeahead"
+              bindLabel="name"
+              bindValue="id"
+              class="form-control"
+              formControlName="menuId"
+              id="menu"
+            >
+              <ng-template ng-typetosearch-tmp>
+                <div class="ng-option disabled">
+                  Please type 2 or more characters
                 </div>
+              </ng-template>
+              <ng-template let-searchTerm="searchTerm" ng-notfound-tmp>
+                <div class="ng-option disabled">
+                  No data found for "{{ searchTerm }}"
+                </div>
+              </ng-template>
+              <ng-template let-searchTerm="searchTerm" ng-loadingtext-tmp>
+                <div class="ng-option disabled">
+                  Fetching data for "{{ searchTerm }}"
+                </div>
+              </ng-template>
+            </ng-select>
+            <ng-container *ngIf="isFieldInvalid(form, 'menuId')">
+              <div *ngIf="form.get('menuId').hasError('required')" class="invalid-feedback">
+                Menu is required
               </div>
-            </div>
+            </ng-container>
           </fieldset>
-        </div>
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <fieldset class="form-group">
-            <label class="form-col-form-label required" for="endDate">End Date</label>
+
+          <!-- Start Date -->
+          <fieldset class=" col-12 form-group">
+            <label class="form-col-form-label required" for="start-date">Start Date</label>
             <div class="input-group">
               <span class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-calendar"></i>
                 </span>
               </span>
-              <input [class.is-invalid]="isFieldInvalid('endDate')" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                [minDate]="minDate" bsDatepicker class="form-control" formControlName="endDate" id="endDate" />
+              <input
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                [class.is-invalid]="isFieldInvalid(form, 'startDate')"
+                bsDatepicker
+                class="form-control"
+                formControlName="startDate"
+                id="start-date"
+              />
+              <ng-container *ngIf="isFieldInvalid(form, 'startDate')">
+                <div class="invalid-feedback">
+                  <ng-template [ngIfElse]="falseRequired" [ngIf]="form.get('startDate').hasError('required')">
+                    Start Date is required
+                  </ng-template>
+                  <ng-template #falseRequired>
+                    Invalid date
+                  </ng-template>
+                </div>
+              </ng-container>
             </div>
           </fieldset>
-        </div>
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <div class="row">
-            <label class="col-md-3 col-form-label" for="active-flag">Active Flag</label>
-            <div class="col-9 col-form-label">
+
+          <!-- End Date -->
+          <fieldset class="col-12 form-group">
+            <label class="form-col-form-label required" for="end-date">End Date</label>
+            <div class="input-group">
+              <span class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-calendar"></i>
+                </span>
+              </span>
+              <input
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                [class.is-invalid]="isFieldInvalid(form, 'endDate')"
+                [minDate]="currentDate"
+                bsDatepicker
+                class="form-control"
+                formControlName="endDate"
+                id="end-date"/>
+              <ng-container *ngIf="isFieldInvalid(form, 'endDate')">
+                <div class="invalid-feedback">
+                  <ng-template [ngIfElse]="falseRequired" [ngIf]="form.get('endDate').hasError('required')">
+                    End Date is required
+                  </ng-template>
+                  <ng-template #falseRequired>
+                    End Date must be higher than current date
+                  </ng-template>
+                </div>
+              </ng-container>
+            </div>
+          </fieldset>
+
+          <!-- Active Flag -->
+          <fieldset class="col-12 col-sm-6 form-group">
+            <label class="col-form-label" for="active-flag">Active Flag</label>
+            <div class="active-pills">
               <label class="switch switch-label switch-pill switch-primary">
-                <input class="switch-input form-control" formControlName="activeFlag" id="active-flag"
-                  type="checkbox" />
-                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+                <input
+                  class="switch-input form-control"
+                  formControlName="activeFlag"
+                  id="active-flag"
+                  type="checkbox"
+                />
+                <span
+                  class="switch-slider"
+                  data-checked="On"
+                  data-unchecked="Off"
+                ></span>
               </label>
             </div>
+          </fieldset>
+        </div>
+
+        <div class="row">
+          <div class="col form-group">
+            <div class="form-actions submit-button mt-5">
+              <ng-template [ngIfElse]="falseEditable" [ngIf]="editable">
+                <button class="btn btn-sm btn-primary" type="submit">
+                  <i class="fa fa-check"></i> Submit
+                </button>
+              </ng-template>
+              <ng-template #falseEditable>
+                <button [routerLink]="['edit']" class="btn btn-sm btn-success" type="button">
+                  <i class="fa fa-edit"></i> Edit
+                </button>
+              </ng-template>
+              <button (click)="location.back()" class="btn btn-sm btn-secondary cancel-buttons" type="button">
+                <i class="fa fa-close"></i>
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div *ngIf="editable" class="row mt-3 mr-3 ml-3 mb-5">
-        <div class="col form-group">
-          <div class="form-actions submit-button mt-5">
-            <button class="btn btn-sm btn-primary" type="submit">
-              <i class="fa fa-dot-circle-o"></i> Submit
-            </button>
-            <button (click)="cancelButton()" class="btn btn-sm btn-secondary cancel-buttons" type="button">
-              <i class="fa fa-ban"></i>
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>

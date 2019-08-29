@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, pipe } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { constant } from '../../../environments/constant';
 import { Page } from '../../core/model/page';
 
 @Injectable({ providedIn: 'root' })
-export class AdminUserService {
+export class UserService {
+
   constructor(private http: HttpClient) {}
 
   getUsers(page?: Page): Observable<any> {
@@ -43,7 +44,7 @@ export class AdminUserService {
     return this.http.put(`${constant.appUrl}/admin/user/${id}`, user);
   }
 
-  deleteUser(id: any): Observable<any>{
+  deleteUser(id: any): Observable<any> {
     return this.http.delete(`${constant.appUrl}/admin/user/${id}`);
   }
 }

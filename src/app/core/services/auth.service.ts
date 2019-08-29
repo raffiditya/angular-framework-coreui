@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {finalize, tap} from 'rxjs/operators';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import {constant} from '../../../environments/constant';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators';
+import { constant } from '../../../environments/constant';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +74,10 @@ export class AuthService {
         tap(response => {
           this.accessToken = response.access_token;
           this.refreshToken = response.refresh_token;
-        })
+        }),
+        /*concatMap(data => {
+          return EMPTY;
+        })*/
       );
   }
 

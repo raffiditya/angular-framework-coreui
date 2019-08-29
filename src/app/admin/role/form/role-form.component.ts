@@ -1,23 +1,26 @@
-import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { AdminRoleService } from '../admin-role.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { normalizeFlag } from '../../../shared/util/normalize-flag';
+import { isFieldInvalid, normalizeFlag } from '../../../util';
+import { RoleService } from '../../service/role.service';
 
 @Component({
   templateUrl: './role-form.component.html',
 })
 export class RoleFormComponent implements OnInit {
+
   editable: boolean = false;
-  id: number = 0;
-  path: string = '';
   form: FormGroup;
+  id: number = 0;
+  isFieldInvalid = isFieldInvalid;
+  path: string = '';
+  roleName: string = '';
 
   constructor(
     private router: Router,
-    private adminRoleService: AdminRoleService,
+    private adminRoleService: RoleService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private location: Location,
@@ -31,22 +34,16 @@ export class RoleFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+    this.id = Number(this.activatedRoute.snapshot.paramMap.get('roleId'));
     this.path = this.activatedRoute.snapshot.data.title;
-    this.editable = this.path !== 'View';
+    this.editable = this.activatedRoute.snapshot.data.editable;
 
     if (this.id) {
       this.adminRoleService.getRole(this.id).subscribe(data => {
+        this.roleName = data.name;
         this.form.patchValue(data);
 
-        if (data['activeFlag'] === 'Y') {
-          this.form.get('activeFlag').setValue(true);
-        } else {
-          this.form.get('activeFlag').setValue(false);
-        }
-
-        this.form.get('name').setValue(data['name']);
-        this.form.get('description').setValue(data['description']);
+        this.form.get('activeFlag').setValue(data['activeFlag'] === 'Y');
 
         if (this.editable) {
           this.form.enable();
@@ -57,39 +54,25 @@ export class RoleFormComponent implements OnInit {
     }
   }
 
-  isFieldInvalid(field: string) {
-    const fieldControl = this.form.get(field);
-    return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
-  }
-
-  cancelButton() {
-    this.location.back();
-  }
-
   onSubmit() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {
       return;
     }
 
-    let normalizedFormValue = normalizeFlag(this.form);
-
     if (this.id) {
-      if (this.form.valid) {
-        this.adminRoleService
-          .editRole(this.id, normalizedFormValue)
-          .subscribe(data => {
-            this.router.navigate(['/admin/role']);
-            this.toastr.success(data.message, 'Edit Role');
-          });
-      }
-    } else {
-      if (this.form.valid) {
-        this.adminRoleService.addRole(normalizedFormValue).subscribe(data => {
-          this.router.navigate(['/admin/role']);
-          this.toastr.success(data.message, 'Add Role');
+      this.adminRoleService
+        .editRole(this.id, normalizeFlag(this.form))
+        .subscribe(data => {
+          this.router.navigate(['/admin/role'])
+            .then(() => this.toastr.success(data.message, 'Edit Role'));
         });
-      }
+    } else {
+      this.adminRoleService.addRole(normalizeFlag(this.form))
+        .subscribe(data => {
+          this.router.navigate(['/admin/role'])
+            .then(() => this.toastr.success(data.message, 'Add Role'));
+        });
     }
   }
 }

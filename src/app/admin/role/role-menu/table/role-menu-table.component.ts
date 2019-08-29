@@ -1,99 +1,72 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AdminRoleMenuService } from '../role-menu.service';
-import { Page } from '../../../../core/model/page';
+import { ColumnMode } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
-import { ModalDirective } from 'ngx-bootstrap/modal';
+import { finalize, map } from "rxjs/operators";
+import { Page } from '../../../../core/model/page';
+import { sortTable } from '../../../../util';
+import { RoleMenuService } from '../../../service/role-menu.service';
 
 @Component({
   selector: 'role-menu-table',
-  templateUrl: './role-menu-table.component.html',
-  styleUrls: ['./role-menu-table.component.css'],
+  templateUrl: './role-menu-table.component.html'
 })
 export class RoleMenuTableComponent implements OnInit {
-  @ViewChild('roleTable', { static: false }) table: any;
-  @ViewChild('deleteRoleMenuModal', { static: false })
-  public deleteRoleMenuModal: ModalDirective;
 
-  id: number = 0;
-  page = new Page();
-  path: string = '';
-  idInactive: string = '';
-  rows: any = [];
+  ColumnMode = ColumnMode;
+  @Input() editable: boolean;
+  loadingIndicator: boolean;
+  page: Page = new Page();
+  roleId: number;
+  rows: any[] = [];
+  sortTable: Function = sortTable;
 
   constructor(
-    private adminRoleMenuService: AdminRoleMenuService,
+    private adminRoleMenuService: RoleMenuService,
     private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService,
-  ) { }
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
-    this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.path = this.activatedRoute.snapshot.data.title;
-    this.getRoleMenuByPage({ offset: 0 });
-  }
-
-  getRoleMenuByPage(pageInfo: { offset: any }) {
-    this.page.pageNumber = pageInfo.offset + 1;
+    this.roleId = Number(this.activatedRoute.snapshot.paramMap.get('roleId'));
     this.getRoleMenu();
   }
 
-  getRoleMenu() {
-    this.adminRoleMenuService.getAssignedMenus(this.id, this.page).subscribe(data => {
-      this.page.totalElements = data.totalElements;
-      this.page.totalPages = data.totalPages;
-      this.rows = data['content'];
-    });
-  }
+  getRoleMenu(pageNumber?: number) {
+    this.loadingIndicator = true;
 
-  disableDeleteButton(activeStatus: string) {
-    if (activeStatus === 'Y') {
-      return false;
-    } else {
-      return true;
+    if (pageNumber) {
+      this.page.pageNumber = pageNumber;
     }
-  }
 
-  toggleExpandRow(row: any) {
-    this.table.rowDetail.toggleExpandRow(row);
-  }
-
-  openDeleteModal(row: any) {
-    this.idInactive = row.id;
-    this.deleteRoleMenuModal.show();
-  }
-
-  selectInactive() {
-    this.adminRoleMenuService
-      .deleteAssignedMenu(this.idInactive)
+    this.adminRoleMenuService.getAssignedMenus(this.roleId, this.page)
+      .pipe(
+        map(data => ({
+          totalElements: data.totalElements,
+          totalPages: data.totalPages,
+          content: data.content
+            .map(content => {
+              const { ...others } = content;
+              return {
+                ...others,
+                menuName: content.menu.name
+              }
+            })
+        })),
+        finalize(() => this.loadingIndicator = false)
+      )
       .subscribe(data => {
-        this.idInactive = '';
-        this.deleteRoleMenuModal.hide();
-        this.toastr.success(data.message, 'Delete Menu');
-        this.getRoleMenu();
+        this.page.totalElements = data.totalElements;
+        this.page.totalPages = data.totalPages;
+        this.rows = data.content;
       });
   }
 
-  onSearchChange(search: any) {
-    if (search.length > 0 && search.length < 3) {
-      return;
-    }
-
-    this.table.sorts = [];
-    this.page.sort = '';
-    this.rows = [];
-
-    if (search.match(/[^a-zA-Z]/g)) {
-      return
-    }
-
-    this.page.searchTerm = search;
-    this.getRoleMenu();
-  }
-
-  onSort(event: any) {
-    this.page.pageNumber = 1;
-    this.page.sort = `${event.column.prop},${event.newValue}`;
-    this.getRoleMenu();
+  inactivateRoleMenu(roleMenuId: number) {
+    this.adminRoleMenuService.deleteAssignedMenu(roleMenuId)
+      .subscribe(data => {
+        this.toastr.success(data.message, 'Delete Role Menu');
+        this.getRoleMenu();
+      });
   }
 }

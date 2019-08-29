@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
-import { constant } from '../../../../environments/constant';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Page } from '../../../core/model/page';
+import { constant } from '../../../environments/constant';
+import { Page } from '../../core/model/page';
 
 @Injectable({ providedIn: 'root' })
-export class AdminRolePrivilegeService {
-  constructor(private http: HttpClient) { }
+export class RolePrivilegeService {
 
-  getAssignedPrivilege(id: number, page?: Page): Observable<any> {
+  constructor(private http: HttpClient) {}
+
+  getAssignedPrivileges(id: number, page?: Page): Observable<any> {
     if (!page) {
       page = {
         size: 10,
@@ -29,15 +30,7 @@ export class AdminRolePrivilegeService {
     return this.http.get(request);
   }
 
-  getPrivileges(page?: Page): Observable<any> {
-    return this.http.get(`${constant.appUrl}/admin/privilege?name=${page.searchTerm}&size=3`);
-  }
-
-  getRole(id: number): Observable<any> {
-    return this.http.get(`${constant.appUrl}/admin/role/${id}`);
-  }
-
-  getPrivilege(id: number): Observable<any> {
+  getAssignedPrivilege(id: number): Observable<any> {
     return this.http.get(`${constant.appUrl}/admin/role-privilege/${id}`);
   }
 

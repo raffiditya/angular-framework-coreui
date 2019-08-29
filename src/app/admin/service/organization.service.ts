@@ -1,16 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { constant } from '../../../environments/constant';
-import { HttpClient} from '@angular/common/http';
-import { Observable, pipe } from 'rxjs';
 import { Page } from '../../core/model/page';
 
 @Injectable({ providedIn: 'root' })
-export class AdminOrganizationService {
+export class OrganizationService {
+
   constructor(private http: HttpClient) {}
 
-  getOrganizations(page?: Page): Observable<any>{
-    if(!page){
-      page={
+  getOrganizations(page?: Page): Observable<any> {
+    if (!page) {
+      page = {
         size: 10,
         pageNumber: 1,
       };
@@ -18,11 +19,11 @@ export class AdminOrganizationService {
 
     let request: string = `${constant.appUrl}/admin/organization?page=${page.pageNumber}&size=${page.size}`;
 
-    if(page.searchTerm){
-      request += `&name=${page.searchTerm}&url=${page.searchTerm}`;
+    if (page.searchTerm) {
+      request += `&name=${page.searchTerm}&abbreviation=${page.searchTerm}`;
     }
 
-    if(page.sort){
+    if (page.sort) {
       request += `&sort=${page.sort}`;
     }
 

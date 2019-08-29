@@ -1,105 +1,156 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header custom-card-header">
-      <div class="custom-card-header-title">
-        <p>Role Menu Assignment Form</p>
-      </div>
+    <div class="card-header-blue">
+      <span class="font-weight-bold mt-2">
+        {{ path }}
+      </span>
     </div>
-    <form (ngSubmit)="onSubmit()" [formGroup]="form">
-      <div class="row mt-4 mr-3 ml-3">
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <label class="col-form-label required" for="role">Role</label>
-          <ng-select id="roleId" [items]="role" [multiple]="false" bindLabel="name" bindValue="id"
-            formControlName="roleId">
-          </ng-select>
-        </div>
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <label class="col-form-label required" for="role">Privilege</label>
-          <ng-select id="privilegeId" (search)="this.page.searchTerm = $event.term" [items]="privileges"
-            [multiple]="false" [typeahead]="menuTypeahead" bindLabel="name" bindValue="id"
-            formControlName="privilegeId">
-            <ng-template ng-typetosearch-tmp>
-              <div class="ng-option disabled">
-                Please type 2 or more characters
+    <div class="card-body">
+      <form
+        (ngSubmit)="onSubmit()"
+        [formGroup]="form"
+      >
+        <div class="row">
+
+          <!-- Privilege -->
+          <fieldset class="col-12 form-group">
+            <label class="col-form-label required" for="privilege">Privilege</label>
+            <ng-select
+              [class.is-invalid]="isFieldInvalid(form, 'privilegeId')"
+              [items]="privileges"
+              [typeahead]="privilegeTypeahead"
+              bindLabel="name"
+              bindValue="id"
+              class="form-control"
+              formControlName="privilegeId"
+              id="privilege"
+            >
+              <ng-template ng-typetosearch-tmp>
+                <div class="ng-option disabled">
+                  Please type 2 or more characters
+                </div>
+              </ng-template>
+              <ng-template let-searchTerm="searchTerm" ng-notfound-tmp>
+                <div class="ng-option disabled">
+                  No data found for "{{ searchTerm }}"
+                </div>
+              </ng-template>
+              <ng-template let-searchTerm="searchTerm" ng-loadingtext-tmp>
+                <div class="ng-option disabled">
+                  Fetching data for "{{ searchTerm }}"
+                </div>
+              </ng-template>
+            </ng-select>
+            <ng-container *ngIf="isFieldInvalid(form, 'privilegeId')">
+              <div *ngIf="form.get('privilegeId').hasError('required')" class="invalid-feedback">
+                Menu is required
               </div>
-            </ng-template>
-            <ng-template let-searchTerm="searchTerm" ng-notfound-tmp>
-              <div class="ng-option disabled">
-                No data found for "{{ searchTerm }}"
-              </div>
-            </ng-template>
-            <ng-template let-searchTerm="searchTerm" ng-loadingtext-tmp>
-              <div class="ng-option disabled">
-                Fetching data for "{{ searchTerm }}"
-              </div>
-            </ng-template>
-          </ng-select>
-          <div *ngIf="isFieldInvalid('privilegeId')" class="text-form-error">
-            <div *ngIf="form.get('privilegeId').hasError('required')">
-              Privilage is required
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mt-4 mr-3 ml-3">
-        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 form-group">
-          <div class="row">
-            <label class="col-md-6 col-form-label" for="canCreate">Create</label>
-            <div class="col-6 col-form-label">
+            </ng-container>
+          </fieldset>
+
+          <!-- Can Create -->
+          <fieldset class="col-md-3 col-12 form-group">
+            <label class="col-form-label" for="can-create">Create</label>
+            <div class="active-pills">
               <label class="switch switch-label switch-pill switch-primary">
-                <input class="switch-input form-control" formControlName="canCreate" id="canCreate" type="checkbox" />
-                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+                <input
+                  class="switch-input form-control"
+                  formControlName="canCreate"
+                  id="can-create"
+                  type="checkbox"
+                />
+                <span
+                  class="switch-slider"
+                  data-checked="On"
+                  data-unchecked="Off"
+                ></span>
               </label>
             </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 form-group">
-          <div class="row">
-            <label class="col-md-6 col-form-label" for="canRead">Read</label>
-            <div class="col-6 col-form-label">
+          </fieldset>
+
+          <!-- Can Read -->
+          <fieldset class="col-md-3 col-12 form-group">
+            <label class="col-form-label" for="can-read">Read</label>
+            <div class="active-pills">
               <label class="switch switch-label switch-pill switch-primary">
-                <input class="switch-input form-control" formControlName="canRead" id="canRead" type="checkbox" />
-                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
+                <input
+                  class="switch-input form-control"
+                  formControlName="canRead"
+                  id="can-read"
+                  type="checkbox"
+                />
+                <span
+                  class="switch-slider"
+                  data-checked="On"
+                  data-unchecked="Off"
+                ></span>
               </label>
+            </div>
+          </fieldset>
+
+          <!-- Can Update -->
+          <fieldset class="col-md-3 col-12 form-group">
+            <label class="col-form-label" for="can-read">Update</label>
+            <div class="active-pills">
+              <label class="switch switch-label switch-pill switch-primary">
+                <input
+                  class="switch-input form-control"
+                  formControlName="canUpdate"
+                  id="can-update"
+                  type="checkbox"
+                />
+                <span
+                  class="switch-slider"
+                  data-checked="On"
+                  data-unchecked="Off"
+                ></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Can Delete -->
+          <fieldset class="col-md-3 col-12 form-group">
+            <label class="col-form-label" for="can-delete">Delete</label>
+            <div class="active-pills">
+              <label class="switch switch-label switch-pill switch-primary">
+                <input
+                  class="switch-input form-control"
+                  formControlName="canDelete"
+                  id="can-delete"
+                  type="checkbox"
+                />
+                <span
+                  class="switch-slider"
+                  data-checked="On"
+                  data-unchecked="Off"
+                ></span>
+              </label>
+            </div>
+          </fieldset>
+
+        </div>
+
+        <div class="row">
+          <div class="col form-group">
+            <div class="form-actions submit-button mt-5">
+              <ng-template [ngIfElse]="falseEditable" [ngIf]="editable">
+                <button class="btn btn-sm btn-primary" type="submit">
+                  <i class="fa fa-check"></i> Submit
+                </button>
+              </ng-template>
+              <ng-template #falseEditable>
+                <button [routerLink]="['edit']" class="btn btn-sm btn-success" type="button">
+                  <i class="fa fa-edit"></i> Edit
+                </button>
+              </ng-template>
+              <button (click)="location.back()" class="btn btn-sm btn-secondary cancel-buttons" type="button">
+                <i class="fa fa-close"></i>
+                Cancel
+              </button>
             </div>
           </div>
         </div>
-        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 form-group">
-          <div class="row">
-            <label class="col-md-6 col-form-label" for="canUpdate">Update</label>
-            <div class="col-6 col-form-label">
-              <label class="switch switch-label switch-pill switch-primary">
-                <input class="switch-input form-control" formControlName="canUpdate" id="canUpdate" type="checkbox" />
-                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 form-group">
-          <div class="row">
-            <label class="col-md-6 col-form-label" for="canDelete">Delete</label>
-            <div class="col-6 col-form-label">
-              <label class="switch switch-label switch-pill switch-primary">
-                <input class="switch-input form-control" formControlName="canDelete" id="canDelete" type="checkbox" />
-                <span class="switch-slider" data-checked="On" data-unchecked="Off"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="editable" class="row mt-3 mr-3 ml-3 mb-5">
-        <div class="col form-group">
-          <div class="form-actions submit-button mt-5">
-            <button class="btn btn-sm btn-primary" type="submit">
-              <i class="fa fa-dot-circle-o"></i> Submit
-            </button>
-            <button (click)="cancelButton()" class="btn btn-sm btn-secondary cancel-buttons" type="button">
-              <i class="fa fa-ban"></i>
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>

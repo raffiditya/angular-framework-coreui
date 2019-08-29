@@ -1,27 +1,26 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, pipe } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { constant } from '../../../environments/constant';
 import { Page } from '../../core/model/page';
 
 @Injectable({ providedIn: 'root' })
-export class AdminMenuService {
-  constructor(private http: HttpClient) { }
+export class MenuService {
+
+  constructor(private http: HttpClient) {}
 
   getMenus(page?: Page): Observable<any> {
     if (!page) {
       page = {
         size: 10,
-        pageNumber: 1,
+        pageNumber: 1
       };
     }
 
-    let request: string = `${constant.appUrl}/admin/menu?page=${
-      page.pageNumber
-      }&size=${page.size}`;
+    let request: string = `${constant.appUrl}/admin/menu?page=${page.pageNumber}&size=${page.size}`;
 
     if (page.searchTerm) {
-      request += `&name=${page.searchTerm}&url=${page.searchTerm}&size=3`;
+      request += `&name=${page.searchTerm}&url=${page.searchTerm}`;
     }
 
     if (page.sort) {
@@ -43,7 +42,7 @@ export class AdminMenuService {
     return this.http.put(`${constant.appUrl}/admin/menu/${id}`, menu);
   }
 
-  deleteMenu(id: any): Observable<any> {
+  deleteMenu(id: number): Observable<any> {
     return this.http.delete(`${constant.appUrl}/admin/menu/${id}`);
   }
 }

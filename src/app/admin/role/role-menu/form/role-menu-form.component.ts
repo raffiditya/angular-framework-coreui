@@ -1,81 +1,73 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { AdminRoleMenuService } from '../role-menu.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
-import { normalizeFlag } from '../../../../shared/util/normalize-flag';
-import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
-import { Page } from '../../../../core/model/page';
+import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
+import { Page } from "../../../../core/model/page";
+import { isFieldInvalid, normalizeFlag } from '../../../../util';
+import { MenuService } from "../../../service/menu.service";
+import { RoleMenuService } from '../../../service/role-menu.service';
 
 @Component({
   templateUrl: './role-menu-form.component.html',
 })
 export class RoleMenuFormComponent implements OnInit {
-  editable: boolean = false;
-  roleId: number = 0;
-  assignedMenuId: number = 0;
-  path: string = '';
-  role: any[] = [];
-  menus: any[] = [];
-  page: Page = new Page();
-  menuTypeahead: EventEmitter<string> = new EventEmitter<string>();
-  form: FormGroup;
 
-  minDate = new Date(1960, 0, 0);
-  maxDate = new Date();
+  currentDate = new Date();
+  editable: boolean = false;
+  form: FormGroup;
+  id: number = 0;
+  isFieldInvalid = isFieldInvalid;
+  menuTypeahead: EventEmitter<string> = new EventEmitter<string>();
+  menus: any[] = [];
+  path: string = '';
+  roleId: number;
 
   constructor(
     private router: Router,
-    private adminRoleMenuService: AdminRoleMenuService,
+    private roleMenuService: RoleMenuService,
+    private menuService: MenuService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private location: Location,
     private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({
-      activeFlag: new FormControl(false, Validators.required),
       roleId: new FormControl(null, Validators.required),
       menuId: new FormControl(null, Validators.required),
       startDate: new FormControl(
-        new Date().toISOString().slice(0, 10),
+        moment().format('YYYY-MM-DD'),
         Validators.required,
       ),
-      endDate: new FormControl(new Date().toISOString().slice(0, 10)),
+      endDate: new FormControl(
+        moment("9999-12-31").format('YYYY-MM-DD'),
+        Validators.required,
+      ),
+      activeFlag: new FormControl(false, Validators.required)
     });
   }
 
   ngOnInit() {
-    this.roleId = Number(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.assignedMenuId = Number(
-      this.activatedRoute.snapshot.paramMap.get('menuid'),
-    );
+    this.id = Number(this.activatedRoute.snapshot.paramMap.get('roleMenuId'));
+    this.roleId = Number(this.activatedRoute.snapshot.paramMap.get('roleId'));
     this.path = this.activatedRoute.snapshot.data.title;
-    this.editable = this.path !== 'View';
+    this.editable = this.activatedRoute.snapshot.data.editable;
     this.searchMenu();
 
-    if (this.assignedMenuId === 0 && this.path === 'Add') {
-      this.adminRoleMenuService.getRole(this.roleId).subscribe(data => {
-        this.role = [data];
-        this.form.get('roleId').patchValue(data.id);
-        this.form.get('roleId').disable();
-        this.form.get('endDate').patchValue('9999-12-31');
-      });
-    } else {
-      this.adminRoleMenuService
-        .getAssignedMenu(this.assignedMenuId)
+    this.form.get('roleId').setValue(this.roleId);
+    if (this.id) {
+      this.roleMenuService.getAssignedMenu(this.id)
         .subscribe(data => {
           this.form.patchValue(data);
 
           this.form.get('activeFlag').setValue(data['activeFlag'] === 'Y');
-          this.role = [data['role']];
-          this.form.get('roleId').patchValue(data['role'].id);
+          this.form.get('menuId').setValue(data.menu.id);
           this.menus = [data.menu];
-          this.form.get('menuId').patchValue(data.menu.id);
 
           if (this.editable) {
             this.form.enable();
-            this.form.get('roleId').disable();
           } else {
             this.form.disable();
           }
@@ -83,30 +75,25 @@ export class RoleMenuFormComponent implements OnInit {
     }
   }
 
-  isFieldInvalid(field: string) {
-    const fieldControl = this.form.get(field);
-    return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
-  }
-
   searchMenu() {
-    this.menus = [];
-
     this.menuTypeahead
       .pipe(
+        tap(() => this.menus = []),
         filter(t => t && t.length >= 2),
-        distinctUntilChanged(),
         debounceTime(300),
-        switchMap(term => {
-          return this.adminRoleMenuService.getMenus(this.page);
+        switchMap(searchTerm => {
+          let page: Page = {
+            size: 3,
+            pageNumber: 1,
+            searchTerm: searchTerm
+          };
+
+          return this.menuService.getMenus(page);
         }),
       )
       .subscribe(data => {
-        this.menus = data['content'];
+        this.menus = data.content;
       });
-  }
-
-  cancelButton() {
-    this.location.back();
   }
 
   onSubmit() {
@@ -115,20 +102,16 @@ export class RoleMenuFormComponent implements OnInit {
       return;
     }
 
-    this.form.get('roleId').enable();
-
-    if (this.assignedMenuId === 0 && this.path === 'Add') {
-      this.adminRoleMenuService
-        .addAssignedMenu(normalizeFlag(this.form))
+    if (this.id) {
+      this.roleMenuService.editAssignedMenu(this.id, normalizeFlag(this.form))
         .subscribe(data => {
-          this.toastr.success(data.message, 'Assign Menu to Role');
+          this.toastr.success(data.message, 'Edit Assign Menu to Role');
           this.location.back();
         });
     } else {
-      this.adminRoleMenuService
-        .editAssignedMenu(this.assignedMenuId, normalizeFlag(this.form))
+      this.roleMenuService.addAssignedMenu(normalizeFlag(this.form))
         .subscribe(data => {
-          this.toastr.success(data.message, 'Edit Assign Menu to Role');
+          this.toastr.success(data.message, 'Add Assign Menu to Role');
           this.location.back();
         });
     }

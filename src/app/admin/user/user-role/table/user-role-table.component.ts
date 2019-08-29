@@ -1,91 +1,72 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AdminUserRoleService } from '../user-role.service';
-import { Page } from '../../../../core/model/page';
+import { ColumnMode } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
-import { ModalDirective } from 'ngx-bootstrap/modal';
+import { finalize, map } from "rxjs/operators";
+import { Page } from '../../../../core/model/page';
+import { sortTable } from '../../../../util';
+import { UserRoleService } from '../../../service/user-role.service';
 
 @Component({
   selector: 'user-role-table',
-  templateUrl: './user-role-table.component.html',
-  styleUrls: ['./user-role-table.component.css'],
+  templateUrl: './user-role-table.component.html'
 })
 export class UserRoleTableComponent implements OnInit {
-  @ViewChild('userTable', { static: false }) table: any;
-  @ViewChild('deleteUserRoleModal', { static: false })
-  public deleteUserRoleModal: ModalDirective;
 
-  id: number = 0;
-  page = new Page();
-  path: string = '';
-  idInactive: number = 0;
-  rows: any = [];
+  ColumnMode = ColumnMode;
+  @Input() editable: boolean;
+  loadingIndicator: boolean;
+  page: Page = new Page();
+  rows: any[] = [];
+  sortTable: Function = sortTable;
+  userId: number;
 
   constructor(
-    private adminUserRoleService: AdminUserRoleService,
+    private userRoleService: UserRoleService,
     private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService,
-  ) { }
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
-    this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.path = this.activatedRoute.snapshot.data.title;
-    this.getUserRoleByPage({ offset: 0 });
-  }
-
-  getUserRoleByPage(pageInfo: { offset: any }) {
-    this.page.pageNumber = pageInfo.offset + 1;
+    this.userId = Number(this.activatedRoute.snapshot.paramMap.get('userId'));
     this.getUserRole();
   }
 
-  getUserRole() {
-    this.adminUserRoleService.getAssignedRoles(this.id, this.page).subscribe(data => {
-      this.page.totalElements = data.totalElements;
-      this.page.totalPages = data.totalPages;
-      this.rows = data['content'];
-    });
-  }
+  getUserRole(pageNumber?: number) {
+    this.loadingIndicator = true;
 
-  toggleExpandRow(row: any) {
-    this.table.rowDetail.toggleExpandRow(row);
-  }
+    if (pageNumber) {
+      this.page.pageNumber = pageNumber;
+    }
 
-  openDeleteModal(row: any) {
-    this.idInactive = row.id;
-    this.deleteUserRoleModal.show();
-  }
-
-  selectInactive() {
-    this.adminUserRoleService
-      .deleteAssignedRole(this.idInactive)
+    this.userRoleService.getAssignedRoles(this.userId, this.page)
+      .pipe(
+        map(data => ({
+          totalElements: data.totalElements,
+          totalPages: data.totalPages,
+          content: data.content
+            .map(content => {
+              const { ...others } = content;
+              return {
+                ...others,
+                roleName: content.role.name
+              }
+            })
+        })),
+        finalize(() => this.loadingIndicator = false)
+      )
       .subscribe(data => {
-        this.idInactive = 0;
-        this.deleteUserRoleModal.hide();
-        this.toastr.success(data.message, 'Delete Menu');
-        this.getUserRole();
+        this.page.totalElements = data.totalElements;
+        this.page.totalPages = data.totalPages;
+        this.rows = data.content;
       });
   }
 
-  onSearchChange(search: any) {
-    if (search.length > 0 && search.length < 3) {
-      return;
-    }
-
-    this.table.sorts = [];
-    this.page.sort = '';
-    this.rows = [];
-
-    if (search.match(/[^a-zA-Z]/g)) {
-      return
-    }
-
-    this.page.searchTerm = search;
-    this.getUserRole();
-  }
-
-  onSort(event: any) {
-    this.page.pageNumber = 1;
-    this.page.sort = `${event.column.prop},${event.newValue}`;
-    this.getUserRole();
+  inactivateUserRole(userRoleId: number) {
+    this.userRoleService.deleteAssignedRole(userRoleId)
+      .subscribe(data => {
+        this.toastr.success(data.message, 'Delete User Role');
+        this.getUserRole();
+      });
   }
 }

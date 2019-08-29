@@ -68,17 +68,17 @@ export const navItems: NavData[] = [
         icon: 'icon-menu',
       },
       {
-        name: 'Users',
+        name: 'User',
         url: '/admin/user',
         icon: 'icon-user',
       },
       {
-        name: 'Organizations',
-        url: '/admin/organizations',
+        name: 'Organization',
+        url: '/admin/organization',
         icon: 'icon-flag',
       },
       {
-        name: 'Roles',
+        name: 'Role',
         url: '/admin/role',
         icon: 'icon-badge',
       },

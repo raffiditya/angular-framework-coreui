@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-
-import { constant } from '../../../../environments/constant';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Page } from '../../../core/model/page';
+import { constant } from '../../../environments/constant';
+import { Page } from '../../core/model/page';
 
 @Injectable({ providedIn: 'root' })
-export class AdminRoleMenuService {
-  constructor(private http: HttpClient) { }
+export class RoleMenuService {
+
+  constructor(private http: HttpClient) {}
 
   getAssignedMenus(id: number, page?: Page): Observable<any> {
     if (!page) {
@@ -32,20 +32,6 @@ export class AdminRoleMenuService {
 
   getAssignedMenu(id: number): Observable<any> {
     return this.http.get(`${constant.appUrl}/admin/role-menu/${id}`);
-  }
-
-  getMenus(page?: Page): Observable<any> {
-    let request: string = `${constant.appUrl}/admin/menu?size=3`;
-
-    if (page.searchTerm) {
-      request += `&name=${page.searchTerm}&url=${page.searchTerm}`;
-    }
-
-    return this.http.get(request);
-  }
-
-  getRole(id: number): Observable<any> {
-    return this.http.get(`${constant.appUrl}/admin/role/${id}`);
   }
 
   addAssignedMenu(assignedMenu: any): Observable<any> {

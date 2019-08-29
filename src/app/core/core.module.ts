@@ -1,18 +1,25 @@
-import {NgModule, Optional, SkipSelf} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RouterModule} from '@angular/router';
-import {AppBreadcrumbModule, AppFooterModule, AppHeaderModule, AppSidebarModule,} from '@coreui/angular';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {PerfectScrollbarConfigInterface, PerfectScrollbarModule,} from 'ngx-perfect-scrollbar';
-import {BlockUIModule} from 'ng-block-ui';
-import {LoadingBarRouterModule} from '@ngx-loading-bar/router';
-import {ToastrModule} from 'ngx-toastr';
-import {BsDropdownModule} from 'ngx-bootstrap';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {BlockUiTemplateComponent, DefaultLayoutComponent, P403Component, P404Component, P500Component,} from './views';
-import {CoreRoutingModule} from './core-routing.module';
-import {TokenInterceptorService} from './services/http-interceptors/token-interceptor.service';
-import {BlockUIHttpModule} from 'ng-block-ui/http';
+import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
+import { AppBreadcrumbModule, AppFooterModule, AppHeaderModule, AppSidebarModule, } from '@coreui/angular';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
+import { BlockUIModule } from 'ng-block-ui';
+import { BlockUIHttpModule } from 'ng-block-ui/http';
+import { BsDatepickerModule, BsDropdownModule } from 'ngx-bootstrap';
+import { PerfectScrollbarConfigInterface, PerfectScrollbarModule, } from 'ngx-perfect-scrollbar';
+import { ToastrModule } from 'ngx-toastr';
+import { CoreRoutingModule } from './core-routing.module';
+import { TokenInterceptorService } from './services/http-interceptors/token-interceptor.service';
+import {
+  BlockUiTemplateComponent,
+  DefaultLayoutComponent,
+  P403Component,
+  P404Component,
+  P500Component,
+} from './views';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -43,7 +50,9 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
       timeOut: 7000,
       progressBar: true,
     }),
+    BsDatepickerModule.forRoot(),
     BsDropdownModule.forRoot(),
+    SweetAlert2Module.forRoot()
   ],
   declarations: [
     BlockUiTemplateComponent,

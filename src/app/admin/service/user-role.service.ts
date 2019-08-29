@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
-
-import { constant } from '../../../../environments/constant';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Page } from '../../../core/model/page';
+
+import { constant } from '../../../environments/constant';
+import { Page } from '../../core/model/page';
 
 @Injectable({ providedIn: 'root' })
-export class AdminUserRoleService {
-  constructor(private http: HttpClient) { }
+export class UserRoleService {
+
+  constructor(private http: HttpClient) {}
 
   getAssignedRoles(id: number, page?: Page): Observable<any> {
     if (!page) {
@@ -32,20 +33,6 @@ export class AdminUserRoleService {
 
   getAssignedRole(id: number): Observable<any> {
     return this.http.get(`${constant.appUrl}/admin/user-role/${id}`);
-  }
-
-  getRoles(page?: Page): Observable<any> {
-    let request: string = `${constant.appUrl}/admin/role?size=3`;
-
-    if (page.searchTerm) {
-      request += `&name=${page.searchTerm}&url=${page.searchTerm}`;
-    }
-
-    return this.http.get(request);
-  }
-
-  getUser(id: number): Observable<any> {
-    return this.http.get(`${constant.appUrl}/admin/user/${id}`);
   }
 
   addAssignedRole(assignedRole: any): Observable<any> {

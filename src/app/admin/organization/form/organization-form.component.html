@@ -1,140 +1,143 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header custom-card-header">
-      <div class="custom-card-header-title">
-        <p>{{ path }} Organization</p>
-      </div>
+    <div class="card-header-blue">
+      <span class="font-weight-bold mt-2">
+        {{ path }} Organization
+      </span>
     </div>
-    <form (ngSubmit)="onSubmit()" [formGroup]="form">
-      <div class="row mt-4 mr-3 ml-3">
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-            <label class="col-form-label required" for="name">
-              Name
-            </label>
-            <input
-              [class.is-invalid]="isFieldInvalid('name')"
-              id="name"
-              name="name"
-              class="form-control"
-              formControlName="name"
-              required type="text"
-            />
-            <div
-              *ngIf="isFieldInvalid('name')"
-              class="text-form-error"
-            >
-            <div *ngIf="form.get('name').hasError('required')" class="text-form-error">
-              Name is required
-            </div>
-            </div>
-          <div class="row">
-            <div class="col form-group">
+    <div class="card-body">
+      <form
+        (ngSubmit)="onSubmit()"
+        [formGroup]="form"
+      >
+        <div class="row">
+          <div class="col-sm-6 col-12">
+
+            <!-- Name -->
+            <fieldset class="form-group">
+              <label class="col-form-label required" for="name">Name</label>
+              <input
+                [class.is-invalid]="isFieldInvalid(form, 'name')"
+                class="form-control"
+                formControlName="name"
+                id="name"
+                name="name"
+                required
+                type="text"
+              />
+              <ng-container *ngIf="isFieldInvalid(form, 'name')">
+                <div *ngIf="form.get('name').hasError('required')" class="invalid-feedback">
+                  Name is required
+                </div>
+              </ng-container>
+            </fieldset>
+
+            <!-- Code Name -->
+            <fieldset class="form-group">
               <label class="col-form-label required" for="codeName">
                 Code Name
               </label>
               <input
-                [class.is-invalid]="isFieldInvalid('codeName')"
-                id="codeName"
-                name="codeName"
+                [class.is-invalid]="isFieldInvalid(form, 'codeName')"
                 class="form-control"
                 formControlName="codeName"
+                id="codeName"
+                name="codeName"
                 required type="text"
               />
-              <div
-                *ngIf="isFieldInvalid('codeName')"
-                class="text-form-error"
-              >
-                <div *ngIf="form.get('codeName').hasError('required')" class="text-form-error">
+              <ng-container *ngIf="isFieldInvalid(form, 'codeName')">
+                <div *ngIf="form.get('codeName').hasError('required')" class="invalid-feedback">
                   Code Name is required
                 </div>
-              </div>
-            </div>
-          </div>
-          <!-- Abbreviation -->
-          <div class="row">
-            <div class="col form-group">
+              </ng-container>
+            </fieldset>
+
+            <!-- Abbreviation -->
+            <fieldset class="form-group">
               <label class="col-form-label required" for="abbreviation">
                 Abbreviation
               </label>
               <input
-                [class.is-invalid]="isFieldInvalid('abbreviation')"
-                id="abbreviation"
-                name="abbreviation"
+                [class.is-invalid]="isFieldInvalid(form, 'abbreviation')"
                 class="form-control"
                 formControlName="abbreviation"
+                id="abbreviation"
+                name="abbreviation"
                 required type="text"
               />
-              <div
-                *ngIf="isFieldInvalid('abbreviation')"
-                class="text-form-error"
-              >
-                <div *ngIf="form.get('abbreviation').hasError('required')" class="text-form-error">
+              <ng-container *ngIf="isFieldInvalid(form, 'abbreviation')">
+                <div *ngIf="form.get('abbreviation').hasError('required')" class="invalid-feedback">
                   Abbreviation is required
                 </div>
-              </div>
-            </div>
+              </ng-container>
+            </fieldset>
+
           </div>
-          <div class="row">
-            <div class="col form-group">
-              <label class="col-form-label" for="parentId">
+          <div class="col-sm-6 col-12">
+
+            <!-- Parent Organization -->
+            <fieldset class="form-group">
+              <label class="col-form-label" for="parent-organization">
                 Parent Organization
               </label>
               <ng-select
-                id="parent-id"
-                (search)="this.page.searchTerm = $event.term"
-                [items]="organizationData"
+                [items]="parentOrganization"
                 [multiple]="false"
                 [typeahead]="organizationTypeahead"
                 bindLabel="name"
                 bindValue="id"
                 formControlName="parentId"
-                placeholder="Select Parent"
+                id="parent-organization"
+                placeholder="Select Parent Organization"
               >
                 <ng-template ng-typetosearch-tmp>
-                  <div class="ng-options disabled">
+                  <div class="ng-option disabled">
                     Please type 2 or more characters
                   </div>
                 </ng-template>
-                <ng-template ng-notfound-tmp let-searchTerm="searchTerm">
-                  <div class="ng-options disabled">
+                <ng-template let-searchTerm="searchTerm" ng-notfound-tmp>
+                  <div class="ng-option disabled">
                     No data found for "{{searchTerm}}"
                   </div>
                 </ng-template>
-                <ng-template ng-loadingtext-tmp let-searchTerm="searchTerm">
-                  <div class="ng-options disabled">
+                <ng-template let-searchTerm="searchTerm" ng-loadingtext-tmp>
+                  <div class="ng-option disabled">
                     Fetching data for "{{searchTerm}}"
                   </div>
                 </ng-template>
               </ng-select>
-            </div>
+            </fieldset>
+
+            <!-- Description -->
+            <fieldset class="form-group">
+              <label class="col-form-label" for="textarea-input">
+                Description
+              </label>
+              <textarea
+                class="form-control"
+                formControlName="description"
+                id="textarea-input"
+                name="textarea-input"
+                rows="5"
+              ></textarea>
+            </fieldset>
+
           </div>
         </div>
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <label class="col-form-label" for="textarea-input">
-            Description
-          </label>
-          <textarea
-            id="textarea-input"
-            name="textarea-input"
-            rows="9"
-            class="form-control"
-            formControlName="description"
-          ></textarea>
-        </div>
-      </div>
-      <div class="row mt-4 mr-3 ml-3">
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
-          <div class="row">
-            <label class="col-md-3 col-form-label" for="Active Flag">
+        <div class="row">
+
+          <!-- Active Flag -->
+          <fieldset class="col form-group">
+            <label class="col-form-label" for="active-flag">
               Active Flag
-              </label>
-            <div class="col-9 active-pills">
+            </label>
+            <div class="active-pills">
               <label class="switch switch-label switch-pill switch-primary">
                 <input
-                  id="active-flag"
-                  type="checkbox"
                   class="switch-input form-control"
                   formControlName="activeFlag"
+                  id="active-flag"
+                  type="checkbox"
                 />
                 <span
                   class="switch-slider"
@@ -143,27 +146,31 @@
                 ></span>
               </label>
             </div>
+          </fieldset>
+
+        </div>
+        <div class="row">
+          <div class="col form-group">
+            <div class="form-actions submit-button mt-5">
+              <ng-template [ngIfElse]="falseEditable" [ngIf]="editable">
+                <button class="btn btn-sm btn-primary" type="submit">
+                  <i class="fa fa-check"></i> Submit
+                </button>
+              </ng-template>
+              <ng-template #falseEditable>
+                <button [routerLink]="['edit']" class="btn btn-sm btn-success" type="button">
+                  <i class="fa fa-edit"></i>
+                  Edit
+                </button>
+              </ng-template>
+              <button (click)="location.back()" class="btn btn-sm btn-secondary cancel-buttons" type="button">
+                <i class="fa fa-close"></i>
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div *ngIf="editable" class="row mt-3 mr-3 ml-3 mb-5">
-        <div class="col form-group">
-          <div class="form-actions submit-button mt-5">
-            <button type="submit" class="btn btn-sm btn-primary">
-              <i class="fa fa-dot-circle-o"></i> 
-              Submit
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-secondary option-buttons"
-              (click)="this.location.back()"
-            >
-              <i class="fa fa-ban"></i>
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>

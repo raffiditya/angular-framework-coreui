@@ -1,0 +1,9 @@
+// Import references
+@import "~@coreui/coreui/scss/variables/colors";
+
+.search-header-input {
+  border: 3px solid $primary;
+  border-right: none;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+}

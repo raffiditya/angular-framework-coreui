@@ -57,9 +57,9 @@
 }
 
 // Import ngx-datatable
-@import '~@swimlane/ngx-datatable/release/index.css';
-@import '~@swimlane/ngx-datatable/release/themes/bootstrap.css';
-@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+@import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/themes/material.css';
+@import '~@swimlane/ngx-datatable/assets/icons.css';
 
 // Import ng-select
 @import '~@ng-select/ng-select/themes/default.theme.css';
@@ -93,144 +93,9 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px #fde6e8;
 }
 
-// customc card header
-
-.custom-card-header {
-  background-color: #4694a6;
-  display: flex;
-  height: 55px;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.custom-card-header-title p {
-  margin: 0;
-  color: white;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.custom-card-header-add-button button a {
-  color: white;
-  text-decoration: none;
-}
-
-.desktop-hidden {
-  display: none;
-}
-
-.custom-card-header-right {
-  display: flex;
-}
-
-.text-form-error {
-  font-size: 80%;
-  width: 100%;
-  margin-top: 0.25rem;
-  font-size: 80%;
-  color: #f86c6b;
-}
-
-/* search */
-
-.search {
-  width: 100%;
-  height: 30px;
-  display: flex;
-  padding-right: 30px;
-}
-
-.searchTerm {
-  width: 100%;
-  border: 3px solid #00b4cc;
-  border-right: none;
-  padding: 5px;
-  height: 35px;
-  border-radius: 5px 0 0 5px;
-  outline: none;
-}
-
-.searchButton {
-  width: 40px;
-  height: 35px;
-  border: 1px solid #00b4cc;
-  background: #00b4cc;
-  text-align: center;
-  color: #fff;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-.wrap {
-  width: 300px;
-}
-
-.main-button {
-  padding-right: 10px;
-}
-
-.responsive-search {
-  display: none;
-}
-
-// modal footer 
-.modal-footer {
-  display: flex;
-  justify-content: flex-start;
-}
-
-@media screen and (max-width: 1200px) {
-  .active-hidden {
-    display: none;
-  }
-  
-  .description-hidden{
-    display: none;
-  }
-
-  .desktop-hidden {
-    display: initial;
-    cursor: pointer;
-  }
-
-  .locked-hidden{
-    display: none;
-  }
-
-  .options-hidden {
-    display: none;
-  }
-
-  .provider-hidden{
-    display: none;
-  }
-
-  .title-hidden {
-    display: none;
-  }
-
-  .url-hidden {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 576px) {
-  .normal-search {
-    display: none;
-  }
-
-  .responsive-search {
-    display: initial;
-  }
-
-  .responsive-search-col{
-    height: 25px;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .search {
-    padding-right: 0;
-  }
+// custom card header
+.card-header-blue {
+  @extend .card-header;
+  background-color: $blue;
+  color: $white;
 }

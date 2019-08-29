@@ -1,200 +1,265 @@
 <div class="animated fadeIn">
-    <div class="card">
-      <div class="card-header custom-card-header">
-        <div class="custom-card-header-title">
-          <p>User Role Assignment Table</p>
-        </div>
-        <div class="custom-card-header-right">
-          <div class="custom-card-header-add-button" *ngIf="path !== 'View'">
-            <button type="button" class="btn">
-              <a [routerLink]="['../add-assigned-role']" routerLinkActive="active">
-                Add New
-              </a>
+  <div class="card">
+    <div class="card-header-blue">
+      <div class="clearfix">
+        <span class="float-left font-weight-bold mt-2">
+          Role Assignment Table
+        </span>
+        <div class="float-right">
+          <div class="row no-gutters">
+            <button *ngIf="editable" class="btn btn-sm btn-success" routerLink="user-role/add" type="button">
+              <i class="fa fa-plus"></i>
+              &nbsp;Add New
             </button>
-          </div>
-          <div class="wrap normal-search">
-            <div class="search">
-              <input type="text" class="searchTerm" placeholder="Search or enter assigned role" name="search"
-                onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
-              <button type="submit" class="searchButton">
-                <i class="fa fa-search"></i>
-              </button>
+            <div class="col d-none d-sm-block ml-2">
+              <app-search-table
+                (onSearch)="getUserRole()"
+                [page]="page"
+                [rows]="rows"
+                [table]="table"
+              ></app-search-table>
             </div>
           </div>
         </div>
       </div>
-      <div class="card-body">
-        <div class="row search-wrap responsive-search">
-          <div class="col-12 responsive-search-col">
-            <div class="wrap responsive-search">
-              <div class="search">
-                <input type="text" class="searchTerm" placeholder="Search or enter assigned role" name="search"
-                  onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" (input)="onSearchChange($event.target.value)" />
-                <button type="submit" class="searchButton">
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
-            </div>
-          </div>
+    </div>
+    <div class="card-body">
+      <div class="row d-block d-sm-none">
+        <div class="col">
+          <app-search-table
+            (onSearch)="getUserRole()"
+            [page]="page"
+            [rows]="rows"
+            [table]="table"
+          ></app-search-table>
         </div>
-        <div class="row">
-          <div class="col-12 col-xl mb-3 mb-xl-0">
-            <ngx-datatable #userTable class="bootstrap" [rows]="rows" [columnMode]="'force'" [headerHeight]="50"
-              [summaryRow]="true" [summaryHeight]="'auto'" [footerHeight]="50" [rowHeight]="50" [externalPaging]="true"
-              [externalSorting]="true" [count]="page.totalElements" [offset]="page.pageNumber - 1" [limit]="page.size"
-              (page)="getUserRoleByPage($event)" (sort)="onSort($event)">
-              <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
-                <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-                  <div style="padding-left:60px; font-size:14px">
-                    <div>
-                      <ng-container>
-                        <span>{{ row.startDate }}</span>
-                      </ng-container>
-                    </div>
-                    <div class="mt-2">
-                      <ng-container>
-                        <span>{{ row.endDate }}</span>
-                      </ng-container>
-                    </div>
-                    <div class="mt-2">
-                      <ng-container [ngSwitch]="row.activeFlag">
-                        <span *ngSwitchCase="'Y'" class="badge badge-success">
-                          Active
-                        </span>
-                        <span *ngSwitchCase="'N'" class="badge badge-danger">
-                          Inactive</span>
-                      </ng-container>
-                    </div>
-                    <div class="mt-2">
-                      <button [routerLink]="['../view-assigned-role', row.id]" type="button" class="btn btn-primary"
-                        data-toggle="tooltip" data-placement="bottom" title="View Role">
-                        <i class="fa fa-sign-in fa-sm"></i>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ngx-datatable
+              #table
+              (page)="getUserRole($event.offset + 1)"
+              (sort)="sortTable(page, $event); getUserRole();"
+              [columnMode]="ColumnMode.force"
+              [count]="page.totalElements"
+              [externalPaging]="true"
+              [externalSorting]="true"
+              [footerHeight]="50"
+              [headerHeight]="50"
+              [limit]="page.size"
+              [loadingIndicator]="loadingIndicator"
+              [offset]="page.pageNumber - 1"
+              [rowHeight]="50"
+              [rows]="rows"
+              [scrollbarH]="true"
+              class="material striped"
+          >
+
+            <!-- Row Detail Template -->
+            <ngx-datatable-row-detail
+              [rowHeight]="150"
+            >
+              <ng-template
+                let-activeFlag="row.activeFlag"
+                let-endDate="row.endDate"
+                let-expanded="true"
+                let-id="row.id"
+                let-name="row.roleName"
+                let-startDate="row.startDate"
+                ngx-datatable-row-detail-template
+              >
+                <div style="padding-left: 60px; font-size: 14px">
+                  <div class="row mt-2">
+                    {{ startDate }} - {{ endDate }}
+                  </div>
+                  <div class="row mt-2">
+                    <ng-template [ngIfElse]="falseInactive" [ngIf]="activeFlag === 'Y'">
+                      <span class="badge badge-success">Active</span>
+                    </ng-template>
+                    <ng-template #falseInactive>
+                      <span class="badge badge-danger">Inactive</span>
+                    </ng-template>
+                  </div>
+                  <ng-container *ngIf="editable">
+                    <div class="row mt-2">
+                      <button
+                        [routerLink]="['user-role', id]"
+                        class="btn btn-primary mr-1"
+                        data-placement="bottom"
+                        data-toggle="tooltip"
+                        title="detail"
+                        type="button"
+                      >
+                        <i class="fa fa-eye fa-sm"></i>
                       </button>
-                      <button [routerLink]="['../edit-assigned-role', row.id]" type="button" class="btn btn-success"
-                        data-toggle="tooltip" data-placement="bottom" title="Edit Role">
+                      <button
+                        [routerLink]="['user-role', id, 'edit']"
+                        class="btn btn-success mr-1"
+                        data-placement="bottom"
+                        data-toggle="tooltip"
+                        title="edit"
+                        type="button"
+                      >
                         <i class="fa fa-edit fa-sm"></i>
                       </button>
-                      <button (click)="openDeleteModal(row)" data-toggle="tooltip" data-placement="bottom"
-                        title="Delete Role" type="button" class="btn btn-danger"
-                        [disabled]="row.activeFlag === 'N'">
+                      <button
+                        (confirm)="inactivateUserRole(id)"
+                        [disabled]="activeFlag === 'N'"
+                        [swal]="{
+                            titleText: 'Inactive Assigned Role',
+                            text: 'Do you want to inactivate ' + name + '?',
+                            type: 'warning',
+                            showCancelButton: true
+                          }"
+                        class="btn btn-danger"
+                        data-placement="bottom"
+                        data-toggle="tooltip"
+                        title="inactivate"
+                        type="button"
+                      >
                         <i class="fa fa-trash fa-sm"></i>
                       </button>
                     </div>
-                  </div>
-                </ng-template>
-              </ngx-datatable-row-detail>
-  
-              <!--  -->
-  
-              <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false"
-                [canAutoResize]="false">
-                <ng-template let-row="row" let-expanded="true" ngx-datatable-cell-template>
-                  <a [class.datatable-icon-right]="!expanded" [class.datatable-icon-down]="expanded"
-                    title="Expand/Collapse Row" (click)="toggleExpandRow(row)" class="desktop-hidden">
-                  </a>
-                </ng-template>
-              </ngx-datatable-column>
-  
-              <!--  -->
-  
-              <ngx-datatable-column name="Role Name" [flexGrow]="3" [minWidth]="200">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <ng-container>
-                    <span class="title-hidden">{{ row.role.name }}</span>
                   </ng-container>
+                </div>
+              </ng-template>
+            </ngx-datatable-row-detail>
+
+            <!-- Arrow Detail Templates -->
+            <ngx-datatable-column
+              [cellClass]="'d-sm-none'"
+              [draggable]="false"
+              [headerClass]="'d-sm-none'"
+              [sortable]="false"
+              [width]="50"
+            >
+              <ng-template
+                let-expanded="true"
+                let-row="row"
+                ngx-datatable-cell-template
+              >
+                <a
+                  (click)="table.rowDetail.toggleExpandRow(row)"
+                  [class.datatable-icon-down]="expanded"
+                  [class.datatable-icon-right]="!expanded"
+                  title="Expand/Collapse Row"
+                >
+                </a>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- Role Name -->
+            <ngx-datatable-column
+              [draggable]="false"
+              [sortable]="true"
+              name="Name"
+              prop="roleName"
+            >
+              <ng-template let-value="value" ngx-datatable-cell-template>
+                {{ value | ellipsis: 15 }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- Start Date -->
+            <ngx-datatable-column
+              [cellClass]="'d-none d-md-inline'"
+              [draggable]="false"
+              [headerClass]="'d-none d-md-inline'"
+              [sortable]="true"
+              name="Start Date"
+              prop="startDate"
+            ></ngx-datatable-column>
+
+            <!-- End Date -->
+            <ngx-datatable-column
+              [cellClass]="'d-none d-md-inline'"
+              [draggable]="false"
+              [headerClass]="'d-none d-md-inline'"
+              [sortable]="true"
+              name="End Date"
+              prop="endDate"
+            ></ngx-datatable-column>
+
+            <!-- Active Flag -->
+            <ngx-datatable-column
+              [cellClass]="'d-none d-md-inline'"
+              [draggable]="false"
+              [headerClass]="'d-none d-md-inline'"
+              [sortable]="true"
+              name="Active"
+              prop="activeFlag"
+            >
+              <ng-template
+                let-value="value"
+                ngx-datatable-cell-template
+              >
+                <ng-template [ngIfElse]="falseInactive" [ngIf]="value === 'Y'">
+                  <span class="badge badge-success">Active</span>
                 </ng-template>
-              </ngx-datatable-column>
-  
-              <!--  -->
-  
-              <ngx-datatable-column name="Start Date" [flexGrow]="3" [minWidth]="200">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <ng-container>
-                    <span class="start-date-hidden">{{ row.startDate }}</span>
-                  </ng-container>
+                <ng-template #falseInactive>
+                  <span class="badge badge-danger">Inactive</span>
                 </ng-template>
-              </ngx-datatable-column>
-  
-              <!--  -->
-  
-              <ngx-datatable-column name="End Date" [flexGrow]="3" [minWidth]="200">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <ng-container>
-                    <span class="end-date-hidden">{{ row.endDate }}</span>
-                  </ng-container>
-                </ng-template>
-              </ngx-datatable-column>
-  
-              <!--  -->
-  
-              <ngx-datatable-column name="Active" prop="activeFlag" [sortable]="true" [flexGrow]="1">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <ng-container [ngSwitch]="row.activeFlag">
-                    <span *ngSwitchCase="'Y'" class="badge badge-success active-hidden">Active</span>
-                    <span *ngSwitchCase="'N'" class="badge badge-danger active-hidden">Inactive</span>
-                  </ng-container>
-                </ng-template>
-              </ngx-datatable-column>
-  
-              <!--  -->
-  
-              <ngx-datatable-column [flexGrow]="1" *ngIf="path !== 'View'">
-                <ng-template ngx-datatable-header-template>
-                  <span class="options-hidden">Actions</span>
-                </ng-template>
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <ng-container>
-                    <button [routerLink]="['../view-assigned-role', row.id]" type="button"
-                      class="btn btn-primary options-hidden" data-toggle="tooltip" data-placement="bottom"
-                      title="View Role">
-                      <i class="fa fa-sign-in fa-sm"></i>
-                    </button>
-                    <button [routerLink]="['../edit-assigned-role', row.id]" type="button"
-                      class="btn btn-success options-hidden" data-toggle="tooltip" data-placement="bottom"
-                      title="Edit Role">
-                      <i class="fa fa-edit fa-sm"></i>
-                    </button>
-                    <button (click)="openDeleteModal(row)" data-toggle="tooltip" data-placement="bottom"
-                      title="Delete Role" type="button" class="btn btn-danger options-hidden"
-                      [disabled]="row.activeFlag === 'N'">
-                      <i class="fa fa-trash fa-sm"></i>
-                    </button>
-                  </ng-container>
-                </ng-template>
-              </ngx-datatable-column>
-            </ngx-datatable>
-          </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- Action -->
+            <ngx-datatable-column
+              *ngIf="editable"
+              [cellClass]="'d-none d-md-inline'"
+              [draggable]="false"
+              [headerClass]="'d-none d-md-inline'"
+              [sortable]="false"
+              name="Action"
+            >
+              <ng-template
+                let-activeFlag="row.activeFlag"
+                let-id="row.id"
+                let-name="row.roleName"
+                ngx-datatable-cell-template
+              >
+                <button
+                  [routerLink]="['user-role', id]"
+                  class="btn btn-sm btn-primary"
+                  data-placement="bottom"
+                  data-toggle="tooltip"
+                  title="detail"
+                  type="button"
+                >
+                  <i class="fa fa-eye fa-sm"></i>
+                </button>
+                <button
+                  [routerLink]="['user-role', id, 'edit']"
+                  class="btn btn-sm btn-success"
+                  data-placement="bottom"
+                  data-toggle="tooltip"
+                  title="edit"
+                  type="button"
+                >
+                  <i class="fa fa-edit fa-sm"></i>
+                </button>
+                <button
+                  (confirm)="inactivateUserRole(id)"
+                  [disabled]="activeFlag === 'N'"
+                  [swal]="{
+                    titleText: 'Inactive Assigned Role',
+                    text: 'Do you want to inactive ' + name + '?',
+                    type: 'warning',
+                    showCancelButton: true
+                  }"
+                  class="btn btn-sm btn-danger"
+                  data-placement="bottom"
+                  data-toggle="tooltip"
+                  title="inactivate"
+                  type="button"
+                >
+                  <i class="cui-lock-locked icons"></i>
+                </button>
+              </ng-template>
+            </ngx-datatable-column>
+
+          </ngx-datatable>
         </div>
       </div>
     </div>
   </div>
-  
-  <div bsModal #deleteUserRoleModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-danger" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Delete Role</h4>
-          <button type="button" class="close" (click)="deleteUserRoleModal.hide()" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-icon mt-3 mb-3">
-            <i class="fa fa-exclamation-triangle"></i>
-          </div>
-          <div class="modal-text">
-            <p>Do you want to inactivate this ?</p>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" (click)="selectInactive()">
-            Delete
-          </button>
-          <button type="button" class="btn btn-secondary" (click)="deleteUserRoleModal.hide()">
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>

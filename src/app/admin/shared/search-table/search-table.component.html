@@ -1,0 +1,16 @@
+<!--suppress HtmlFormInputWithoutLabel -->
+<div class="input-group">
+  <input
+    (input)="onInput($event.target.value, rows, page, table)"
+    (keypress)="onKeyPress($event)"
+    class="form-control search-header-input"
+    name="search"
+    placeholder="Search"
+    type="text"
+  />
+  <span class="input-group-append">
+    <button class="btn btn-sm btn-primary" type="submit">
+      <i class="fa fa-search"></i>
+    </button>
+  </span>
+</div>

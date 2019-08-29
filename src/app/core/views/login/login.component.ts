@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
-import { BlockUIService } from 'ng-block-ui';
-import { NgForm } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,19 +10,17 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['login.component.scss'],
 })
 export class LoginComponent {
-  wrongPassword: boolean = false;
-
   userLogin = {
     username: '',
     password: '',
     rememberMe: false,
   };
+  wrongPassword: boolean = false;
 
   constructor(
-    // private loadingService: BlockUIService,
     private authService: AuthService,
     private router: Router,
-  ) { }
+  ) {}
 
   onLogin(loginForm: NgForm) {
     this.wrongPassword = false;
@@ -31,10 +28,7 @@ export class LoginComponent {
       return;
     }
 
-    // this.loadingService.start('appRoot');
-
-    this.authService
-      .login(this.userLogin.username, this.userLogin.password)
+    this.authService.login(this.userLogin.username, this.userLogin.password)
       .subscribe(
         _ =>
           this.router
@@ -44,7 +38,6 @@ export class LoginComponent {
           if (errorResponse.status === 401) {
             this.wrongPassword = true;
           }
-          // this.loadingService.reset('appRoot');
         }
       );
   }

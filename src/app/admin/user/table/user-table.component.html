@@ -1,132 +1,126 @@
 <div class="animated fadeIn">
   <div class="card">
-    <div class="card-header custom-card-header">
-      <div class="custom-card-header-title">
-        <p>{{ path }} Table</p>
-      </div>
-      <div class="custom-card-header-right">
-        <div class="custom-card-header-add-button">
-          <button type="button" class="btn">
-            <a [routerLink]="['../add']" routerLinkActive="active">
-              Add New
-            </a>
-          </button>
-        </div>
-        <div class="wrap normal-search">
-          <div class="search">
-            <input
-              type="text"
-              class="searchTerm"
-              placeholder="Search"
-              name="search"
-              onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" 
-              (input)="onSearchChange($event.target.value)"
-            />
-            <button type="submit" class="searchButton">
-              <i class="fa fa-search"></i>
+    <div class="card-header-blue">
+      <div class="clearfix">
+        <span class="float-left font-weight-bold mt-2">
+        User Table
+        </span>
+        <div class="float-right">
+          <div class="row no-gutters">
+            <button class="btn btn-sm btn-success" routerLink="add" type="button">
+              <i class="fa fa-plus"></i>
+              &nbsp;Add New
             </button>
+            <div class="col d-none d-sm-block ml-2">
+              <app-search-table
+                (onSearch)="getUsers()"
+                [page]="page"
+                [rows]="rows"
+                [table]="table"
+              ></app-search-table>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="card-body">
-      <div class="row search-wrap responsive-search">
-        <div class="col-12 responsive-search-col">
-          <div class="wrap responsive-search">
-            <div class="search">
-              <input
-                type="text"
-                name = "search"
-                class="searchTerm"
-                placeholder="Search"
-                onkeypress="return /^[-_ a-zA-Z0-9]+$/.test(event.key)" 
-                (input)="onSearchChange($event.target.value)"
-              />
-              <button type="submit" class="searchButton">
-                <i class="fa fa-search"></i>
-              </button>
-            </div>
-          </div>
+      <div class="row d-block d-sm-none">
+        <div class="col">
+          <app-search-table
+            (onSearch)="getUsers()"
+            [page]="page"
+            [rows]="rows"
+            [table]="table"
+          ></app-search-table>
         </div>
       </div>
       <div class="row">
-        <div class="col-12 col-xl mb-3 mb-xl-0">
+        <div class="col">
           <ngx-datatable
-            #userTable
-            class="bootstrap" 
-            [rows]="rows" 
-            [columnMode]="'force'" 
-            [headerHeight]="50"
-            [summaryRow]="true" 
-            [summaryHeight]="'auto'" 
-            [footerHeight]="50" 
-            [rowHeight]="50" 
-            [externalPaging]="true"
-            [externalSorting]="true"
-            [count]="page.totalElements" 
-            [offset]="page.pageNumber - 1" 
-            [limit]="page.size"
-            (page)="getUserByPage($event)" 
-            (sort)="onSort($event)">
+              #table
+              (page)="getUsers($event.offset + 1)"
+              (sort)="sortTable(page, $event); getUsers();"
+              [columnMode]="ColumnMode.force"
+              [count]="page.totalElements"
+              [externalPaging]="true"
+              [externalSorting]="true"
+              [footerHeight]="50"
+              [headerHeight]="50"
+              [limit]="page.size"
+              [loadingIndicator]="loadingIndicator"
+              [offset]="page.pageNumber - 1"
+              [rowHeight]="50"
+              [rows]="rows"
+              [scrollbarH]="true"
+              class="material striped"
           >
-            <!-- Row Detail Template-->
-            <ngx-datatable-row-detail [rowHeight]="150">
+
+            <!-- Row Detail Template -->
+            <ngx-datatable-row-detail
+              [rowHeight]="150"
+            >
               <ng-template
-                let-row="row"
+                let-activeFlag="row.activeFlag"
                 let-expanded="true"
+                let-id="row.id"
+                let-locked="row.locked"
+                let-provider="row.provider"
+                let-username="row.username"
                 ngx-datatable-row-detail-template
               >
-                <div style="padding-left:60px; font-size:14px">
-                  <div>{{ row.url }}</div>
-                  <div class="mt-2">
-                    <ng-container [ngSwitch]="row.locked">
-                      <span *ngSwitchCase="'N'" class="badge badge-success"
-                        >Unlocked</span
-                      >
-                      <span *ngSwitchCase="'Y'" class="badge badge-danger"
-                        >Locked</span
-                      >
-                    </ng-container>
+                <div style="padding-left: 60px; font-size: 14px">
+                  <div class="row mt-2">
+                    {{ provider }}
                   </div>
-                  <div class="mt-2">
-                    <ng-container [ngSwitch]="row.activeFlag">
-                      <span *ngSwitchCase="'Y'" class="badge badge-success"
-                        >Active</span
-                      >
-                      <span *ngSwitchCase="'N'" class="badge badge-danger"
-                        >Inactive</span
-                      >
-                    </ng-container>
+                  <div class="row mt-2">
+                    <ng-template [ngIfElse]="falseUnlocked" [ngIf]="locked === 'N'">
+                      <span class="badge badge-success mr-1">Unlocked</span>
+                    </ng-template>
+                    <ng-template #falseUnlocked>
+                      <span class="badge badge-danger mr-1">Locked</span>
+                    </ng-template>
+                    <ng-template [ngIfElse]="falseInactive" [ngIf]="activeFlag === 'Y'">
+                      <span class="badge badge-success">Active</span>
+                    </ng-template>
+                    <ng-template #falseInactive>
+                      <span class="badge badge-danger">Inactive</span>
+                    </ng-template>
                   </div>
-                  <div class="mt-2">
+                  <div class="row mt-2">
                     <button
-                      [routerLink]="['/admin/user', row.id]"
-                      type="button"
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
+                      [routerLink]="[id]"
+                      class="btn btn-primary mr-1"
                       data-placement="bottom"
-                      title="View User"
+                      data-toggle="tooltip"
+                      title="detail"
+                      type="button"
                     >
-                      <i class="fa fa-sign-in fa-sm"></i>
+                      <i class="fa fa-eye fa-sm"></i>
                     </button>
                     <button
-                      [routerLink]="['/admin/user/edit', row.id]"
-                      type="button"
-                      class="btn btn-success"
-                      data-toggle="tooltip"
+                      [routerLink]="[id, 'edit']"
+                      class="btn btn-success mr-1"
                       data-placement="bottom"
-                      title="Edit User"
+                      data-toggle="tooltip"
+                      title="edit"
+                      type="button"
                     >
                       <i class="fa fa-edit fa-sm"></i>
                     </button>
                     <button
-                      (click)="openDeleteModal(row)"
-                      data-toggle="tooltip"
-                      data-placement="bottom"
-                      title="Delete User"
-                      type="button"
+                      (confirm)="inactivateUser(id)"
+                      [disabled]="activeFlag === 'N'"
+                      [swal]="{
+                        titleText: 'Inactivate User',
+                        text: 'Do you want to inactivate ' + username + '?',
+                        type: 'warning',
+                        showCancelButton: true
+                      }"
                       class="btn btn-danger"
-                      [disabled]="row.activeFlag === 'N'"
+                      data-placement="bottom"
+                      data-toggle="tooltip"
+                      title="inactivate"
+                      type="button"
                     >
                       <i class="fa fa-trash fa-sm"></i>
                     </button>
@@ -135,236 +129,167 @@
               </ng-template>
             </ngx-datatable-row-detail>
 
-            <!--  -->
-
+            <!-- Arrow Detail Templates -->
             <ngx-datatable-column
-              [width]="50"
-              [resizeable]="false"
-              [sortable]="false"
+              [cellClass]="'d-sm-none'"
               [draggable]="false"
-              [canAutoResize]="false"
+              [headerClass]="'d-sm-none'"
+              [sortable]="false"
+              [width]="50"
             >
               <ng-template
-                let-row="row"
                 let-expanded="true"
+                let-row="row"
                 ngx-datatable-cell-template
               >
                 <a
-                  [class.datatable-icon-right]="!expanded"
+                  (click)="table.rowDetail.toggleExpandRow(row)"
                   [class.datatable-icon-down]="expanded"
+                  [class.datatable-icon-right]="!expanded"
                   title="Expand/Collapse Row"
-                  (click)="toggleExpandRow(row)"
-                  class="desktop-hidden"
                 >
                 </a>
               </ng-template>
             </ngx-datatable-column>
 
-            <!-- User Name -->
-
+            <!-- Username -->
             <ngx-datatable-column
+              [draggable]="false"
+              [sortable]="true"
               name="Username"
-              [flexGrow]="3"
-              [minWidth]="200"
+              prop="username"
             >
-              <ng-template let-value="value" ngx-datatable-cell-template>
-                {{ value }}
-              </ng-template>
             </ngx-datatable-column>
 
             <!-- Provider -->
-
-            <ngx-datatable-column 
-              name="Auth Provider" 
-              [flexGrow]="1"
+            <ngx-datatable-column
+              [cellClass]="'d-none d-xl-inline'"
+              [draggable]="false"
+              [headerClass]="'d-none d-xl-inline'"
+              [sortable]="true"
+              name="Auth Provider"
+              prop="authProvider"
             >
-              <ng-template 
-                let-row="row" 
-                ngx-datatable-cell-template
-              >
-                <ng-container>
-                  <span class="provider-hidden">
-                    {{ row.authProvider }}
-                  </span>
-                </ng-container>
+              <ng-template let-value="value" ngx-datatable-cell-template>
+                {{ value | ellipsis: 10 }}
               </ng-template>
             </ngx-datatable-column>
 
             <!-- Description -->
-
-            <ngx-datatable-column 
-              name="Description" 
-              [flexGrow]="1"
+            <ngx-datatable-column
+              [cellClass]="'d-none d-xl-inline'"
+              [draggable]="false"
+              [headerClass]="'d-none d-xl-inline'"
+              [sortable]="true"
+              name="Description"
+              prop="description"
             >
-              <ng-template 
-                let-value="value" 
-                ngx-datatable-cell-template
-              >
-                <span class="description-hidden">
-                  {{ value }}
-                </span>
+              <ng-template let-value="value" ngx-datatable-cell-template>
+                {{ value | ellipsis: 30 }}
               </ng-template>
             </ngx-datatable-column>
 
             <!-- Locked Flag -->
-
             <ngx-datatable-column
+              [cellClass]="'d-none d-md-inline'"
+              [draggable]="false"
+              [headerClass]="'d-none d-md-inline'"
+              [sortable]="true"
               name="Locked"
               prop="locked"
-              [sortable]="true"
-              [flexGrow]="3"
-              [minWidth]="200"
             >
-              <ng-template 
-                let-row="row" 
+              <ng-template
+                let-value="value"
                 ngx-datatable-cell-template
               >
-                <ng-container [ngSwitch]="row.locked">
-                  <span
-                    *ngSwitchCase="'N'"
-                    class="badge badge-success locked-hidden"
-                  >
-                    Unlocked
-                  </span>
-                  <span
-                    *ngSwitchCase="'Y'"
-                    class="badge badge-danger locked-hidden"
-                  >
-                    Locked
-                    </span>
-                </ng-container>
+                <ng-template [ngIfElse]="falseUnlocked" [ngIf]="value === 'N'">
+                  <span class="badge badge-success">Unlocked</span>
+                </ng-template>
+                <ng-template #falseUnlocked>
+                  <span class="badge badge-danger">Locked</span>
+                </ng-template>
               </ng-template>
             </ngx-datatable-column>
 
             <!-- Active Flag -->
-
             <ngx-datatable-column
+              [cellClass]="'d-none d-md-inline'"
+              [draggable]="false"
+              [headerClass]="'d-none d-md-inline'"
+              [sortable]="true"
               name="Active"
               prop="activeFlag"
-              [sortable]="true"
-              [flexGrow]="1"
             >
-              <ng-template 
-                let-row="row" 
+              <ng-template
+                let-value="value"
                 ngx-datatable-cell-template
               >
-                <ng-container [ngSwitch]="row.activeFlag">
-                  <span
-                    *ngSwitchCase="'Y'"
-                    class="badge badge-success active-hidden"
-                  >
-                    Active
-                  </span>
-                  <span
-                    *ngSwitchCase="'N'"
-                    class="badge badge-danger active-hidden"
-                  >
-                    Inactive
-                  </span>
-                </ng-container>
+                <ng-template [ngIfElse]="falseInactive" [ngIf]="value === 'Y'">
+                  <span class="badge badge-success">Active</span>
+                </ng-template>
+                <ng-template #falseInactive>
+                  <span class="badge badge-danger">Inactive</span>
+                </ng-template>
               </ng-template>
             </ngx-datatable-column>
 
-            <!-- Option -->
-
-            <ngx-datatable-column [flexGrow]="1">
-              <ng-template ngx-datatable-header-template>
-                <span class="options-hidden">
-                  Options
-                </span>
-              </ng-template>
-              <ng-template let-row="row" ngx-datatable-cell-template>
-                <ng-container>
-                  <button
-                    [routerLink]="['/admin/user', row.id]"
-                    type="button"
-                    class="btn btn-primary options-hidden"
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="View User"
-                  >
-                    <i class="fa fa-sign-in fa-sm"></i>
-                  </button>
-                  <button
-                    [routerLink]="['/admin/user/edit', row.id]"
-                    type="button"
-                    class="btn btn-success options-hidden"
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="Edit User"
-                  >
-                    <i class="fa fa-edit fa-sm"></i>
-                  </button>
-                  <button
-                    (click)="openDeleteModal(row)"
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="Delete User"
-                    type="button"
-                    class="btn btn-danger options-hidden"
-                    [disabled]="row.activeFlag === 'N'"
-                  >
-                    <i class="fa fa-trash fa-sm"></i>
-                  </button>
-                </ng-container>
+            <!-- Action -->
+            <ngx-datatable-column
+              [cellClass]="'d-none d-md-inline'"
+              [draggable]="false"
+              [headerClass]="'d-none d-md-inline'"
+              [sortable]="false"
+              name="Action"
+            >
+              <ng-template
+                let-activeFlag="row.activeFlag"
+                let-id="row.id"
+                let-username="row.username"
+                ngx-datatable-cell-template
+              >
+                <button
+                  [routerLink]="[id]"
+                  class="btn btn-sm btn-primary"
+                  data-placement="bottom"
+                  data-toggle="tooltip"
+                  title="detail"
+                  type="button"
+                >
+                  <i class="fa fa-eye fa-sm"></i>
+                </button>
+                <button
+                  [routerLink]="[id, 'edit']"
+                  class="btn btn-sm btn-success"
+                  data-placement="bottom"
+                  data-toggle="tooltip"
+                  title="edit"
+                  type="button"
+                >
+                  <i class="fa fa-edit fa-sm"></i>
+                </button>
+                <button
+                  (confirm)="inactivateUser(id)"
+                  [disabled]="activeFlag === 'N'"
+                  [swal]="{
+                    titleText: 'Inactivate User',
+                    text: 'Do you want to inactivate ' + username + '?',
+                    type: 'warning',
+                    showCancelButton: true
+                  }"
+                  class="btn btn-sm btn-danger"
+                  data-placement="bottom"
+                  data-toggle="tooltip"
+                  title="inactivate"
+                  type="button"
+                >
+                  <i class="cui-lock-locked icons"></i>
+                </button>
               </ng-template>
             </ngx-datatable-column>
+
           </ngx-datatable>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<div
-  bsModal
-  #inactiveModal="bs-modal"
-  class="modal fade"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="myModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-danger" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">
-          Delete User
-        </h4>
-        <button
-          type="button"
-          class="close"
-          (click)="inactiveModal.hide()"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-icon mt-3 mb-3">
-          <i class="fa fa-exclamation-triangle"></i>
-        </div>
-        <div class="modal-text">
-          <p>Do you want to inactivate this User?</p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button 
-          type="button" 
-          class="btn btn-danger" 
-          (click)="selectInactive()"
-        >
-          Delete
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="inactiveModal.hide()"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-

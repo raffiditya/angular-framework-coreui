@@ -1,32 +1,32 @@
-import { Component, OnInit, EventEmitter} from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
-import { Router, ActivatedRoute} from '@angular/router';
-import { AdminOrganizationService } from '../admin-organization.service';
-import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
+import { Component, EventEmitter, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { Page } from '../../../core/model/page';
-import { FormBuilder, FormGroup, FormControl, Validators} from '@angular/forms';
-import { normalizeFlag } from '../../../shared/util/normalize-flag';
+import { isFieldInvalid, normalizeFlag } from '../../../util';
+import { OrganizationService } from '../../service/organization.service';
 
 @Component({
   templateUrl: './organization-form.component.html',
 })
 export class OrganizationFormComponent implements OnInit {
-  
+
   editable: boolean = false;
-  id: number = 0;
-  path: string = '';
-  organizationData: any[] = [];
   form: FormGroup;
+  id: number = 0;
+  isFieldInvalid = isFieldInvalid;
   organizationTypeahead: EventEmitter<string> = new EventEmitter<string>();
-  page: Page = new Page();
+  parentOrganization: any[] = [];
+  path: string = '';
 
   constructor(
     private router: Router,
-    private adminOrganizationService: AdminOrganizationService,
+    private adminOrganizationService: OrganizationService,
     private formBuilder: FormBuilder,
-    private location: Location,
     private activatedRoute: ActivatedRoute,
+    private location: Location,
     private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({
@@ -42,76 +42,74 @@ export class OrganizationFormComponent implements OnInit {
   ngOnInit() {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
     this.path = this.activatedRoute.snapshot.data.title;
-    this.editable = this.path !== "View";
+    this.editable = this.activatedRoute.snapshot.data.editable;
     this.searchOrganization();
 
     if (this.id) {
       this.adminOrganizationService.getOrganization(this.id).subscribe(data => {
         this.form.patchValue(data);
-        
+
         this.form.get('activeFlag').setValue(data['activeFlag'] === 'Y');
-        if(data['parentId']){
-          this.setParent(data['parentId']);
+        if (data['parentId']) {
+          this.setParent(data.parentId);
         }
 
-        if(this.editable){
+        if (this.editable) {
           this.form.enable();
-        }
-        else{
+        } else {
           this.form.disable();
         }
       });
     }
   }
 
-  isFieldInvalid(field: string) {
-    const fieldControl = this.form.get(field);
-    return fieldControl.invalid && (fieldControl.dirty || fieldControl.touched);
-  }
-
   setParent(parentId: number) {
     this.adminOrganizationService.getOrganization(parentId).subscribe(data => {
-      this.organizationData = [data];
+      this.parentOrganization = [data];
       this.form.get('parentId').setValue(parentId);
     });
   }
 
   searchOrganization() {
-    this.organizationData = [];
-    
     this.organizationTypeahead
       .pipe(
-        filter(t => t && t.length > 2),
-        distinctUntilChanged(),
+        tap(() => this.parentOrganization = []),
+        filter(t => t && t.length >= 2),
         debounceTime(300),
-        switchMap(term => this.adminOrganizationService.getOrganizations(this.page)),
+        switchMap(searchTerm => {
+          let page: Page = {
+            size: 3,
+            pageNumber: 1,
+            searchTerm: searchTerm
+          };
+
+          return this.adminOrganizationService.getOrganizations(page)
+        }),
       )
-      .subscribe (data =>{
-        this.organizationData = data['content'];
+      .subscribe(data => {
+        this.parentOrganization = data.content;
       });
   }
 
   onSubmit() {
     this.form.markAllAsTouched();
-    if(!this.form.valid){
+    if (!this.form.valid) {
       return;
     }
 
     if (this.id) {
       this.adminOrganizationService
-      .editOrganization(this.id, normalizeFlag(this.form) )
+        .editOrganization(this.id, normalizeFlag(this.form))
         .subscribe(data => {
-          this.router.navigate(['/admin/organizations']);
-          this.toastr.success(data.message, 'Edit Organization');
+          this.router.navigate(['/admin/organizations'])
+            .then(() => this.toastr.success(data.message, 'Edit Organization'));
         });
-    }
-    else {
-
+    } else {
       this.adminOrganizationService
         .addOrganization(normalizeFlag(this.form))
         .subscribe(data => {
-          this.router.navigate(['/admin/organizations']);
-          this.toastr.success(data.message, 'Add Organization')
+          this.router.navigate(['/admin/organizations'])
+            .then(() => this.toastr.success(data.message, 'Add Organization'));
         });
     }
   }
