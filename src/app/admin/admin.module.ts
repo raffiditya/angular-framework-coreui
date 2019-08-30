@@ -34,6 +34,18 @@ import { RoleMenuFormComponent } from './role/role-menu/form/role-menu-form.comp
 import { RolePrivilegeTableComponent } from './role/role-privilege/table/role-privilege-table.component';
 import { RolePrivilegeFormComponent } from './role/role-privilege/form/role-privilege-form.component';
 
+//User Component
+import { UserTableComponent } from './user/table/user-table.component';
+import { UserFormComponent } from './user/form/user-form.component';
+
+//User Role Assignment
+import { UserRoleTableComponent } from './user/user-role/table/user-role-table.component';
+import { UserRoleFormComponent} from './user/user-role/form/user-role-form.component';
+
+//User Organization Assignment
+import { UserOrganizationTableComponent } from './user/user-organization/table/user-organization-table.component';
+import { UserOrganizationFormComponent } from './user/user-organization/form/user-organization-form.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -56,6 +68,12 @@ import { RolePrivilegeFormComponent } from './role/role-privilege/form/role-priv
     RoleMenuFormComponent,
     RolePrivilegeTableComponent,
     RolePrivilegeFormComponent,
+    UserTableComponent,
+    UserFormComponent,
+    UserRoleTableComponent,
+    UserRoleFormComponent,
+    UserOrganizationTableComponent,
+    UserOrganizationFormComponent,
   ],
 })
 export class AdminModule { }

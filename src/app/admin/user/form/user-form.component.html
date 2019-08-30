@@ -1,0 +1,205 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header custom-card-header">
+      <div class="custom-card-header-title"> 
+          <p>{{ path }} User</p>
+      </div>
+    </div>
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" >
+      <div class="row mt-4 mr-3 ml-3">  
+        <h3>  
+          <span>
+            User
+          </span>
+        </h3>
+      </div>
+      <hr class="row mt-4 mr-3 ml-3"/>
+      <div class="row mt-4 mr-3 ml-3">
+        <div class="col-xl-6 col-lg-3 col-md-4 col-sm-8 col-12 form-group">
+          <div class="row">
+            <div class="col form-group">
+              <label class="col-form-label required" for="username">
+                Username
+              </label>
+              <input
+                id="name"
+                [class.is-invalid]="isFieldInvalid('username')"
+                name="username"
+                type="text"
+                class="form-control"
+                formControlName="username"
+                required
+              />
+              <div *ngIf="isFieldInvalid('username')" class="text-form-error">
+                <div *ngIf="form.get('username').hasError('required')">
+                  Username is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <label class="col-form-label required" for="authProvider">
+                Auth Provider
+              </label>
+              <ng-select 
+                id="authProvider" 
+                name="authProvider" 
+                class="form-control" 
+                [class.is-invalid]="isFieldInvalid('authProvider')"
+                formControlName="authProvider"
+                bindLabel="name"
+                bindValue="value"
+                (change)="disablePassword($event)"
+                [items]="selectAuthProvider"
+                [virtualScroll]="true" 
+                required
+              >
+              </ng-select>
+              <div
+                *ngIf="isFieldInvalid('authProvider')"
+                class="text-form-error"
+              >
+              <div *ngIf="form.get('authProvider').hasError('required')">
+                Auth Provider is required
+              </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+          <div class="col">
+            <label class="col-form-label" for="activeFlag">
+              Active Flag
+            </label>
+            <div class="col-9 active-pills">
+              <label class="switch switch-label switch-pill switch-primary">
+                <input
+                  id="active-flag"
+                  type="checkbox"
+                  class="switch-input form-control"
+                  formControlName="activeFlag"
+                />
+                <span
+                  class="switch-slider"
+                  data-checked="On"
+                  data-unchecked="Off"
+                ></span>
+              </label>
+            </div>
+          </div>
+          <div class="col">
+            <label class="col-form-label" for="locked">
+              Locked
+            </label>
+            <div class="col-9 active-pills">
+              <label class="switch switch-label switch-pill switch-primary">
+                <input
+                  id="locked"
+                  type="checkbox"
+                  class="switch-input form-control"
+                  formControlName="locked"
+                />
+                <span
+                  class="switch-slider"
+                  data-checked="On"
+                  data-unchecked="Off"
+                ></span>
+              </label>
+            </div>
+          </div>      
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 form-group">
+          <label class="col-form-label" for="textarea-input">
+            Description
+          </label>
+          <textarea
+            id="textarea-input"
+            name="textarea-input"
+            rows="9"
+            class="form-control"
+            formControlName="description"
+          ></textarea>
+        </div>
+      </div>
+      <div class="row mt-4 mr-3 ml-3">  
+          <h3>  
+              Password
+          </h3>
+      </div>
+      <hr class="row mt-4 mr-3 ml-3" />
+      <div class="row mt-4 mr-3 ml-3">
+          <div class="col-xl-6 col-lg-3 col-md-4 col-sm-8 col-12 form-group">
+            <div class="row">
+              <div class="col form-group">
+                <label class="col-form-label" for="newPassword">
+                  Password
+                </label>
+                <input
+                  id="newPassword"
+                  name="newPassword"
+                  type="password"
+                  class="form-control"
+                  formControlName="newPassword"
+                  [class.is-invalid]="form.get('newPassword').errors?.mustMatch || form.get('newPassword').errors?.required || isFieldInvalid('newPassword')"   
+                />
+                <div *ngIf="form.get('newPassword').errors" class="text-form-error">
+                  <div *ngIf="form.get('newPassword').errors.minlength">
+                    Password must be at least 8 characters
+                  </div>
+                  <div *ngIf="form.get('newPassword').errors.required">
+                    Password is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col form-group">
+                <label class="col-form-label" for="cfmNewPassword">
+                  Confirm Password
+                </label>
+                <input
+                  id="cfmNewPassword"
+                  name="cfmNewPassword"
+                  type="password"
+                  class="form-control"
+                  formControlName="cfmNewPassword"
+                  [class.is-invalid]="form.get('cfmNewPassword').errors?.mustMatch"
+                />
+                <div *ngIf="form.get('cfmNewPassword').errors" class="text-form-error">
+                  <div *ngIf="form.get('cfmNewPassword').errors.mustMatch">
+                    Password does not match
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="row mt-4 mr-3 ml-3">
+          
+        </div>
+      <div *ngIf="editable" class="row mt-3 mr-3 ml-3 mb-5">
+        <div class="col form-group">
+          <div class="form-actions submit-button mt-5">
+            <button type="submit" class="btn btn-sm btn-primary">
+              <i class="fa fa-dot-circle-o"></i> 
+              Submit
+            </button>
+            <button
+              (click)="this.location.back()"
+              type="button"
+              class="btn btn-sm btn-secondary cancel-buttons"
+            >
+              <i class="fa fa-ban"></i>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<user-role-table *ngIf="path !== 'Add'"></user-role-table>
+
+<user-organization-table *ngIf="path !== 'Add'"></user-organization-table>
