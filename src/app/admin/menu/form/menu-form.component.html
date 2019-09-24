@@ -46,16 +46,33 @@
 
             <!-- Icon -->
             <fieldset class="form-group">
-              <label class="col-form-label" for="url">Icon</label>
+              <label class="col-form-label" for="icon">Icon</label>
               <ng-select
                 [items]="icons"
                 [virtualScroll]="true"
+                groupBy="groupName"
                 bindLabel="name"
                 bindValue="value"
                 formControlName="icon"
+                id="icon"
                 labelForId="icon"
                 placeholder="Select icon"
               >
+                <ng-template
+                  let-name="item.name"
+                  let-value="item.value"
+                  ng-label-tmp
+                >
+                  <i [class]="'icons ' + value"></i>
+                  {{ name }}
+                </ng-template>
+                <ng-template
+                  let-groupName="item.groupName"
+                  let-index="index"
+                  ng-optgroup-tmp
+                >
+                  Group icons <b>"{{ groupName }}"</b>
+                </ng-template>
                 <ng-template
                   let-name="item.name"
                   let-value="item.value"

@@ -23,7 +23,7 @@ export class OrganizationFormComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private adminOrganizationService: OrganizationService,
+    private organizationService: OrganizationService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     public location: Location,
@@ -46,7 +46,7 @@ export class OrganizationFormComponent implements OnInit {
     this.searchOrganization();
 
     if (this.id) {
-      this.adminOrganizationService.getOrganization(this.id).subscribe(data => {
+      this.organizationService.getOrganization(this.id).subscribe(data => {
         this.form.patchValue(data);
 
         this.form.get('activeFlag').setValue(data['activeFlag'] === 'Y');
@@ -64,7 +64,7 @@ export class OrganizationFormComponent implements OnInit {
   }
 
   setParent(parentId: number) {
-    this.adminOrganizationService.getOrganization(parentId).subscribe(data => {
+    this.organizationService.getOrganization(parentId).subscribe(data => {
       this.parentOrganization = [data];
       this.form.get('parentId').setValue(parentId);
     });
@@ -83,7 +83,7 @@ export class OrganizationFormComponent implements OnInit {
             searchTerm: searchTerm
           };
 
-          return this.adminOrganizationService.getOrganizations(page);
+          return this.organizationService.getOrganizations(page);
         }),
       )
       .subscribe(data => {
@@ -98,14 +98,14 @@ export class OrganizationFormComponent implements OnInit {
     }
 
     if (this.id) {
-      this.adminOrganizationService
+      this.organizationService
         .editOrganization(this.id, normalizeFlag(this.form))
         .subscribe(data => {
           this.router.navigate(['/admin/organizations'])
             .then(() => this.toastr.success(data.message, 'Edit Organization'));
         });
     } else {
-      this.adminOrganizationService
+      this.organizationService
         .addOrganization(normalizeFlag(this.form))
         .subscribe(data => {
           this.router.navigate(['/admin/organizations'])

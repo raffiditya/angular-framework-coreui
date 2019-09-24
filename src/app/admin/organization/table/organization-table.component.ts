@@ -19,7 +19,7 @@ export class OrganizationTableComponent implements OnInit {
   sortTable: Function = sortTable;
 
   constructor(
-    private adminOrganizationService: OrganizationService,
+    private organizationService: OrganizationService,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService
   ) {}
@@ -35,7 +35,7 @@ export class OrganizationTableComponent implements OnInit {
       this.page.pageNumber = pageNumber;
     }
 
-    this.adminOrganizationService.getOrganizations(this.page)
+    this.organizationService.getOrganizations(this.page)
       .pipe(
         finalize(() => this.loadingIndicator = false)
       )
@@ -47,7 +47,7 @@ export class OrganizationTableComponent implements OnInit {
   }
 
   inactivateOrg(orgId: number) {
-    this.adminOrganizationService.deleteOrganization(orgId)
+    this.organizationService.deleteOrganization(orgId)
       .subscribe(data => {
         this.toastr.success(data.message, 'Delete Organization');
         this.getOrganization();

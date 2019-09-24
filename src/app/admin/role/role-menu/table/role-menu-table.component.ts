@@ -22,7 +22,7 @@ export class RoleMenuTableComponent implements OnInit {
   sortTable: Function = sortTable;
 
   constructor(
-    private adminRoleMenuService: RoleMenuService,
+    private roleMenuService: RoleMenuService,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService
   ) {}
@@ -39,7 +39,7 @@ export class RoleMenuTableComponent implements OnInit {
       this.page.pageNumber = pageNumber;
     }
 
-    this.adminRoleMenuService.getAssignedMenus(this.roleId, this.page)
+    this.roleMenuService.getAssignedMenus(this.roleId, this.page)
       .pipe(
         map(data => ({
           totalElements: data.totalElements,
@@ -63,7 +63,7 @@ export class RoleMenuTableComponent implements OnInit {
   }
 
   inactivateRoleMenu(roleMenuId: number) {
-    this.adminRoleMenuService.deleteAssignedMenu(roleMenuId)
+    this.roleMenuService.deleteAssignedMenu(roleMenuId)
       .subscribe(data => {
         this.toastr.success(data.message, 'Delete Role Menu');
         this.getRoleMenu();

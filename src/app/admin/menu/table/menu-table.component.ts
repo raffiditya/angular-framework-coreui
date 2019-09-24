@@ -19,7 +19,7 @@ export class MenuTableComponent implements OnInit {
   sortTable: Function = sortTable;
 
   constructor(
-    private adminMenuService: MenuService,
+    private menuService: MenuService,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService
   ) {}
@@ -35,7 +35,7 @@ export class MenuTableComponent implements OnInit {
       this.page.pageNumber = pageNumber;
     }
 
-    this.adminMenuService.getMenus(this.page)
+    this.menuService.getMenus(this.page)
       .pipe(
         finalize(() => this.loadingIndicator = false)
       )
@@ -47,7 +47,7 @@ export class MenuTableComponent implements OnInit {
   }
 
   inactivateMenu(menuId: number) {
-    this.adminMenuService.deleteMenu(menuId)
+    this.menuService.deleteMenu(menuId)
       .subscribe(data => {
         this.toastr.success(data.message, 'Delete Menu');
         this.getMenu();

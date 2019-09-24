@@ -6,9 +6,7 @@ import { AuthService } from '../core/services/auth.service';
 })
 export class DashboardComponent {
 
-  constructor(private authService: AuthService) {
-    console.log(this.authService.organizationList);
-  }
+  constructor(private authService: AuthService) {}
 
   get organizations() {
     return this.authService.organizationNameList;

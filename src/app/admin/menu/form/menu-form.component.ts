@@ -25,7 +25,7 @@ export class MenuFormComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private adminMenuService: MenuService,
+    private menuService: MenuService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     public location: Location,
@@ -51,7 +51,7 @@ export class MenuFormComponent implements OnInit {
     this.searchMenu();
 
     if (this.id) {
-      this.adminMenuService
+      this.menuService
         .getMenu(this.id)
         .subscribe(data => {
           this.form.patchValue(data);
@@ -72,7 +72,7 @@ export class MenuFormComponent implements OnInit {
   }
 
   setParent(parentId: number) {
-    this.adminMenuService
+    this.menuService
       .getMenu(parentId)
       .subscribe(data => this.menus = [data]);
   }
@@ -90,7 +90,7 @@ export class MenuFormComponent implements OnInit {
             searchTerm: searchTerm
           };
 
-          return this.adminMenuService.getMenus(page);
+          return this.menuService.getMenus(page);
         }),
       )
       .subscribe(data => {
@@ -105,14 +105,14 @@ export class MenuFormComponent implements OnInit {
     }
 
     if (this.id) {
-      this.adminMenuService
+      this.menuService
         .editMenu(this.id, normalizeFlag(this.form))
         .subscribe(data => {
           this.router.navigate(['/admin/menu'])
             .then(() => this.toastr.success(data.message, 'Edit Menu'));
         });
     } else {
-      this.adminMenuService
+      this.menuService
         .addMenu(normalizeFlag(this.form))
         .subscribe(data => {
           this.router.navigate(['/admin/menu'])

@@ -20,7 +20,7 @@ export class RoleFormComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private adminRoleService: RoleService,
+    private roleService: RoleService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     public location: Location,
@@ -39,7 +39,7 @@ export class RoleFormComponent implements OnInit {
     this.editable = this.activatedRoute.snapshot.data.editable;
 
     if (this.id) {
-      this.adminRoleService.getRole(this.id).subscribe(data => {
+      this.roleService.getRole(this.id).subscribe(data => {
         this.roleName = data.name;
         this.form.patchValue(data);
 
@@ -61,14 +61,14 @@ export class RoleFormComponent implements OnInit {
     }
 
     if (this.id) {
-      this.adminRoleService
+      this.roleService
         .editRole(this.id, normalizeFlag(this.form))
         .subscribe(data => {
           this.router.navigate(['/admin/role'])
             .then(() => this.toastr.success(data.message, 'Edit Role'));
         });
     } else {
-      this.adminRoleService.addRole(normalizeFlag(this.form))
+      this.roleService.addRole(normalizeFlag(this.form))
         .subscribe(data => {
           this.router.navigate(['/admin/role'])
             .then(() => this.toastr.success(data.message, 'Add Role'));

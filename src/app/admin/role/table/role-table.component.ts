@@ -19,7 +19,7 @@ export class RoleTableComponent implements OnInit {
   sortTable: Function = sortTable;
 
   constructor(
-    private adminRoleService: RoleService,
+    private roleService: RoleService,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService
   ) {}
@@ -35,7 +35,7 @@ export class RoleTableComponent implements OnInit {
       this.page.pageNumber = pageNumber;
     }
 
-    this.adminRoleService.getRoles(this.page)
+    this.roleService.getRoles(this.page)
       .pipe(
         finalize(() => this.loadingIndicator = false)
       )
@@ -47,7 +47,7 @@ export class RoleTableComponent implements OnInit {
   }
 
   inactivateRole(roleId: number) {
-    this.adminRoleService.deleteRole(roleId)
+    this.roleService.deleteRole(roleId)
       .subscribe(data => {
         this.toastr.success(data.message, 'Delete Role');
         this.getRole();

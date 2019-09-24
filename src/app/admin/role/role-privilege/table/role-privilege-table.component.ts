@@ -21,7 +21,7 @@ export class RolePrivilegeTableComponent implements OnInit {
   sortTable: Function = sortTable;
 
   constructor(
-    private adminRolePrivilegeService: RolePrivilegeService,
+    private rolePrivilegeService: RolePrivilegeService,
     private activatedRoute: ActivatedRoute
   ) {}
 
@@ -37,7 +37,7 @@ export class RolePrivilegeTableComponent implements OnInit {
       this.page.pageNumber = pageNumber;
     }
 
-    this.adminRolePrivilegeService.getAssignedPrivileges(this.roleId, this.page)
+    this.rolePrivilegeService.getAssignedPrivileges(this.roleId, this.page)
       .pipe(
         map(data => ({
           totalElements: data.totalElements,
