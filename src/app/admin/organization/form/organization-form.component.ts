@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { Page } from '../../../core/model/page';
+import { Page } from '../../../core/model/page.model';
 import { isFieldInvalid, normalizeFlag } from '../../../util';
 import { OrganizationService } from '../../service/organization.service';
 
@@ -26,7 +26,7 @@ export class OrganizationFormComponent implements OnInit {
     private adminOrganizationService: OrganizationService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
+    public location: Location,
     private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({
@@ -83,7 +83,7 @@ export class OrganizationFormComponent implements OnInit {
             searchTerm: searchTerm
           };
 
-          return this.adminOrganizationService.getOrganizations(page)
+          return this.adminOrganizationService.getOrganizations(page);
         }),
       )
       .subscribe(data => {

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { constant } from '../../../environments/constant';
-import { Page } from '../../core/model/page';
+import { Page } from '../../core/model/page.model';
 
 @Injectable({ providedIn: 'root' })
 export class OrganizationService {

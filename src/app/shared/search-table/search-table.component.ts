@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DatatableComponent } from "@swimlane/ngx-datatable";
-import { Page } from "../../../core/model/page";
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { Page } from '../../core/model/page.model';
 
 const pattern: RegExp = /[^-_ a-zA-Z]/;
 

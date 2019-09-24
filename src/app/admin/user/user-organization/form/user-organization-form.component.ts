@@ -5,9 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { debounceTime, filter, switchMap } from 'rxjs/operators';
-import { Page } from '../../../../core/model/page';
+import { Page } from '../../../../core/model/page.model';
 import { isFieldInvalid, normalizeFlag } from '../../../../util';
-import { OrganizationService } from "../../../service/organization.service";
+import { OrganizationService } from '../../../service/organization.service';
 import { UserOrganizationService } from '../../../service/user-organization.service';
 
 @Component({
@@ -31,7 +31,7 @@ export class UserOrganizationFormComponent implements OnInit {
     private organizationService: OrganizationService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
+    public location: Location,
     private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({
@@ -42,7 +42,7 @@ export class UserOrganizationFormComponent implements OnInit {
         Validators.required,
       ),
       endDate: new FormControl(
-        moment("9999-12-31").format('YYYY-MM-DD'),
+        moment('9999-12-31').format('YYYY-MM-DD'),
         Validators.required,
       ),
       activeFlag: new FormControl(false, Validators.required)

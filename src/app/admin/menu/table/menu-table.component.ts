@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
-import { finalize } from "rxjs/operators";
-import { Page } from '../../../core/model/page';
+import { finalize } from 'rxjs/operators';
+import { Page } from '../../../core/model/page.model';
 import { sortTable } from '../../../util';
 import { MenuService } from '../../service/menu.service';
 

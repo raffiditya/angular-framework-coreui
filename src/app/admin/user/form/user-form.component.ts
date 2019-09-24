@@ -26,7 +26,7 @@ export class UserFormComponent implements OnInit {
     private userService: UserService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
+    public location: Location,
     private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({

@@ -1,11 +1,11 @@
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
-import { NgSelectModule } from "@ng-select/ng-select";
-import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { EllipsisPipe } from "../../shared/pipe/ellipsis.pipe";
-import { SearchTableComponent } from './search-table/search-table.component';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { EllipsisPipe } from '../../shared/pipe/ellipsis.pipe';
+import { SearchTableComponent } from '../../shared/search-table/search-table.component';
 
 @NgModule({
   imports: [

@@ -30,9 +30,7 @@ export class LoginComponent {
 
     this.authService.login(this.userLogin.username, this.userLogin.password)
       .subscribe(
-        _ =>
-          this.router
-            .navigateByUrl('/dashboard'),
+        _ => this.router.navigateByUrl('/dashboard'),
         (error: HttpErrorResponse) => {
           let errorResponse = error as HttpErrorResponse;
           if (errorResponse.status === 401) {

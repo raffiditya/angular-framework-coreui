@@ -4,9 +4,9 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { Page } from "../../../../core/model/page";
+import { Page } from '../../../../core/model/page.model';
 import { isFieldInvalid, normalizeFlag } from '../../../../util';
-import { PrivilegeService } from "../../../service/privilege.service";
+import { PrivilegeService } from '../../../service/privilege.service';
 import { RolePrivilegeService } from '../../../service/role-privilege.service';
 
 @Component({
@@ -29,7 +29,7 @@ export class RolePrivilegeFormComponent implements OnInit {
     private privilegeService: PrivilegeService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
+    public location: Location,
     private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({

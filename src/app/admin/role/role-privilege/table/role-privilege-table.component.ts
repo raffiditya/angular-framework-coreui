@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { finalize, map } from "rxjs/operators";
-import { Page } from '../../../../core/model/page';
+import { finalize, map } from 'rxjs/operators';
+import { Page } from '../../../../core/model/page.model';
 import { sortTable } from '../../../../util';
 import { RolePrivilegeService } from '../../../service/role-privilege.service';
 

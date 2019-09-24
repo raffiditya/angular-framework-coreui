@@ -1,20 +1,19 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {DOCUMENT} from '@angular/common';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 // import { navItems } from '../../_nav';
-import {NavData} from '../../../../_nav';
-import {AuthService} from '../../../services/auth.service';
-import {Router} from '@angular/router';
-import {NavigationService} from '../../../services/navigation.service';
-
+import { NavData } from '../../../../_nav';
+import { AuthService } from '../../../services/auth.service';
+import { NavigationService } from '../../../services/navigation.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
 })
 export class DefaultLayoutComponent implements OnInit, OnDestroy {
+  public element: HTMLElement;
   public navItems: NavData[] = [];
   public sidebarMinimized = true;
-  public element: HTMLElement;
   private changes: MutationObserver;
 
   constructor(private authService: AuthService, private navigationService: NavigationService, private router: Router,
@@ -27,6 +26,18 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       attributes: true,
       attributeFilter: ['class']
     });
+  }
+
+  get organizations() {
+    return this.authService.organizationNameList;
+  }
+
+  get roles() {
+    return this.authService.roleList;
+  }
+
+  get username() {
+    return this.authService.username;
   }
 
   ngOnInit(): void {

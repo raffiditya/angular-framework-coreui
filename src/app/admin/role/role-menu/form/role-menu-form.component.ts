@@ -5,9 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { Page } from "../../../../core/model/page";
+import { Page } from '../../../../core/model/page.model';
 import { isFieldInvalid, normalizeFlag } from '../../../../util';
-import { MenuService } from "../../../service/menu.service";
+import { MenuService } from '../../../service/menu.service';
 import { RoleMenuService } from '../../../service/role-menu.service';
 
 @Component({
@@ -31,7 +31,7 @@ export class RoleMenuFormComponent implements OnInit {
     private menuService: MenuService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
+    public location: Location,
     private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({
@@ -42,7 +42,7 @@ export class RoleMenuFormComponent implements OnInit {
         Validators.required,
       ),
       endDate: new FormControl(
-        moment("9999-12-31").format('YYYY-MM-DD'),
+        moment('9999-12-31').format('YYYY-MM-DD'),
         Validators.required,
       ),
       activeFlag: new FormControl(false, Validators.required)

@@ -23,7 +23,7 @@ export class RoleFormComponent implements OnInit {
     private adminRoleService: RoleService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
+    public location: Location,
     private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({

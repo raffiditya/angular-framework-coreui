@@ -1,5 +1,5 @@
-import { DatatableComponent } from "@swimlane/ngx-datatable";
-import { Page } from "../core/model/page";
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { Page } from '../core/model/page.model';
 
 export function sortTable(page: Page, event: any): void {
   page.pageNumber = 1;

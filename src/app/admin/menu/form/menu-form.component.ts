@@ -4,10 +4,10 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { Page } from '../../../core/model/page';
+import { Page } from '../../../core/model/page.model';
 import { isFieldInvalid, normalizeFlag } from '../../../util';
 import { MenuService } from '../../service/menu.service';
-import { icons, MenuIconModel } from "../menu-icon.model";
+import { icons, MenuIconModel } from '../menu-icon.model';
 
 @Component({
   templateUrl: './menu-form.component.html',
@@ -28,7 +28,7 @@ export class MenuFormComponent implements OnInit {
     private adminMenuService: MenuService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
+    public location: Location,
     private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({

@@ -1,21 +1,12 @@
 {
-  "name": "@coreui/coreui-free-angular-admin-template",
+  "name": "@ets/angular-admin-template",
   "version": "2.5.2",
-  "description": "CoreUI Free Angular 2+ Admin Template",
+  "description": "ETS Angular Admin Template based form CoreUi Free Angular Admin Template",
   "author": {
-    "name": "Łukasz Holeczek",
-    "url": "http://holeczek.pl",
-    "github": "https://github.com/mrholek",
-    "twitter": "https://twitter.com/lukaszholeczek"
+    "name": "Raffi Ditya",
+    "github": "https://github.com/raffidityas"
   },
-  "contributors": [
-    {
-      "name": "Andrzej Kopański",
-      "url": "https://github.com/xidedix"
-    }
-  ],
-  "homepage": "https://coreui.io/angular",
-  "copyright": "Copyright 2019 creativeLabs Łukasz Holeczek",
+  "copyright": "Copyright 2019 PT. Bank Negara Indonesia (Persero), Tbk",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -50,7 +41,6 @@
     "chart.js": "^2.8.0",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.6.9",
-    "flag-icon-css": "^3.3.0",
     "font-awesome": "^4.7.0",
     "moment": "^2.24.0",
     "mutationobserver-shim": "^0.3.3",
