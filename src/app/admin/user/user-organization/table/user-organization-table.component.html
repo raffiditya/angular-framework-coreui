@@ -14,8 +14,8 @@
             <div class="col d-none d-sm-block ml-2">
               <app-search-table
                 (onSearch)="getUserOrganization()"
+                [data]="data"
                 [page]="page"
-                [rows]="rows"
                 [table]="table"
               ></app-search-table>
             </div>
@@ -28,8 +28,8 @@
         <div class="col">
           <app-search-table
             (onSearch)="getUserOrganization()"
+            [data]="data"
             [page]="page"
-            [rows]="rows"
             [table]="table"
           ></app-search-table>
         </div>
@@ -39,16 +39,16 @@
           <ngx-datatable
               #table
               (page)="getUserOrganization($event.offset + 1)"
-              (sort)="sortTable(page, $event); getUserOrganization();"
+              (sort)="sortTableFn(page, $event); getUserOrganization();"
               [columnMode]="ColumnMode.force"
-              [count]="page.totalElements"
+              [count]="totalElements"
               [externalPaging]="true"
               [externalSorting]="true"
               [footerHeight]="50"
               [headerHeight]="50"
               [limit]="page.size"
               [loadingIndicator]="loadingIndicator"
-              [offset]="page.pageNumber - 1"
+              [offset]="offset"
               [rowHeight]="50"
               [rows]="rows"
               [scrollbarH]="true"
@@ -64,7 +64,7 @@
                 let-endDate="row.endDate"
                 let-expanded="true"
                 let-id="row.id"
-                let-name="row.orgName"
+                let-name="row.organization.name"
                 let-startDate="row.startDate"
                 ngx-datatable-row-detail-template
               >
@@ -153,7 +153,7 @@
               [draggable]="false"
               [sortable]="true"
               name="Name"
-              prop="orgName"
+              prop="organization.name"
             >
               <ng-template let-value="value" ngx-datatable-cell-template>
                 {{ value | ellipsis: 15 }}
@@ -214,7 +214,7 @@
               <ng-template
                 let-activeFlag="row.activeFlag"
                 let-id="row.id"
-                let-name="row.orgName"
+                let-name="row.organization.name"
                 ngx-datatable-cell-template
               >
                 <button

@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-header-blue">
       <span class="font-weight-bold mt-2">
-        {{ path }} Role
+        {{ title }} Role
       </span>
     </div>
     <div class="card-body">
@@ -96,6 +96,6 @@
   </div>
 </div>
 
-<role-menu-table *ngIf="path !== 'Add'" [editable]="editable"></role-menu-table>
+<role-menu-table *ngIf="title !== 'Add'" [editable]="editable"></role-menu-table>
 
-<role-privilege-table *ngIf="path !== 'Add'" [editable]="editable"></role-privilege-table>
+<role-privilege-table *ngIf="title !== 'Add'" [editable]="editable"></role-privilege-table>

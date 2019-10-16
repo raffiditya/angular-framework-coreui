@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { finalize, map } from 'rxjs/operators';
-import { Page } from '../../../../core/model/page.model';
-import { sortTable } from '../../../../util';
-import { RolePrivilegeService } from '../../../service/role-privilege.service';
+import { finalize } from 'rxjs/operators';
+import { PagedApiResponse, PageRequest } from '../../../../lib/model';
+import { sortTableFn } from '../../../../util';
+import { RolePrivilege } from '../../../model';
+import { RolePrivilegeService } from '../../../service';
 
 @Component({
   selector: 'role-privilege-table',
@@ -13,50 +14,44 @@ import { RolePrivilegeService } from '../../../service/role-privilege.service';
 export class RolePrivilegeTableComponent implements OnInit {
 
   ColumnMode = ColumnMode;
+  data: PagedApiResponse<RolePrivilege>;
   @Input() editable: boolean;
   loadingIndicator: boolean;
-  page: Page = new Page();
+  page: PageRequest = new PageRequest();
   roleId: number;
-  rows: any[] = [];
-  sortTable: Function = sortTable;
+  sortTableFn: Function = sortTableFn;
 
   constructor(
     private rolePrivilegeService: RolePrivilegeService,
     private activatedRoute: ActivatedRoute
   ) {}
 
+  get offset(): number {
+    return !!(this.data && this.data.number) ? this.data.number : 0;
+  }
+
+  get rows(): Array<RolePrivilege> {
+    return !!(this.data && this.data.content) ? this.data.content : [];
+  }
+
+  get totalElements(): number {
+    return !!(this.data && this.data.totalElements) ? this.data.totalElements : 0;
+  }
+
   ngOnInit() {
     this.roleId = Number(this.activatedRoute.snapshot.paramMap.get('roleId'));
     this.getRolePrivilege();
   }
 
-  getRolePrivilege(pageNumber?: number) {
+  getRolePrivilege(pageNumber: number = 1) {
     this.loadingIndicator = true;
+    this.page.page = pageNumber;
 
-    if (pageNumber) {
-      this.page.pageNumber = pageNumber;
-    }
-
-    this.rolePrivilegeService.getAssignedPrivileges(this.roleId, this.page)
+    this.rolePrivilegeService
+      .getRowsFromRelation(this.page, this.roleId)
       .pipe(
-        map(data => ({
-          totalElements: data.totalElements,
-          totalPages: data.totalPages,
-          content: data.content
-            .map(content => {
-              const { ...others } = content;
-              return {
-                ...others,
-                privilegeName: content.privilege.name
-              }
-            })
-        })),
         finalize(() => this.loadingIndicator = false)
       )
-      .subscribe(data => {
-        this.page.totalElements = data.totalElements;
-        this.page.totalPages = data.totalPages;
-        this.rows = data.content;
-      });
+      .subscribe(data => this.data = data);
   }
 }

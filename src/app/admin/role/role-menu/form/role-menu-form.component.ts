@@ -1,14 +1,12 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
-import { ToastrService } from 'ngx-toastr';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { Page } from '../../../../core/model/page.model';
 import { isFieldInvalid, normalizeFlag } from '../../../../util';
-import { MenuService } from '../../../service/menu.service';
-import { RoleMenuService } from '../../../service/role-menu.service';
+import { Menu } from '../../../model';
+import { MenuService, RoleMenuService } from '../../../service';
 
 @Component({
   templateUrl: './role-menu-form.component.html',
@@ -21,18 +19,16 @@ export class RoleMenuFormComponent implements OnInit {
   id: number = 0;
   isFieldInvalid = isFieldInvalid;
   menuTypeahead: EventEmitter<string> = new EventEmitter<string>();
-  menus: any[] = [];
-  path: string = '';
+  menus: Menu[] = [];
   roleId: number;
+  title: string = '';
 
   constructor(
-    private router: Router,
     private roleMenuService: RoleMenuService,
     private menuService: MenuService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     public location: Location,
-    private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({
       roleId: new FormControl(null, Validators.required),
@@ -52,25 +48,24 @@ export class RoleMenuFormComponent implements OnInit {
   ngOnInit() {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('roleMenuId'));
     this.roleId = Number(this.activatedRoute.snapshot.paramMap.get('roleId'));
-    this.path = this.activatedRoute.snapshot.data.title;
+    this.title = this.activatedRoute.snapshot.data.title;
     this.editable = this.activatedRoute.snapshot.data.editable;
     this.searchMenu();
-
     this.form.get('roleId').setValue(this.roleId);
+
+    if (!this.editable) {
+      this.form.disable();
+    }
+
     if (this.id) {
-      this.roleMenuService.getAssignedMenu(this.id)
+      this.roleMenuService
+        .get(this.id)
         .subscribe(data => {
           this.form.patchValue(data);
 
-          this.form.get('activeFlag').setValue(data['activeFlag'] === 'Y');
+          this.form.get('activeFlag').setValue(data.activeFlag === 'Y');
           this.form.get('menuId').setValue(data.menu.id);
           this.menus = [data.menu];
-
-          if (this.editable) {
-            this.form.enable();
-          } else {
-            this.form.disable();
-          }
         });
     }
   }
@@ -81,19 +76,9 @@ export class RoleMenuFormComponent implements OnInit {
         tap(() => this.menus = []),
         filter(t => t && t.length >= 2),
         debounceTime(300),
-        switchMap(searchTerm => {
-          let page: Page = {
-            size: 3,
-            pageNumber: 1,
-            searchTerm: searchTerm
-          };
-
-          return this.menuService.getMenus(page);
-        }),
+        switchMap(searchText => this.menuService.search(searchText))
       )
-      .subscribe(data => {
-        this.menus = data.content;
-      });
+      .subscribe(data => this.menus = data);
   }
 
   onSubmit() {
@@ -103,17 +88,13 @@ export class RoleMenuFormComponent implements OnInit {
     }
 
     if (this.id) {
-      this.roleMenuService.editAssignedMenu(this.id, normalizeFlag(this.form))
-        .subscribe(data => {
-          this.toastr.success(data.message, 'Edit Assign Menu to Role');
-          this.location.back();
-        });
+      this.roleMenuService
+        .edit(this.id, normalizeFlag(this.form))
+        .subscribe(() => this.location.back());
     } else {
-      this.roleMenuService.addAssignedMenu(normalizeFlag(this.form))
-        .subscribe(data => {
-          this.toastr.success(data.message, 'Add Assign Menu to Role');
-          this.location.back();
-        });
+      this.roleMenuService
+        .add(normalizeFlag(this.form))
+        .subscribe(() => this.location.back());
     }
   }
 }

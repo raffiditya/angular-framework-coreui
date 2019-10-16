@@ -14,9 +14,9 @@
             <div class="col d-none d-sm-block ml-2">
               <app-search-table
                 (onSearch)="getRolePrivilege()"
+                [data]="data"
                 [page]="page"
-                [rows]="rows"
-                [table]="table"
+                [table]="rolePrivilegeTable"
               ></app-search-table>
             </div>
           </div>
@@ -28,27 +28,27 @@
         <div class="col">
           <app-search-table
             (onSearch)="getRolePrivilege()"
+            [data]="data"
             [page]="page"
-            [rows]="rows"
-            [table]="table"
+            [table]="rolePrivilegeTable"
           ></app-search-table>
         </div>
       </div>
       <div class="row">
         <div class="col">
           <ngx-datatable
-              #table
+              #rolePrivilegeTable
               (page)="getRolePrivilege($event.offset + 1)"
-              (sort)="sortTable(page, $event); getRolePrivilege();"
+              (sort)="sortTableFn(page, $event); getRolePrivilege();"
               [columnMode]="ColumnMode.force"
-              [count]="page.totalElements"
+              [count]="totalElements"
               [externalPaging]="true"
               [externalSorting]="true"
               [footerHeight]="50"
               [headerHeight]="50"
               [limit]="page.size"
               [loadingIndicator]="loadingIndicator"
-              [offset]="page.pageNumber - 1"
+              [offset]="offset"
               [rowHeight]="50"
               [rows]="rows"
               [scrollbarH]="true"
@@ -119,7 +119,7 @@
                 ngx-datatable-cell-template
               >
                 <a
-                  (click)="table.rowDetail.toggleExpandRow(row)"
+                  (click)="rolePrivilegeTable.rowDetail.toggleExpandRow(row)"
                   [class.datatable-icon-down]="expanded"
                   [class.datatable-icon-right]="!expanded"
                   title="Expand/Collapse Row"
@@ -133,7 +133,7 @@
               [draggable]="false"
               [sortable]="true"
               name="Name"
-              prop="privilegeName"
+              prop="privilege.name"
             >
               <ng-template let-value="value" ngx-datatable-cell-template>
                 {{ value | ellipsis: 15 }}

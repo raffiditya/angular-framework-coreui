@@ -14,8 +14,8 @@
             <div class="col d-none d-sm-block ml-2">
               <app-search-table
                 (onSearch)="getOrganization()"
+                [data]="data"
                 [page]="page"
-                [rows]="rows"
                 [table]="table"
               ></app-search-table>
             </div>
@@ -28,8 +28,8 @@
         <div class="col">
           <app-search-table
             (onSearch)="getOrganization()"
+            [data]="data"
             [page]="page"
-            [rows]="rows"
             [table]="table"
           ></app-search-table>
         </div>
@@ -39,16 +39,16 @@
           <ngx-datatable
               #table
               (page)="getOrganization($event.offset + 1)"
-              (sort)="sortTable(page, $event); getOrganization();"
+              (sort)="sortTableFn(page, $event); getOrganization();"
               [columnMode]="ColumnMode.force"
-              [count]="page.totalElements"
+              [count]="totalElements"
               [externalPaging]="true"
               [externalSorting]="true"
               [footerHeight]="50"
               [headerHeight]="50"
               [limit]="page.size"
               [loadingIndicator]="loadingIndicator"
-              [offset]="page.pageNumber - 1"
+              [offset]="offset"
               [rowHeight]="50"
               [rows]="rows"
               [scrollbarH]="true"

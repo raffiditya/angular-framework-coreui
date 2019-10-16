@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
-import { Page } from '../../../core/model/page.model';
-import { sortTable } from '../../../util';
-import { OrganizationService } from '../../service/organization.service';
+import { PagedApiResponse, PageRequest } from '../../../lib/model';
+import { sortTableFn } from '../../../util';
+import { Organization } from '../../model';
+import { OrganizationService } from '../../service';
 
 @Component({
   templateUrl: './organization-table.component.html'
@@ -13,44 +12,42 @@ import { OrganizationService } from '../../service/organization.service';
 export class OrganizationTableComponent implements OnInit {
 
   ColumnMode = ColumnMode;
+  data: PagedApiResponse<Organization>;
   loadingIndicator: boolean;
-  page: Page = new Page();
-  rows: any[] = [];
-  sortTable: Function = sortTable;
+  page: PageRequest = new PageRequest();
+  sortTableFn: Function = sortTableFn;
 
-  constructor(
-    private organizationService: OrganizationService,
-    private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
-  ) {}
+  constructor(private organizationService: OrganizationService) {}
+
+  get offset(): number {
+    return !!(this.data && this.data.number) ? this.data.number : 0;
+  }
+
+  get rows(): Array<Organization> {
+    return !!(this.data && this.data.content) ? this.data.content : [];
+  }
+
+  get totalElements(): number {
+    return !!(this.data && this.data.totalElements) ? this.data.totalElements : 0;
+  }
 
   ngOnInit() {
     this.getOrganization();
   }
 
-  getOrganization(pageNumber?: number) {
+  getOrganization(pageNumber: number = 1) {
     this.loadingIndicator = true;
+    this.page.page = pageNumber;
 
-    if (pageNumber) {
-      this.page.pageNumber = pageNumber;
-    }
-
-    this.organizationService.getOrganizations(this.page)
+    this.organizationService.getTableRows(this.page)
       .pipe(
         finalize(() => this.loadingIndicator = false)
       )
-      .subscribe(data => {
-        this.page.totalElements = data.totalElements;
-        this.page.totalPages = data.totalPages;
-        this.rows = data.content;
-      });
+      .subscribe(data => this.data = data);
   }
 
   inactivateOrg(orgId: number) {
-    this.organizationService.deleteOrganization(orgId)
-      .subscribe(data => {
-        this.toastr.success(data.message, 'Delete Organization');
-        this.getOrganization();
-      });
+    this.organizationService.delete(orgId)
+      .subscribe(() => this.getOrganization());
   }
 }

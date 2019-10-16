@@ -3,16 +3,20 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { AppBreadcrumbModule, AppFooterModule, AppHeaderModule, AppSidebarModule, } from '@coreui/angular';
+import { AppBreadcrumbModule, AppFooterModule, AppHeaderModule, AppSidebarModule } from '@coreui/angular';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
-import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { BlockUIModule } from 'ng-block-ui';
 import { BlockUIHttpModule } from 'ng-block-ui/http';
 import { BsDatepickerModule, BsDropdownModule } from 'ngx-bootstrap';
 import { PerfectScrollbarConfigInterface, PerfectScrollbarModule, } from 'ngx-perfect-scrollbar';
 import { ToastrModule } from 'ngx-toastr';
 import { CoreRoutingModule } from './core-routing.module';
-import { TokenInterceptorService } from './services/http-interceptors/token-interceptor.service';
+import {
+  NotifierInterceptorService,
+  ResponseInterceptorService,
+  TokenInterceptorService
+} from './services/http-interceptors';
 import {
   BlockUiTemplateComponent,
   DefaultLayoutComponent,
@@ -21,6 +25,7 @@ import {
   P500Component,
 } from './views';
 
+// noinspection JSUnusedLocalSymbols
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
 };
@@ -44,6 +49,9 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
       template: BlockUiTemplateComponent,
       delayStart: 500,
       delayStop: 500,
+    }),
+    BlockUIHttpModule.forRoot({
+      blockAllRequestsInProgress: true
     }),
     LoadingBarRouterModule,
     ToastrModule.forRoot({
@@ -82,6 +90,16 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ResponseInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: NotifierInterceptorService,
       multi: true,
     },
   ],

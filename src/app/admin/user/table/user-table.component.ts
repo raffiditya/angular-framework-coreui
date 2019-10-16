@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
-import { Page } from '../../../core/model/page.model';
-import { sortTable } from '../../../util';
-import { UserService } from '../../service/user.service';
+import { PagedApiResponse, PageRequest } from '../../../lib/model';
+import { sortTableFn } from '../../../util';
+import { User } from '../../model';
+import { UserService } from '../../service';
 
 @Component({
   templateUrl: './user-table.component.html'
@@ -13,44 +12,44 @@ import { UserService } from '../../service/user.service';
 export class UserTableComponent implements OnInit {
 
   ColumnMode = ColumnMode;
+  data: PagedApiResponse<User>;
   loadingIndicator: boolean;
-  page: Page = new Page();
-  rows: any[] = [];
-  sortTable: Function = sortTable;
+  page: PageRequest = new PageRequest();
+  sortTableFn: Function = sortTableFn;
 
-  constructor(
-    private userService: UserService,
-    private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
-  ) {}
+  constructor(private userService: UserService) {}
+
+  get offset(): number {
+    return !!(this.data && this.data.number) ? this.data.number : 0;
+  }
+
+  get rows(): Array<User> {
+    return !!(this.data && this.data.content) ? this.data.content : [];
+  }
+
+  get totalElements(): number {
+    return !!(this.data && this.data.totalElements) ? this.data.totalElements : 0;
+  }
 
   ngOnInit() {
     this.getUsers();
   }
 
-  getUsers(pageNumber?: number) {
+  getUsers(pageNumber: number = 1) {
     this.loadingIndicator = true;
+    this.page.page = pageNumber;
 
-    if (pageNumber) {
-      this.page.pageNumber = pageNumber;
-    }
-
-    this.userService.getUsers(this.page)
+    this.userService
+      .getTableRows(this.page)
       .pipe(
         finalize(() => this.loadingIndicator = false)
       )
-      .subscribe(data => {
-        this.page.totalElements = data.totalElements;
-        this.page.totalPages = data.totalPages;
-        this.rows = data['content'];
-      });
+      .subscribe(data => this.data = data);
   }
 
   inactivateUser(userId: number) {
-    this.userService.deleteUser(userId)
-      .subscribe(data => {
-        this.toastr.success(data.message, 'Delete User');
-        this.getUsers();
-      });
+    this.userService
+      .delete(userId)
+      .subscribe(() => this.getUsers());
   }
 }

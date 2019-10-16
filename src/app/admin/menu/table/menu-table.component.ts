@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
-import { Page } from '../../../core/model/page.model';
-import { sortTable } from '../../../util';
-import { MenuService } from '../../service/menu.service';
+import { PagedApiResponse, PageRequest } from '../../../lib/model';
+import { sortTableFn } from '../../../util';
+import { Menu } from '../../model';
+import { MenuService } from '../../service';
 
 @Component({
   templateUrl: './menu-table.component.html'
@@ -13,44 +12,43 @@ import { MenuService } from '../../service/menu.service';
 export class MenuTableComponent implements OnInit {
 
   ColumnMode = ColumnMode;
+  data: PagedApiResponse<Menu>;
   loadingIndicator: boolean;
-  page: Page = new Page();
-  rows: any[] = [];
-  sortTable: Function = sortTable;
+  page: PageRequest = new PageRequest();
+  sortTableFn: Function = sortTableFn;
 
-  constructor(
-    private menuService: MenuService,
-    private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
-  ) {}
+  constructor(private menuService: MenuService) {}
+
+  get offset(): number {
+    return !!(this.data && this.data.number) ? this.data.number : 0;
+  }
+
+  get rows(): Array<Menu> {
+    return !!(this.data && this.data.content) ? this.data.content : [];
+  }
+
+  get totalElements(): number {
+    return !!(this.data && this.data.totalElements) ? this.data.totalElements : 0;
+  }
 
   ngOnInit() {
     this.getMenu();
   }
 
-  getMenu(pageNumber?: number) {
+  getMenu(pageNumber: number = 1) {
     this.loadingIndicator = true;
+    this.page.page = pageNumber;
 
-    if (pageNumber) {
-      this.page.pageNumber = pageNumber;
-    }
-
-    this.menuService.getMenus(this.page)
+    this.menuService
+      .getTableRows(this.page)
       .pipe(
         finalize(() => this.loadingIndicator = false)
       )
-      .subscribe(data => {
-        this.page.totalElements = data.totalElements;
-        this.page.totalPages = data.totalPages;
-        this.rows = data.content;
-      });
+      .subscribe(data => this.data = data);
   }
 
   inactivateMenu(menuId: number) {
-    this.menuService.deleteMenu(menuId)
-      .subscribe(data => {
-        this.toastr.success(data.message, 'Delete Menu');
-        this.getMenu();
-      });
+    this.menuService.delete(menuId)
+      .subscribe(() => this.getMenu());
   }
 }

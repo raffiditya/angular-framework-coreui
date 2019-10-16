@@ -1,10 +1,10 @@
 <!--[navbarBrandFull]="{src: 'assets/img/brand/logo.svg', width: 89, height: 25, alt: 'CoreUI Logo'}"
   [navbarBrandMinimized]="{src: 'assets/img/brand/bni-small.png', width: 30, height: 30, alt: 'CoreUI Logo'}"-->
 <app-header
-  [navbarBrandRouterLink]="['/dashboard']"
   [asideMenuToggler]="false"
-  [mobileAsideMenuToggler]="false"
   [fixed]="true"
+  [mobileAsideMenuToggler]="false"
+  [navbarBrandRouterLink]="['/dashboard']"
   [navbarBrandText]="{icon: '<img src=\'assets/img/brand/bni-small.png\'/>', text: 'Example App'}"
   [sidebarToggler]="false">
   <button [appSidebarToggler]="'lg'" class="navbar-toggler d-md-down-none" type="button">
@@ -17,7 +17,8 @@
   </ul>
   <ul class="nav navbar-nav ml-auto">
     <li class="nav-item dropdown" dropdown>
-      <a (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown" dropdownToggle
+      <a (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown"
+         dropdownToggle
          href="#" role="button">
         <i class="fa fa-user-circle-o fa-2x mt-4" style="display: inline;"></i>
       </a>
@@ -26,15 +27,16 @@
         <span class="dropdown-item"><i class="icons icon-star"></i> {{ roles }}</span>
         <span class="dropdown-item"><i class="fa fa-users"></i> {{ organizations }}</span>
         <div class="dropdown-header text-center"><strong>Settings</strong></div>
-        <a (click)="onLogout()" class="dropdown-item" role="button" routerLink=""><i
-          class="icons cui-account-logout"></i> Logout</a>
+        <button (click)="onLogout()" class="dropdown-item">
+          <i class="icons cui-account-logout"></i> Logout
+        </button>
       </div>
     </li>
   </ul>
 </app-header>
 <div class="app-body">
-  <app-sidebar [fixed]="true" [display]="'lg'">
-    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+  <app-sidebar [display]="'lg'" [fixed]="true">
+    <app-sidebar-nav [disabled]="sidebarMinimized" [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
     <app-sidebar-minimizer></app-sidebar-minimizer>
   </app-sidebar>
   <!-- Main content -->
@@ -44,8 +46,8 @@
     <cui-breadcrumb>
       <!-- Breadcrumb Menu-->
       <li class="breadcrumb-menu d-md-down-none">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-          <a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>
+        <div aria-label="Button group with nested dropdown" class="btn-group" role="group">
+          <a [routerLink]="['/dashboard']" class="btn"><i class="icon-graph"></i> &nbsp;Dashboard</a>
         </div>
       </li>
     </cui-breadcrumb>

@@ -1,10 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute } from '@angular/router';
 import { isFieldInvalid, normalizeFlag } from '../../../util';
-import { UserService } from '../../service/user.service';
+import { UserService } from '../../service';
 
 @Component({
   templateUrl: './user-form.component.html',
@@ -15,19 +14,17 @@ export class UserFormComponent implements OnInit {
   form: FormGroup;
   id: number = 0;
   isFieldInvalid = isFieldInvalid;
-  path: string = '';
-  selectAuthProvider: any = [
+  readonly selectAuthProvider: any = [
     { value: 'LDAP', name: 'LDAP' },
     { value: 'LOCAL', name: 'LOCAL' },
   ];
+  title: string = '';
 
   constructor(
-    private router: Router,
     private userService: UserService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    public location: Location,
-    private toastr: ToastrService,
+    public location: Location
   ) {
     this.form = formBuilder.group({
       username: new FormControl('', [
@@ -47,37 +44,35 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit() {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('userId'));
-    this.path = this.activatedRoute.snapshot.data.title;
+    this.title = this.activatedRoute.snapshot.data.title;
     this.editable = this.activatedRoute.snapshot.data.editable;
 
+    if (!this.editable) {
+      this.form.disable();
+    }
+
     if (this.id) {
-      this.userService.getUser(this.id)
+      this.userService
+        .get(this.id)
         .subscribe(data => {
-          // hacky stupid backend mistake.
-          data.password = '';
           this.form.patchValue(data);
 
-          this.form.get('activeFlag').setValue(data['activeFlag'] === 'Y');
-          this.form.get('locked').setValue(data['locked'] === 'Y');
+          this.form.get('activeFlag').setValue(data.activeFlag === 'Y');
+          this.form.get('locked').setValue(data.locked === 'Y');
 
+          // Change Password validator
           if (this.editable) {
-            this.form.enable();
-
-            if (this.path === 'Edit') {
-              this.form.get('password').clearValidators();
-              this.form.get('password').updateValueAndValidity();
-              this.form.get('confirmPassword').clearValidators();
-              this.form.get('confirmPassword').updateValueAndValidity();
-            }
-          } else {
-            this.form.disable();
+            this.form.get('password').clearValidators();
+            this.form.get('password').updateValueAndValidity();
+            this.form.get('confirmPassword').clearValidators();
+            this.form.get('confirmPassword').updateValueAndValidity();
           }
         });
     }
   }
 
   onChangePassword($event): void {
-    if (this.path === 'Add') {
+    if (this.title === 'Add') {
       return;
     }
 
@@ -91,16 +86,16 @@ export class UserFormComponent implements OnInit {
   }
 
   onAuthenticationChange($event): void {
-    if (!this.editable) {
+    if (!this.editable || !$event) {
       return;
     }
 
-    if ('LOCAL' !== $event.value) {
-      this.form.get('password').disable();
-      this.form.get('confirmPassword').disable();
-    } else {
+    if ('LOCAL' === $event.value) {
       this.form.get('password').enable();
       this.form.get('confirmPassword').enable();
+    } else {
+      this.form.get('password').disable();
+      this.form.get('confirmPassword').disable();
     }
 
     this.form.get('password').setValue('');
@@ -116,7 +111,8 @@ export class UserFormComponent implements OnInit {
     }
 
     let { requiredConfirmationError }: any = confirmPasswordControl.hasError('required')
-                                             ? { required: true } : {};
+                                             ? { required: true }
+                                             : {};
 
     if (passwordControl.value !== confirmPasswordControl.value) {
       confirmPasswordControl.setErrors({
@@ -139,21 +135,18 @@ export class UserFormComponent implements OnInit {
       return;
     }
 
+    // Disable to remove confirmation from body request.
     this.form.get('confirmPassword').disable();
     let user: any = normalizeFlag(this.form);
 
     if (this.id) {
-      this.userService.editUser(this.id, user)
-        .subscribe(data => {
-          this.router.navigate(['/admin/user'])
-            .then(() => this.toastr.success(data.message, 'Edit User'));
-        });
+      this.userService
+        .edit(this.id, user)
+        .subscribe(() => this.location.back());
     } else {
-      this.userService.addUser(user)
-        .subscribe(data => {
-          this.router.navigate(['admin/user'])
-            .then(() => this.toastr.success(data.message, 'Add User'));
-        });
+      this.userService
+        .add(user)
+        .subscribe(() => this.location.back());
     }
   }
 }

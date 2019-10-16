@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
-import { Page } from '../../../core/model/page.model';
-import { sortTable } from '../../../util';
-import { RoleService } from '../../service/role.service';
+import { PagedApiResponse, PageRequest } from '../../../lib/model';
+import { sortTableFn } from '../../../util';
+import { Role } from '../../model';
+import { RoleService } from '../../service';
 
 @Component({
   templateUrl: './role-table.component.html'
@@ -13,44 +12,43 @@ import { RoleService } from '../../service/role.service';
 export class RoleTableComponent implements OnInit {
 
   ColumnMode = ColumnMode;
+  data: PagedApiResponse<Role>;
   loadingIndicator: boolean;
-  page: Page = new Page();
-  rows: any[] = [];
-  sortTable: Function = sortTable;
+  page: PageRequest = new PageRequest();
+  sortTableFn: Function = sortTableFn;
 
-  constructor(
-    private roleService: RoleService,
-    private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
-  ) {}
+  constructor(private roleService: RoleService) {}
+
+  get offset(): number {
+    return !!(this.data && this.data.number) ? this.data.number : 0;
+  }
+
+  get rows(): Array<Role> {
+    return !!(this.data && this.data.content) ? this.data.content : [];
+  }
+
+  get totalElements(): number {
+    return !!(this.data && this.data.totalElements) ? this.data.totalElements : 0;
+  }
 
   ngOnInit() {
     this.getRole();
   }
 
-  getRole(pageNumber?: number) {
+  getRole(pageNumber: number = 1) {
     this.loadingIndicator = true;
+    this.page.page = pageNumber;
 
-    if (pageNumber) {
-      this.page.pageNumber = pageNumber;
-    }
-
-    this.roleService.getRoles(this.page)
+    this.roleService
+      .getTableRows(this.page)
       .pipe(
         finalize(() => this.loadingIndicator = false)
       )
-      .subscribe(data => {
-        this.page.totalElements = data.totalElements;
-        this.page.totalPages = data.totalPages;
-        this.rows = data['content'];
-      });
+      .subscribe(data => this.data = data);
   }
 
   inactivateRole(roleId: number) {
-    this.roleService.deleteRole(roleId)
-      .subscribe(data => {
-        this.toastr.success(data.message, 'Delete Role');
-        this.getRole();
-      });
+    this.roleService.delete(roleId)
+      .subscribe(() => this.getRole());
   }
 }

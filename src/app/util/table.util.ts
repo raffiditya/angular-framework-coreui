@@ -1,25 +1,6 @@
-import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { Page } from '../core/model/page.model';
+import { PageRequest } from '../lib/model';
 
-export function sortTable(page: Page, event: any): void {
-  page.pageNumber = 1;
-  page.sort = `${event.column.prop},${event.newValue}`;
-}
-
-export function isSearchableTable(search: string, dataRows: any[], page: Page, datatable: DatatableComponent): boolean {
-  if ((search.length > 0) && (search.length < 2)) {
-    return false;
-  }
-
-  datatable.sorts = [];
-  page.sort = '';
-  // empty data row.
-  dataRows.splice(0, dataRows.length);
-
-  if (search.match(/[^-_ a-zA-Z]/g)) {
-    return false;
-  }
-
-  page.searchTerm = search;
-  return true;
+export function sortTableFn(pageRequest: PageRequest, event: any): void {
+  pageRequest.page = 1;
+  pageRequest.sort = `${event.column.prop},${event.newValue}`;
 }

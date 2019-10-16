@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { Page } from '../../core/model/page.model';
-
-const pattern: RegExp = /[^-_ a-zA-Z]/;
+import { PagedApiResponse, PageRequest } from '../../lib/model';
 
 @Component({
   selector: 'app-search-table',
@@ -12,31 +10,35 @@ const pattern: RegExp = /[^-_ a-zA-Z]/;
 export class SearchTableComponent {
 
   @Output() onSearch: EventEmitter<any> = new EventEmitter<any>();
-  @Input() page: Page;
-  @Input() rows: any[];
+  @Input() data: PagedApiResponse<any>;
+  @Input() page: PageRequest;
   @Input() table: DatatableComponent;
+  private readonly pattern: RegExp = /[^-_ a-zA-Z]/;
 
   onKeyPress($event: KeyboardEvent) {
-    if ($event.key.match(pattern)) {
+    if ($event.key.match(this.pattern)) {
       $event.preventDefault();
     }
   }
 
-  onInput(search: string, dataRows: any[], page: Page, datatable: DatatableComponent): void {
+  onInput(search: string, data: PagedApiResponse<any>, page: PageRequest, datatable: DatatableComponent): void {
     if ((search.length > 0) && (search.length < 2)) {
       return;
     }
 
     datatable.sorts = [];
     page.sort = '';
-    // empty data row.
-    dataRows.splice(0, dataRows.length);
+    data.totalElements = 0;
+    data.totalPages = 0;
+    data.number = 0;
+    data.empty = true;
+    data.content = [];
 
-    if (search.match(pattern)) {
+    if (search.match(this.pattern)) {
       return;
     }
 
-    page.searchTerm = search;
+    page.searchTerm = '';
     this.onSearch.emit();
   }
 }

@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-header-blue">
       <span class="font-weight-bold mt-2">
-          {{ path }} User
+          {{ title }} User
       </span>
     </div>
     <div class="card-body">
@@ -135,7 +135,7 @@
         </div>
         <div class="row mt-5">
           <h3 class="col-12">
-            <ng-template [ngIf]="editable && path !== 'Add'">Change&nbsp;</ng-template>
+            <ng-template [ngIf]="editable && title !== 'Add'">Change&nbsp;</ng-template>
             Password
           </h3>
           <div class="col-12">
@@ -148,7 +148,7 @@
           <!-- Password -->
           <fieldset class="col-12 form-group">
             <label
-              [class.required]="path === 'Add' && form.get('password').enabled"
+              [class.required]="title === 'Add' && form.get('password').enabled"
               class="col-form-label"
               for="password"
             >
@@ -178,7 +178,7 @@
           <!-- Confirm Password -->
           <fieldset class="col-12 form-group">
             <label
-              [class.required]="(path === 'Add' || passwordInput.value?.length >= 1) && form.get('confirmPassword').enabled"
+              [class.required]="(title === 'Add' || passwordInput.value?.length >= 1) && form.get('confirmPassword').enabled"
               class="col-form-label"
               for="confirm-password"
             >
@@ -230,6 +230,6 @@
 </div>
 
 
-<user-role-table *ngIf="path !== 'Add'" [editable]="editable"></user-role-table>
+<user-role-table *ngIf="title !== 'Add'" [editable]="editable"></user-role-table>
 
-<user-organization-table *ngIf="path !== 'Add'" [editable]="editable"></user-organization-table>
+<user-organization-table *ngIf="title !== 'Add'" [editable]="editable"></user-organization-table>

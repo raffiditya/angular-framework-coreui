@@ -1,23 +1,22 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../core/services/auth.service';
+import { UserService } from '../core/services';
 
 @Component({
   templateUrl: 'dashboard.component.html'
 })
 export class DashboardComponent {
 
-  constructor(private authService: AuthService) {}
+  constructor(private userService: UserService) {}
 
   get organizations() {
-    return this.authService.organizationNameList;
+    return this.userService.organizationNameList;
   }
 
   get roles() {
-    return this.authService.roleList;
+    return this.userService.roleList;
   }
 
   get username() {
-    return this.authService.username;
+    return this.userService.username;
   }
-
 }

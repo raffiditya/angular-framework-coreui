@@ -14,9 +14,9 @@
             <div class="col d-none d-sm-block ml-2">
               <app-search-table
                 (onSearch)="getUsers()"
+                [data]="data"
                 [page]="page"
-                [rows]="rows"
-                [table]="table"
+                [table]="userTable"
               ></app-search-table>
             </div>
           </div>
@@ -28,27 +28,27 @@
         <div class="col">
           <app-search-table
             (onSearch)="getUsers()"
+            [data]="data"
             [page]="page"
-            [rows]="rows"
-            [table]="table"
+            [table]="userTable"
           ></app-search-table>
         </div>
       </div>
       <div class="row">
         <div class="col">
           <ngx-datatable
-              #table
+              #userTable
               (page)="getUsers($event.offset + 1)"
-              (sort)="sortTable(page, $event); getUsers();"
+              (sort)="sortTableFn(page, $event); getUsers();"
               [columnMode]="ColumnMode.force"
-              [count]="page.totalElements"
+              [count]="totalElements"
               [externalPaging]="true"
               [externalSorting]="true"
               [footerHeight]="50"
               [headerHeight]="50"
               [limit]="page.size"
               [loadingIndicator]="loadingIndicator"
-              [offset]="page.pageNumber - 1"
+              [offset]="offset"
               [rowHeight]="50"
               [rows]="rows"
               [scrollbarH]="true"
@@ -143,7 +143,7 @@
                 ngx-datatable-cell-template
               >
                 <a
-                  (click)="table.rowDetail.toggleExpandRow(row)"
+                  (click)="userTable.rowDetail.toggleExpandRow(row)"
                   [class.datatable-icon-down]="expanded"
                   [class.datatable-icon-right]="!expanded"
                   title="Expand/Collapse Row"

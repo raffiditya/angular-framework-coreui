@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { ToastrService } from 'ngx-toastr';
-import { finalize, map } from 'rxjs/operators';
-import { Page } from '../../../../core/model/page.model';
-import { sortTable } from '../../../../util';
-import { UserRoleService } from '../../../service/user-role.service';
+import { finalize } from 'rxjs/operators';
+import { PagedApiResponse, PageRequest } from '../../../../lib/model';
+import { sortTableFn } from '../../../../util';
+import { UserRole } from '../../../model';
+import { UserRoleService } from '../../../service';
 
 @Component({
   selector: 'user-role-table',
@@ -14,18 +14,29 @@ import { UserRoleService } from '../../../service/user-role.service';
 export class UserRoleTableComponent implements OnInit {
 
   ColumnMode = ColumnMode;
+  data: PagedApiResponse<UserRole>;
   @Input() editable: boolean;
   loadingIndicator: boolean;
-  page: Page = new Page();
-  rows: any[] = [];
-  sortTable: Function = sortTable;
+  page: PageRequest = new PageRequest();
+  sortTableFn: Function = sortTableFn;
   userId: number;
 
   constructor(
     private userRoleService: UserRoleService,
-    private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
+    private activatedRoute: ActivatedRoute
   ) {}
+
+  get offset(): number {
+    return !!(this.data && this.data.number) ? this.data.number : 0;
+  }
+
+  get rows(): Array<UserRole> {
+    return !!(this.data && this.data.content) ? this.data.content : [];
+  }
+
+  get totalElements(): number {
+    return !!(this.data && this.data.totalElements) ? this.data.totalElements : 0;
+  }
 
   ngOnInit() {
     this.userId = Number(this.activatedRoute.snapshot.paramMap.get('userId'));
@@ -34,39 +45,19 @@ export class UserRoleTableComponent implements OnInit {
 
   getUserRole(pageNumber?: number) {
     this.loadingIndicator = true;
+    this.page.page = pageNumber;
 
-    if (pageNumber) {
-      this.page.pageNumber = pageNumber;
-    }
-
-    this.userRoleService.getAssignedRoles(this.userId, this.page)
+    this.userRoleService
+      .getRowsFromRelation(this.page, this.userId)
       .pipe(
-        map(data => ({
-          totalElements: data.totalElements,
-          totalPages: data.totalPages,
-          content: data.content
-            .map(content => {
-              const { ...others } = content;
-              return {
-                ...others,
-                roleName: content.role.name
-              }
-            })
-        })),
         finalize(() => this.loadingIndicator = false)
       )
-      .subscribe(data => {
-        this.page.totalElements = data.totalElements;
-        this.page.totalPages = data.totalPages;
-        this.rows = data.content;
-      });
+      .subscribe(data => this.data = data);
   }
 
   inactivateUserRole(userRoleId: number) {
-    this.userRoleService.deleteAssignedRole(userRoleId)
-      .subscribe(data => {
-        this.toastr.success(data.message, 'Delete User Role');
-        this.getUserRole();
-      });
+    this.userRoleService
+      .delete(userRoleId)
+      .subscribe(() => this.getUserRole());
   }
 }

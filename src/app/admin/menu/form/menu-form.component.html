@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-header-blue">
       <span class="font-weight-bold mt-2">
-        {{ path }} Menu
+        {{ title }} Menu
       </span>
     </div>
     <div class="card-body">
@@ -50,10 +50,10 @@
               <ng-select
                 [items]="icons"
                 [virtualScroll]="true"
-                groupBy="groupName"
                 bindLabel="name"
                 bindValue="value"
                 formControlName="icon"
+                groupBy="groupName"
                 id="icon"
                 labelForId="icon"
                 placeholder="Select icon"
@@ -199,8 +199,7 @@
                 </button>
               </ng-template>
               <button (click)="location.back()" class="btn btn-sm btn-secondary cancel-buttons" type="button">
-                <i class="fa fa-close"></i>
-                Cancel
+                <i class="fa fa-close"></i> Cancel
               </button>
             </div>
           </div>

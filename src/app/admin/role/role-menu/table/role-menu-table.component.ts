@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { ToastrService } from 'ngx-toastr';
-import { finalize, map } from 'rxjs/operators';
-import { Page } from '../../../../core/model/page.model';
-import { sortTable } from '../../../../util';
-import { RoleMenuService } from '../../../service/role-menu.service';
+import { finalize } from 'rxjs/operators';
+import { PagedApiResponse, PageRequest } from '../../../../lib/model';
+import { sortTableFn } from '../../../../util';
+import { RoleMenu } from '../../../model';
+import { RoleMenuService } from '../../../service';
 
 @Component({
   selector: 'role-menu-table',
@@ -14,59 +14,49 @@ import { RoleMenuService } from '../../../service/role-menu.service';
 export class RoleMenuTableComponent implements OnInit {
 
   ColumnMode = ColumnMode;
+  data: PagedApiResponse<RoleMenu>;
   @Input() editable: boolean;
   loadingIndicator: boolean;
-  page: Page = new Page();
+  page: PageRequest = new PageRequest();
   roleId: number;
-  rows: any[] = [];
-  sortTable: Function = sortTable;
+  sortTableFn: Function = sortTableFn;
 
   constructor(
     private roleMenuService: RoleMenuService,
-    private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
+    private activatedRoute: ActivatedRoute
   ) {}
+
+  get offset(): number {
+    return !!(this.data && this.data.number) ? this.data.number : 0;
+  }
+
+  get rows(): Array<RoleMenu> {
+    return !!(this.data && this.data.content) ? this.data.content : [];
+  }
+
+  get totalElements(): number {
+    return !!(this.data && this.data.totalElements) ? this.data.totalElements : 0;
+  }
 
   ngOnInit() {
     this.roleId = Number(this.activatedRoute.snapshot.paramMap.get('roleId'));
     this.getRoleMenu();
   }
 
-  getRoleMenu(pageNumber?: number) {
+  getRoleMenu(pageNumber: number = 1) {
     this.loadingIndicator = true;
+    this.page.page = pageNumber;
 
-    if (pageNumber) {
-      this.page.pageNumber = pageNumber;
-    }
-
-    this.roleMenuService.getAssignedMenus(this.roleId, this.page)
+    this.roleMenuService
+      .getRowsFromRelation(this.page, this.roleId)
       .pipe(
-        map(data => ({
-          totalElements: data.totalElements,
-          totalPages: data.totalPages,
-          content: data.content
-            .map(content => {
-              const { ...others } = content;
-              return {
-                ...others,
-                menuName: content.menu.name
-              }
-            })
-        })),
         finalize(() => this.loadingIndicator = false)
       )
-      .subscribe(data => {
-        this.page.totalElements = data.totalElements;
-        this.page.totalPages = data.totalPages;
-        this.rows = data.content;
-      });
+      .subscribe(data => this.data = data);
   }
 
   inactivateRoleMenu(roleMenuId: number) {
-    this.roleMenuService.deleteAssignedMenu(roleMenuId)
-      .subscribe(data => {
-        this.toastr.success(data.message, 'Delete Role Menu');
-        this.getRoleMenu();
-      });
+    this.roleMenuService.delete(roleMenuId)
+      .subscribe(() => this.getRoleMenu());
   }
 }

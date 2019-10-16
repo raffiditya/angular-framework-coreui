@@ -1,14 +1,12 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
-import { ToastrService } from 'ngx-toastr';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { Page } from '../../../../core/model/page.model';
 import { isFieldInvalid, normalizeFlag } from '../../../../util';
-import { RoleService } from '../../../service/role.service';
-import { UserRoleService } from '../../../service/user-role.service';
+import { Role } from '../../../model';
+import { RoleService, UserRoleService } from '../../../service';
 
 @Component({
   templateUrl: './user-role-form.component.html',
@@ -20,19 +18,17 @@ export class UserRoleFormComponent implements OnInit {
   form: FormGroup;
   id: number = 0;
   isFieldInvalid = isFieldInvalid;
-  path: string = '';
   roleTypeahead: EventEmitter<string> = new EventEmitter<string>();
-  roles: any[] = [];
+  roles: Role[] = [];
+  title: string = '';
   userId: number;
 
   constructor(
-    private router: Router,
     private userRoleService: UserRoleService,
     private roleService: RoleService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    public location: Location,
-    private toastr: ToastrService,
+    public location: Location
   ) {
     this.form = formBuilder.group({
       userId: new FormControl(null, Validators.required),
@@ -52,25 +48,24 @@ export class UserRoleFormComponent implements OnInit {
   ngOnInit() {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('userRoleId'));
     this.userId = Number(this.activatedRoute.snapshot.paramMap.get('userId'));
-    this.path = this.activatedRoute.snapshot.data.title;
+    this.title = this.activatedRoute.snapshot.data.title;
     this.editable = this.activatedRoute.snapshot.data.editable;
     this.searchRole();
-
     this.form.get('userId').setValue(this.userId);
+
+    if (!this.editable) {
+      this.form.disable();
+    }
+
     if (this.id) {
-      this.userRoleService.getAssignedRole(this.id)
+      this.userRoleService
+        .get(this.id)
         .subscribe(data => {
           this.form.patchValue(data);
 
-          this.form.get('activeFlag').setValue(data['activeFlag'] === 'Y');
+          this.form.get('activeFlag').setValue(data.activeFlag === 'Y');
           this.form.get('roleId').patchValue(data.role.id);
           this.roles = [data.role];
-
-          if (this.editable) {
-            this.form.enable();
-          } else {
-            this.form.disable();
-          }
         });
     }
   }
@@ -81,19 +76,9 @@ export class UserRoleFormComponent implements OnInit {
         tap(() => this.roles = []),
         filter(t => t && t.length >= 2),
         debounceTime(300),
-        switchMap(searchTerm => {
-          let page: Page = {
-            size: 3,
-            pageNumber: 1,
-            searchTerm: searchTerm
-          };
-
-          return this.roleService.getRoles(page);
-        }),
+        switchMap(searchText => this.roleService.search(searchText)),
       )
-      .subscribe(data => {
-        this.roles = data.content;
-      });
+      .subscribe(data => this.roles = data);
   }
 
   onSubmit() {
@@ -103,17 +88,13 @@ export class UserRoleFormComponent implements OnInit {
     }
 
     if (this.id) {
-      this.userRoleService.editAssignedRole(this.id, normalizeFlag(this.form))
-        .subscribe(data => {
-          this.toastr.success(data.message, 'Edit Assign Role to User');
-          this.location.back();
-        });
+      this.userRoleService
+        .edit(this.id, normalizeFlag(this.form))
+        .subscribe(() => this.location.back());
     } else {
-      this.userRoleService.addAssignedRole(normalizeFlag(this.form))
-        .subscribe(data => {
-          this.toastr.success(data.message, 'Add Assign Role to User');
-          this.location.back();
-        });
+      this.userRoleService
+        .add(normalizeFlag(this.form))
+        .subscribe(() => this.location.back());
     }
   }
 }

@@ -1,10 +1,8 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-// import { navItems } from '../../_nav';
 import { NavData } from '../../../../_nav';
-import { AuthService } from '../../../services/auth.service';
-import { NavigationService } from '../../../services/navigation.service';
+import { AuthService, NavigationService, UserService } from '../../../services';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,8 +14,13 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   public sidebarMinimized = true;
   private changes: MutationObserver;
 
-  constructor(private authService: AuthService, private navigationService: NavigationService, private router: Router,
-              @Inject(DOCUMENT) _document?: any) {
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+    private navigationService: NavigationService,
+    private router: Router,
+    @Inject(DOCUMENT) _document?: any
+  ) {
     this.changes = new MutationObserver(() => {
       this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
     });
@@ -29,15 +32,15 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   get organizations() {
-    return this.authService.organizationNameList;
+    return this.userService.organizationNameList;
   }
 
   get roles() {
-    return this.authService.roleList;
+    return this.userService.roleList;
   }
 
   get username() {
-    return this.authService.username;
+    return this.userService.username;
   }
 
   ngOnInit(): void {
@@ -56,6 +59,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   onLogout(): void {
-    this.authService.logout().subscribe(() => this.router.navigateByUrl('/login'));
+    this.authService.logout()
+      .subscribe(() => this.router.navigateByUrl('/login'));
   }
 }

@@ -1,14 +1,12 @@
 import { Location } from '@angular/common';
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
-import { ToastrService } from 'ngx-toastr';
-import { debounceTime, filter, switchMap } from 'rxjs/operators';
-import { Page } from '../../../../core/model/page.model';
+import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { isFieldInvalid, normalizeFlag } from '../../../../util';
-import { OrganizationService } from '../../../service/organization.service';
-import { UserOrganizationService } from '../../../service/user-organization.service';
+import { Organization } from '../../../model';
+import { OrganizationService, UserOrganizationService } from '../../../service';
 
 @Component({
   templateUrl: './user-organization-form.component.html',
@@ -21,18 +19,16 @@ export class UserOrganizationFormComponent implements OnInit {
   id: number = 0;
   isFieldInvalid = isFieldInvalid;
   organizationTypeahead: EventEmitter<string> = new EventEmitter<string>();
-  organizations: any[] = [];
-  path: string = '';
+  organizations: Organization[] = [];
+  title: string = '';
   userId: number;
 
   constructor(
-    private router: Router,
     private userOrganizationService: UserOrganizationService,
     private organizationService: OrganizationService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    public location: Location,
-    private toastr: ToastrService,
+    public location: Location
   ) {
     this.form = formBuilder.group({
       userId: new FormControl(null, Validators.required),
@@ -52,25 +48,24 @@ export class UserOrganizationFormComponent implements OnInit {
   ngOnInit() {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('userOrgId'));
     this.userId = Number(this.activatedRoute.snapshot.paramMap.get('userId'));
-    this.path = this.activatedRoute.snapshot.data.title;
+    this.title = this.activatedRoute.snapshot.data.title;
     this.editable = this.activatedRoute.snapshot.data.editable;
     this.searchOrganization();
-
     this.form.get('userId').setValue(this.userId);
+
+    if (!this.editable) {
+      this.form.disable();
+    }
+
     if (this.id) {
-      this.userOrganizationService.getAssignedOrganization(this.id)
+      this.userOrganizationService
+        .get(this.id)
         .subscribe(data => {
           this.form.patchValue(data);
 
-          this.form.get('activeFlag').setValue(data['activeFlag'] === 'Y');
+          this.form.get('activeFlag').setValue(data.activeFlag === 'Y');
           this.form.get('organizationId').patchValue(data.organization.id);
           this.organizations = [data.organization];
-
-          if (this.editable) {
-            this.form.enable();
-          } else {
-            this.form.disable();
-          }
         });
     }
   }
@@ -78,21 +73,12 @@ export class UserOrganizationFormComponent implements OnInit {
   searchOrganization() {
     this.organizationTypeahead
       .pipe(
+        tap(() => this.organizations = []),
         filter(t => t && t.length >= 2),
         debounceTime(300),
-        switchMap(searchTerm => {
-          let page: Page = {
-            size: 3,
-            pageNumber: 1,
-            searchTerm: searchTerm
-          };
-
-          return this.organizationService.getOrganizations(page);
-        }),
+        switchMap(searchText => this.organizationService.search(searchText))
       )
-      .subscribe(data => {
-        this.organizations = data.content;
-      });
+      .subscribe(data => this.organizations = data);
   }
 
   onSubmit() {
@@ -102,18 +88,13 @@ export class UserOrganizationFormComponent implements OnInit {
     }
 
     if (this.id) {
-      this.userOrganizationService.editAssignedOrganization(this.id, normalizeFlag(this.form))
-        .subscribe(data => {
-          this.toastr.success(data.message, 'Edit Assign Organization to User');
-          this.location.back();
-        });
-
+      this.userOrganizationService
+        .edit(this.id, normalizeFlag(this.form))
+        .subscribe(() => this.location.back());
     } else {
-      this.userOrganizationService.addAssignedOrganization(normalizeFlag(this.form))
-        .subscribe(data => {
-          this.toastr.success(data.message, 'Add Assign Organization to User');
-          this.location.back();
-        });
+      this.userOrganizationService
+        .add(normalizeFlag(this.form))
+        .subscribe(() => this.location.back());
     }
   }
 }

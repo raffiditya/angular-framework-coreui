@@ -1,10 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute } from '@angular/router';
 import { isFieldInvalid, normalizeFlag } from '../../../util';
-import { RoleService } from '../../service/role.service';
+import { RoleService } from '../../service';
 
 @Component({
   templateUrl: './role-form.component.html',
@@ -15,16 +14,14 @@ export class RoleFormComponent implements OnInit {
   form: FormGroup;
   id: number = 0;
   isFieldInvalid = isFieldInvalid;
-  path: string = '';
   roleName: string = '';
+  title: string = '';
 
   constructor(
-    private router: Router,
     private roleService: RoleService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     public location: Location,
-    private toastr: ToastrService,
   ) {
     this.form = formBuilder.group({
       activeFlag: new FormControl(false, Validators.required),
@@ -35,22 +32,22 @@ export class RoleFormComponent implements OnInit {
 
   ngOnInit() {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('roleId'));
-    this.path = this.activatedRoute.snapshot.data.title;
+    this.title = this.activatedRoute.snapshot.data.title;
     this.editable = this.activatedRoute.snapshot.data.editable;
 
+    if (!this.editable) {
+      this.form.disable();
+    }
+
     if (this.id) {
-      this.roleService.getRole(this.id).subscribe(data => {
-        this.roleName = data.name;
-        this.form.patchValue(data);
+      this.roleService
+        .get(this.id)
+        .subscribe(data => {
+          this.roleName = data.name;
+          this.form.patchValue(data);
 
-        this.form.get('activeFlag').setValue(data['activeFlag'] === 'Y');
-
-        if (this.editable) {
-          this.form.enable();
-        } else {
-          this.form.disable();
-        }
-      });
+          this.form.get('activeFlag').setValue(data.activeFlag === 'Y');
+        });
     }
   }
 
@@ -62,17 +59,11 @@ export class RoleFormComponent implements OnInit {
 
     if (this.id) {
       this.roleService
-        .editRole(this.id, normalizeFlag(this.form))
-        .subscribe(data => {
-          this.router.navigate(['/admin/role'])
-            .then(() => this.toastr.success(data.message, 'Edit Role'));
-        });
+        .edit(this.id, normalizeFlag(this.form))
+        .subscribe(() => this.location.back());
     } else {
-      this.roleService.addRole(normalizeFlag(this.form))
-        .subscribe(data => {
-          this.router.navigate(['/admin/role'])
-            .then(() => this.toastr.success(data.message, 'Add Role'));
-        });
+      this.roleService.add(normalizeFlag(this.form))
+        .subscribe(() => this.location.back());
     }
   }
 }
