@@ -9,6 +9,6 @@ import { RolePrivilege } from '../model';
 export class RolePrivilegeService extends BaseCrudTableRelationService<RolePrivilege> {
 
   constructor(http: HttpClient) {
-    super(http, `${constant.appUrl}/admin/role-privilege`, 'roleId');
+    super(http, `${constant.adminUrl}/role-privilege`);
   }
 }

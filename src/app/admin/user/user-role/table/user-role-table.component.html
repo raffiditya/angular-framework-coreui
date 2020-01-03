@@ -37,22 +37,22 @@
       <div class="row">
         <div class="col">
           <ngx-datatable
-              #table
-              (page)="getUserRole($event.offset + 1)"
-              (sort)="sortTableFn(page, $event); getUserRole();"
-              [columnMode]="ColumnMode.force"
-              [count]="totalElements"
-              [externalPaging]="true"
-              [externalSorting]="true"
-              [footerHeight]="50"
-              [headerHeight]="50"
-              [limit]="page.size"
-              [loadingIndicator]="loadingIndicator"
-              [offset]="offset"
-              [rowHeight]="50"
-              [rows]="rows"
-              [scrollbarH]="true"
-              class="material striped"
+            #table
+            (page)="getUserRole($event.offset + 1)"
+            (sort)="sortTableFn(page, $event); getUserRole();"
+            [columnMode]="ColumnMode.force"
+            [count]="totalElements"
+            [externalPaging]="true"
+            [externalSorting]="true"
+            [footerHeight]="50"
+            [headerHeight]="50"
+            [limit]="page.size"
+            [loadingIndicator]="loadingIndicator"
+            [offset]="offset"
+            [rowHeight]="50"
+            [rows]="rows"
+            [scrollbarH]="true"
+            class="material striped"
           >
 
             <!-- Row Detail Template -->
@@ -108,7 +108,7 @@
                         [swal]="{
                             titleText: 'Inactive Assigned Role',
                             text: 'Do you want to inactivate ' + name + '?',
-                            type: 'warning',
+                            icon: 'warning',
                             showCancelButton: true
                           }"
                         class="btn btn-danger"
@@ -243,7 +243,7 @@
                   [swal]="{
                     titleText: 'Inactive Assigned Role',
                     text: 'Do you want to inactive ' + name + '?',
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true
                   }"
                   class="btn btn-sm btn-danger"

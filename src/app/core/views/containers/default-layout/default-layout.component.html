@@ -16,10 +16,19 @@
     </li>
   </ul>
   <ul class="nav navbar-nav ml-auto">
-    <li class="nav-item dropdown" dropdown>
+    <li class="nav-item dropdown" dropdown placement="bottom right">
+      <button aria-controls="dropdown-basic" class="btn btn-success dropdown-toggle" dropdownToggle type="button">
+        {{selectedModule?.name}}
+      </button>
+      <ul *dropdownMenu aria-labelledby="basic-link" class="dropdown-menu dropdown-menu-right" role="menu">
+        <li *ngFor="let moduleItem of moduleItems">
+          <a (click)="onSelectChanges(moduleItem)" class="dropdown-item" href="#" role="button">{{moduleItem.name}}</a>
+        </li>
+      </ul>
+    </li>
+    <li class="nav-item dropdown" dropdown placement="bottom right">
       <a (click)="false" aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown"
-         dropdownToggle
-         href="#" role="button">
+         dropdownToggle href="#" role="button">
         <i class="fa fa-user-circle-o fa-2x mt-4" style="display: inline;"></i>
       </a>
       <div *dropdownMenu aria-labelledby="simple-dropdown" class="dropdown-menu dropdown-menu-right">
@@ -35,8 +44,9 @@
   </ul>
 </app-header>
 <div class="app-body">
-  <app-sidebar [display]="'lg'" [fixed]="true">
-    <app-sidebar-nav [disabled]="sidebarMinimized" [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
+  <app-sidebar #appSidebar (minimizedChange)="toggleMinimize($event)" [display]="'lg'" [fixed]="true"
+               [minimized]="sidebarMinimized">
+    <app-sidebar-nav [disabled]="appSidebar.minimized" [navItems]="navItems" [perfectScrollbar]></app-sidebar-nav>
     <app-sidebar-minimizer></app-sidebar-minimizer>
   </app-sidebar>
   <!-- Main content -->

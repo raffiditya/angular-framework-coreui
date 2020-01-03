@@ -9,6 +9,6 @@ import { RoleMenu } from '../model';
 export class RoleMenuService extends BaseCrudTableRelationService<RoleMenu> {
 
   constructor(http: HttpClient) {
-    super(http, `${constant.appUrl}/admin/role-menu`, 'roleId');
+    super(http, `${constant.adminUrl}/role-menu`);
   }
 }

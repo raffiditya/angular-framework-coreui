@@ -54,10 +54,7 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
       blockAllRequestsInProgress: true
     }),
     LoadingBarRouterModule,
-    ToastrModule.forRoot({
-      timeOut: 7000,
-      progressBar: true,
-    }),
+    ToastrModule.forRoot(),
     BsDatepickerModule.forRoot(),
     BsDropdownModule.forRoot(),
     SweetAlert2Module.forRoot()

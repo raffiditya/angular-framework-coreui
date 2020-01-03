@@ -9,6 +9,6 @@ import { Privilege } from '../model';
 export class PrivilegeService extends BaseCrudService<Privilege> {
 
   constructor(http: HttpClient) {
-    super(http, `${constant.appUrl}/admin/privilege`);
+    super(http, `${constant.adminUrl}/privilege`);
   }
 }

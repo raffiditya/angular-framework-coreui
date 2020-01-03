@@ -3,17 +3,17 @@
     <div class="card-header-blue">
       <div class="clearfix">
         <span class="float-left font-weight-bold mt-2">
-          Privilege Assignment Table
+          Module Assignment Table
         </span>
         <div class="float-right">
           <div class="row no-gutters">
-            <button *ngIf="editable" class="btn btn-sm btn-success" routerLink="role-privilege/add" type="button">
+            <button *ngIf="editable" class="btn btn-sm btn-success" routerLink="role-module/add" type="button">
               <i class="fa fa-plus"></i>
               &nbsp;Add New
             </button>
             <div class="col d-none d-sm-block ml-2">
               <app-search-table
-                (onSearch)="getRolePrivilege()"
+                (onSearch)="getRoleModule()"
                 [data]="data"
                 [page]="page"
                 [table]="table"
@@ -27,7 +27,7 @@
       <div class="row d-block d-sm-none">
         <div class="col">
           <app-search-table
-            (onSearch)="getRolePrivilege()"
+            (onSearch)="getRoleModule()"
             [data]="data"
             [page]="page"
             [table]="table"
@@ -38,8 +38,8 @@
         <div class="col">
           <ngx-datatable
             #table
-            (page)="getRolePrivilege($event.offset + 1)"
-            (sort)="sortTableFn(page, $event); getRolePrivilege();"
+            (page)="getRoleModule($event.offset + 1)"
+            (sort)="sortTableFn(page, $event); getRoleModule();"
             [columnMode]="ColumnMode.force"
             [count]="totalElements"
             [externalPaging]="true"
@@ -61,26 +61,29 @@
             >
               <ng-template
                 let-activeFlag="row.activeFlag"
-                let-create="row.canCreate"
-                let-delete="row.canDelete"
                 let-endDate="row.endDate"
                 let-expanded="true"
                 let-id="row.id"
-                let-read="row.canRead"
-                let-update="row.canUpdate"
+                let-name="row.module.name"
+                let-startDate="row.startDate"
                 ngx-datatable-row-detail-template
               >
                 <div style="padding-left: 60px; font-size: 14px">
                   <div class="row mt-2">
-                    <span [ngClass]="create === 'Y' ? 'badge-success' : 'badge-danger'" class="badge mr-1">Create</span>
-                    <span [ngClass]="read === 'Y' ? 'badge-success' : 'badge-danger'" class="badge mr-1">Read</span>
-                    <span [ngClass]="update === 'Y' ? 'badge-success' : 'badge-danger'" class="badge mr-1">Update</span>
-                    <span [ngClass]="delete === 'Y' ? 'badge-success' : 'badge-danger'" class="badge">Delete</span>
+                    {{ startDate }} - {{ endDate }}
+                  </div>
+                  <div class="row mt-2">
+                    <ng-template [ngIfElse]="falseInactive" [ngIf]="activeFlag === 'Y'">
+                      <span class="badge badge-success">Active</span>
+                    </ng-template>
+                    <ng-template #falseInactive>
+                      <span class="badge badge-danger">Inactive</span>
+                    </ng-template>
                   </div>
                   <ng-container *ngIf="editable">
                     <div class="row mt-2">
                       <button
-                        [routerLink]="['role-privilege', id]"
+                        [routerLink]="['role-module', id]"
                         class="btn btn-primary mr-1"
                         data-placement="bottom"
                         data-toggle="tooltip"
@@ -90,7 +93,7 @@
                         <i class="fa fa-eye fa-sm"></i>
                       </button>
                       <button
-                        [routerLink]="['role-privilege', id, 'edit']"
+                        [routerLink]="['role-module', id, 'edit']"
                         class="btn btn-success mr-1"
                         data-placement="bottom"
                         data-toggle="tooltip"
@@ -98,6 +101,23 @@
                         type="button"
                       >
                         <i class="fa fa-edit fa-sm"></i>
+                      </button>
+                      <button
+                        (confirm)="inactivateRoleModule(id)"
+                        [disabled]="activeFlag === 'N'"
+                        [swal]="{
+                            titleText: 'Inactive Assigned Module',
+                            text: 'Do you want to inactivate ' + name + '?',
+                            icon: 'warning',
+                            showCancelButton: true
+                          }"
+                        class="btn btn-danger"
+                        data-placement="bottom"
+                        data-toggle="tooltip"
+                        title="inactivate"
+                        type="button"
+                      >
+                        <i class="fa fa-trash fa-sm"></i>
                       </button>
                     </div>
                   </ng-container>
@@ -128,90 +148,56 @@
               </ng-template>
             </ngx-datatable-column>
 
-            <!-- Privilege Name -->
+            <!-- Module Name -->
             <ngx-datatable-column
               [draggable]="false"
               [sortable]="true"
               name="Name"
-              prop="privilege.name"
+              prop="module.name"
             >
               <ng-template let-value="value" ngx-datatable-cell-template>
                 {{ value | ellipsis: 15 }}
               </ng-template>
             </ngx-datatable-column>
 
-            <!-- Create  -->
+            <!-- Start Date -->
             <ngx-datatable-column
-              [cellClass]="'d-none d-lg-inline'"
+              [cellClass]="'d-none d-md-inline'"
               [draggable]="false"
-              [headerClass]="'d-none d-lg-inline'"
+              [headerClass]="'d-none d-md-inline'"
               [sortable]="true"
-              name="Create"
-              prop="canCreate"
-            >
-              <ng-template let-value="value" ngx-datatable-cell-template>
-                <ng-template [ngIfElse]="falseCan" [ngIf]="value === 'Y'">
-                  <span class="badge badge-success">Yes</span>
-                </ng-template>
-                <ng-template #falseCan>
-                  <span class="badge badge-danger">No</span>
-                </ng-template>
-              </ng-template>
-            </ngx-datatable-column>
+              name="Start Date"
+              prop="startDate"
+            ></ngx-datatable-column>
 
-            <!-- Read -->
+            <!-- End Date -->
             <ngx-datatable-column
-              [cellClass]="'d-none d-lg-inline'"
+              [cellClass]="'d-none d-md-inline'"
               [draggable]="false"
-              [headerClass]="'d-none d-lg-inline'"
+              [headerClass]="'d-none d-md-inline'"
               [sortable]="true"
-              name="Read"
-              prop="canRead"
-            >
-              <ng-template let-value="value" ngx-datatable-cell-template>
-                <ng-template [ngIfElse]="falseCan" [ngIf]="value === 'Y'">
-                  <span class="badge badge-success">Yes</span>
-                </ng-template>
-                <ng-template #falseCan>
-                  <span class="badge badge-danger">No</span>
-                </ng-template>
-              </ng-template>
-            </ngx-datatable-column>
+              name="End Date"
+              prop="endDate"
+            ></ngx-datatable-column>
 
-            <!-- Update -->
+            <!-- Active Flag -->
             <ngx-datatable-column
-              [cellClass]="'d-none d-lg-inline'"
+              [cellClass]="'d-none d-md-inline'"
               [draggable]="false"
-              [headerClass]="'d-none d-lg-inline'"
+              [headerClass]="'d-none d-md-inline'"
               [sortable]="true"
-              name="Update"
-              prop="canUpdate"
+              name="Active"
+              prop="activeFlag"
             >
-              <ng-template let-value="value" ngx-datatable-cell-template>
-                <ng-template [ngIfElse]="falseCan" [ngIf]="value === 'Y'">
-                  <span class="badge badge-success">Yes</span>
+              <ng-template
+                let-value="value"
+                ngx-datatable-cell-template
+              >
+                <ng-template [ngIfElse]="falseInactive" [ngIf]="value === 'Y'">
+                  <span class="badge badge-success">Active</span>
                 </ng-template>
-                <ng-template #falseCan>
-                  <span class="badge badge-danger">No</span>
-                </ng-template>
-              </ng-template>
-            </ngx-datatable-column>
-
-            <!-- Delete -->
-            <ngx-datatable-column
-              [cellClass]="'d-none d-lg-inline'"
-              [draggable]="false"
-              [headerClass]="'d-none d-lg-inline'"
-              [sortable]="true"
-              name="Delete"
-              prop="canDelete"
-            >
-              <ng-template let-value="value" ngx-datatable-cell-template>
-                <ng-template [ngIfElse]="falseCan" [ngIf]="value === 'Y'">
-                  <span class="badge badge-success">Yes</span>
-                </ng-template>
-                <ng-template #falseCan>
-                  <span class="badge badge-danger">No</span>
+                <ng-template #falseInactive>
+                  <span class="badge badge-danger">Inactive</span>
                 </ng-template>
               </ng-template>
             </ngx-datatable-column>
@@ -228,10 +214,11 @@
               <ng-template
                 let-activeFlag="row.activeFlag"
                 let-id="row.id"
+                let-name="row.module.name"
                 ngx-datatable-cell-template
               >
                 <button
-                  [routerLink]="['role-privilege', id]"
+                  [routerLink]="['role-module', id]"
                   class="btn btn-sm btn-primary"
                   data-placement="bottom"
                   data-toggle="tooltip"
@@ -241,7 +228,7 @@
                   <i class="fa fa-eye fa-sm"></i>
                 </button>
                 <button
-                  [routerLink]="['role-privilege', id, 'edit']"
+                  [routerLink]="['role-module', id, 'edit']"
                   class="btn btn-sm btn-success"
                   data-placement="bottom"
                   data-toggle="tooltip"
@@ -249,6 +236,23 @@
                   type="button"
                 >
                   <i class="fa fa-edit fa-sm"></i>
+                </button>
+                <button
+                  (confirm)="inactivateRoleModule(id)"
+                  [disabled]="activeFlag === 'N'"
+                  [swal]="{
+                    titleText: 'Inactive Assigned Role',
+                    text: 'Do you want to inactive ' + name + '?',
+                    icon: 'warning',
+                    showCancelButton: true
+                  }"
+                  class="btn btn-sm btn-danger"
+                  data-placement="bottom"
+                  data-toggle="tooltip"
+                  title="inactivate"
+                  type="button"
+                >
+                  <i class="cui-lock-locked icons"></i>
                 </button>
               </ng-template>
             </ngx-datatable-column>

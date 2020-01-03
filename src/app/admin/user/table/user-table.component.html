@@ -16,7 +16,7 @@
                 (onSearch)="getUsers()"
                 [data]="data"
                 [page]="page"
-                [table]="userTable"
+                [table]="table"
               ></app-search-table>
             </div>
           </div>
@@ -30,29 +30,29 @@
             (onSearch)="getUsers()"
             [data]="data"
             [page]="page"
-            [table]="userTable"
+            [table]="table"
           ></app-search-table>
         </div>
       </div>
       <div class="row">
         <div class="col">
           <ngx-datatable
-              #userTable
-              (page)="getUsers($event.offset + 1)"
-              (sort)="sortTableFn(page, $event); getUsers();"
-              [columnMode]="ColumnMode.force"
-              [count]="totalElements"
-              [externalPaging]="true"
-              [externalSorting]="true"
-              [footerHeight]="50"
-              [headerHeight]="50"
-              [limit]="page.size"
-              [loadingIndicator]="loadingIndicator"
-              [offset]="offset"
-              [rowHeight]="50"
-              [rows]="rows"
-              [scrollbarH]="true"
-              class="material striped"
+            #table
+            (page)="getUsers($event.offset + 1)"
+            (sort)="sortTableFn(page, $event); getUsers();"
+            [columnMode]="ColumnMode.force"
+            [count]="totalElements"
+            [externalPaging]="true"
+            [externalSorting]="true"
+            [footerHeight]="50"
+            [headerHeight]="50"
+            [limit]="page.size"
+            [loadingIndicator]="loadingIndicator"
+            [offset]="offset"
+            [rowHeight]="50"
+            [rows]="rows"
+            [scrollbarH]="true"
+            class="material striped"
           >
 
             <!-- Row Detail Template -->
@@ -113,7 +113,7 @@
                       [swal]="{
                         titleText: 'Inactivate User',
                         text: 'Do you want to inactivate ' + username + '?',
-                        type: 'warning',
+                        icon: 'warning',
                         showCancelButton: true
                       }"
                       class="btn btn-danger"
@@ -143,7 +143,7 @@
                 ngx-datatable-cell-template
               >
                 <a
-                  (click)="userTable.rowDetail.toggleExpandRow(row)"
+                  (click)="table.rowDetail.toggleExpandRow(row)"
                   [class.datatable-icon-down]="expanded"
                   [class.datatable-icon-right]="!expanded"
                   title="Expand/Collapse Row"
@@ -273,7 +273,7 @@
                   [swal]="{
                     titleText: 'Inactivate User',
                     text: 'Do you want to inactivate ' + username + '?',
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true
                   }"
                   class="btn btn-sm btn-danger"

@@ -9,6 +9,6 @@ import { Role } from '../model';
 export class RoleService extends BaseCrudTableService<Role> {
 
   constructor(http: HttpClient) {
-    super(http, `${constant.appUrl}/admin/role`);
+    super(http, `${constant.adminUrl}/role`);
   }
 }

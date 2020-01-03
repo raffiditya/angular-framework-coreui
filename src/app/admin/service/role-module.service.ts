@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 import { constant } from '../../../environments/constant';
 import { BaseCrudTableRelationService } from '../../lib/service';
 import { AdminModule } from '../admin.module';
-import { UserOrg } from '../model';
+import { RoleModule } from '../model';
 
 @Injectable({ providedIn: AdminModule })
-export class UserOrganizationService extends BaseCrudTableRelationService<UserOrg> {
+export class RoleModuleService extends BaseCrudTableRelationService<RoleModule> {
 
   constructor(http: HttpClient) {
-    super(http, `${constant.adminUrl}/user-org`);
+    super(http, `${constant.adminUrl}/role-module`);
   }
 }

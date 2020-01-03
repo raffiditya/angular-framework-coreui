@@ -16,7 +16,7 @@
                 (onSearch)="getMenu()"
                 [data]="data"
                 [page]="page"
-                [table]="menuTable"
+                [table]="table"
               ></app-search-table>
             </div>
           </div>
@@ -30,29 +30,29 @@
             (onSearch)="getMenu()"
             [data]="data"
             [page]="page"
-            [table]="menuTable"
+            [table]="table"
           ></app-search-table>
         </div>
       </div>
       <div class="row">
         <div class="col">
           <ngx-datatable
-              #menuTable
-              (page)="getMenu($event.offset + 1)"
-              (sort)="sortTableFn(page, $event); getMenu();"
-              [columnMode]="ColumnMode.force"
-              [count]="totalElements"
-              [externalPaging]="true"
-              [externalSorting]="true"
-              [footerHeight]="50"
-              [headerHeight]="50"
-              [limit]="page.size"
-              [loadingIndicator]="loadingIndicator"
-              [offset]="offset"
-              [rowHeight]="50"
-              [rows]="rows"
-              [scrollbarH]="true"
-              class="material striped"
+            #table
+            (page)="getMenu($event.offset + 1)"
+            (sort)="sortTableFn(page, $event); getMenu();"
+            [columnMode]="ColumnMode.force"
+            [count]="totalElements"
+            [externalPaging]="true"
+            [externalSorting]="true"
+            [footerHeight]="50"
+            [headerHeight]="50"
+            [limit]="page.size"
+            [loadingIndicator]="loadingIndicator"
+            [offset]="offset"
+            [rowHeight]="50"
+            [rows]="rows"
+            [scrollbarH]="true"
+            class="material striped"
           >
 
             <!-- Row Detail Template -->
@@ -104,7 +104,7 @@
                       [swal]="{
                         titleText: 'Inactivate Menu',
                         text: 'Do you want to inactivate ' + name + '?',
-                        type: 'warning',
+                        icon: 'warning',
                         showCancelButton: true
                       }"
                       class="btn btn-danger"
@@ -134,7 +134,7 @@
                 ngx-datatable-cell-template
               >
                 <a
-                  (click)="menuTable.rowDetail.toggleExpandRow(row)"
+                  (click)="table.rowDetail.toggleExpandRow(row)"
                   [class.datatable-icon-down]="expanded"
                   [class.datatable-icon-right]="!expanded"
                   title="Expand/Collapse Row"
@@ -253,7 +253,7 @@
                   [swal]="{
                     titleText: 'Inactivate Menu',
                     text: 'Do you want to inactivate ' + name + '?',
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true
                   }"
                   class="btn btn-sm btn-danger"

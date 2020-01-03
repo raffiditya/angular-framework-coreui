@@ -6,7 +6,7 @@ import { BaseCrudTableService } from './base-crud-table.service';
 
 export abstract class BaseCrudTableRelationService<T> extends BaseCrudTableService<T> implements TableRelation<T> {
 
-  protected constructor(http: HttpClient, url: string, public relationColumn: string) {
+  protected constructor(http: HttpClient, url: string, public relationColumn: string = 'relationId') {
     super(http, url);
   }
 

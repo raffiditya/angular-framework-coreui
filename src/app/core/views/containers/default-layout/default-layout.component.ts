@@ -1,34 +1,28 @@
-import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavData } from '../../../../_nav';
-import { AuthService, NavigationService, UserService } from '../../../services';
+import { INavData } from '@coreui/angular';
+import { Module } from '../../../model/module.model';
+import { AuthService, ModuleService, NavigationService, UserService } from '../../../services';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
 })
-export class DefaultLayoutComponent implements OnInit, OnDestroy {
-  public element: HTMLElement;
-  public navItems: NavData[] = [];
-  public sidebarMinimized = true;
-  private changes: MutationObserver;
+export class DefaultLayoutComponent implements OnInit {
+
+  public moduleItems: Module[] = [];
+  public navItems: INavData[] = [];
+  public selectedModule: Module;
+  public sidebarMinimized = false;
 
   constructor(
     private authService: AuthService,
     private userService: UserService,
+    private moduleService: ModuleService,
     private navigationService: NavigationService,
-    private router: Router,
-    @Inject(DOCUMENT) _document?: any
+    private router: Router
   ) {
-    this.changes = new MutationObserver(() => {
-      this.sidebarMinimized = _document.body.classList.contains('sidebar-minimized');
-    });
-    this.element = _document.body;
-    this.changes.observe(<Element>this.element, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
+    this.selectedModule = moduleService.selectedModule;
   }
 
   get organizations() {
@@ -43,16 +37,39 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     return this.userService.username;
   }
 
+  toggleMinimize(e) {
+    this.sidebarMinimized = e;
+  }
+
   ngOnInit(): void {
-    this.getMenu();
+    // this.getMenu();
+    this.getModule();
   }
 
-  ngOnDestroy(): void {
-    this.changes.disconnect();
+  onSelectChanges(selectedItem: Module) {
+    this.selectedModule = selectedItem;
+    this.moduleService.selectedModule = selectedItem;
+    this.getMenu(selectedItem);
   }
 
-  getMenu() {
-    this.navigationService.getMenu()
+  getModule() {
+    this.moduleService.getModule()
+      .subscribe(
+        moduleResponse => {
+          this.moduleItems = moduleResponse;
+          if (this.moduleItems !== null && this.moduleItems.length > 0) {
+            if (this.selectedModule == null) {
+              this.selectedModule = this.moduleItems[0];
+              this.moduleService.selectedModule = this.selectedModule;
+            }
+            this.getMenu(this.selectedModule);
+          }
+        }
+      );
+  }
+
+  getMenu(module: Module) {
+    this.navigationService.getMenu(module.id)
       .subscribe(
         navsResponse => this.navItems = navsResponse
       );

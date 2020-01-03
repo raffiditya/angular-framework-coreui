@@ -8,7 +8,7 @@ export abstract class BaseCrudService<T> implements Crud<T> {
 
   search(searchTerm: string): Observable<Array<T>> {
     return this.http.get<Array<T>>(
-      `${this.url}/searchSuggestion`,
+      `${this.url}/searchSuggestions`,
       {
         params: {
           searchTerm: searchTerm

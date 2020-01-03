@@ -4,8 +4,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { isFieldInvalid, normalizeFlag } from '../../../util';
-import { Menu } from '../../model';
-import { MenuService } from '../../service';
+import { Menu, Module } from '../../model';
+import { MenuService, ModuleService } from '../../service';
 import { icons, MenuIconModel } from '../menu-icon.model';
 
 @Component({
@@ -20,10 +20,13 @@ export class MenuFormComponent implements OnInit {
   isFieldInvalid = isFieldInvalid;
   menuTypeahead: EventEmitter<string> = new EventEmitter<string>();
   menus: Menu[] = [];
+  moduleTypeahead: EventEmitter<string> = new EventEmitter<string>();
+  modules: Module[] = [];
   title: string = '';
 
   constructor(
     private menuService: MenuService,
+    private moduleService: ModuleService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     public location: Location,
@@ -31,6 +34,7 @@ export class MenuFormComponent implements OnInit {
     this.form = formBuilder.group({
       activeFlag: new FormControl(false, Validators.required),
       name: new FormControl('', Validators.required),
+      moduleId: new FormControl(null),
       description: new FormControl(null),
       url: new FormControl(''),
       icon: new FormControl(''),
@@ -45,6 +49,7 @@ export class MenuFormComponent implements OnInit {
     this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
     this.title = this.activatedRoute.snapshot.data.title;
     this.editable = this.activatedRoute.snapshot.data.editable;
+    this.searchModule();
     this.searchMenu();
 
     if (!this.editable) {
@@ -62,6 +67,9 @@ export class MenuFormComponent implements OnInit {
           if (data.parentId) {
             this.setParent(data.parentId);
           }
+          if (data.moduleId) {
+            this.setModule(data.moduleId);
+          }
         });
     }
   }
@@ -70,6 +78,12 @@ export class MenuFormComponent implements OnInit {
     this.menuService
       .get(parentId)
       .subscribe(data => this.menus = [data]);
+  }
+
+  setModule(moduleId: number) {
+    this.moduleService
+      .get(moduleId)
+      .subscribe(data => this.modules = [data]);
   }
 
   searchMenu() {
@@ -81,6 +95,17 @@ export class MenuFormComponent implements OnInit {
         switchMap(searchText => this.menuService.search(searchText))
       )
       .subscribe(data => this.menus = data);
+  }
+
+  searchModule() {
+    this.moduleTypeahead
+      .pipe(
+        tap(() => this.modules = []),
+        filter(t => t && t.length >= 2),
+        debounceTime(300),
+        switchMap(searchText => this.moduleService.search(searchText))
+      )
+      .subscribe(data => this.modules = data);
   }
 
   onSubmit(): void {

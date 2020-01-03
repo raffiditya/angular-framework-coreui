@@ -9,6 +9,6 @@ import { Menu } from '../model';
 export class MenuService extends BaseCrudTableService<Menu> {
 
   constructor(http: HttpClient) {
-    super(http, `${constant.appUrl}/admin/menu`);
+    super(http, `${constant.adminUrl}/menu`);
   }
 }

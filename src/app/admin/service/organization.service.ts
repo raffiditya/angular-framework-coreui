@@ -9,6 +9,6 @@ import { Organization } from '../model';
 export class OrganizationService extends BaseCrudTableService<Organization> {
 
   constructor(http: HttpClient) {
-    super(http, `${constant.appUrl}/admin/organization`);
+    super(http, `${constant.adminUrl}/organization`);
   }
 }

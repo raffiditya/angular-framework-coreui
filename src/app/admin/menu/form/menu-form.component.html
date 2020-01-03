@@ -32,6 +32,36 @@
               </ng-container>
             </fieldset>
 
+            <!-- Module -->
+            <fieldset class="form-group">
+              <label class="col-form-label" for="module-id">Module</label>
+              <ng-select
+                [items]="modules"
+                [typeahead]="moduleTypeahead"
+                bindLabel="name"
+                bindValue="id"
+                formControlName="moduleId"
+                id="module-id"
+                placeholder="Select module"
+              >
+                <ng-template ng-typetosearch-tmp>
+                  <div class="ng-option disabled">
+                    Please type 2 or more characters
+                  </div>
+                </ng-template>
+                <ng-template let-searchTerm="searchTerm" ng-notfound-tmp>
+                  <div class="ng-option disabled">
+                    No data found for "{{searchTerm}}"
+                  </div>
+                </ng-template>
+                <ng-template let-searchTerm="searchTerm" ng-loadingtext-tmp>
+                  <div class="ng-option disabled">
+                    Fetching data for "{{searchTerm}}"
+                  </div>
+                </ng-template>
+              </ng-select>
+            </fieldset>
+
             <!-- Url -->
             <fieldset class="form-group">
               <label class="col-form-label" for="url">Url</label>

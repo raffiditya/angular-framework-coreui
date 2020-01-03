@@ -1,9 +1,10 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { RoleFormComponent } from "./form/role-form.component";
-import { RoleMenuFormComponent } from "./role-menu/form/role-menu-form.component";
-import { RolePrivilegeFormComponent } from "./role-privilege/form/role-privilege-form.component";
-import { RoleTableComponent } from "./table/role-table.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { RoleFormComponent } from './form/role-form.component';
+import { RoleMenuFormComponent } from './role-menu/form/role-menu-form.component';
+import { RoleModuleFormComponent } from './role-module/form/role-module-form.component';
+import { RolePrivilegeFormComponent } from './role-privilege/form/role-privilege-form.component';
+import { RoleTableComponent } from './table/role-table.component';
 
 const routes: Routes = [
   {
@@ -54,6 +55,35 @@ const routes: Routes = [
                       editable: true,
                       title: 'Form'
                     }
+                  },
+                  {
+                    path: 'role-module/add',
+                    component: RoleModuleFormComponent,
+                    data: {
+                      title: 'Add Assigned Module',
+                      editable: true
+                    }
+                  },
+                  {
+                    path: 'role-module/:roleModuleId',
+                    children: [
+                      {
+                        path: '',
+                        component: RoleModuleFormComponent,
+                        data: {
+                          title: 'Detail Assigned Module',
+                          editable: false
+                        }
+                      },
+                      {
+                        path: 'edit',
+                        component: RoleModuleFormComponent,
+                        data: {
+                          title: 'Edit Assigned Module',
+                          editable: true
+                        }
+                      }
+                    ]
                   },
                   {
                     path: 'role-menu/add',

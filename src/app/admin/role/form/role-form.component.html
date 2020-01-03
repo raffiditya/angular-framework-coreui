@@ -96,6 +96,8 @@
   </div>
 </div>
 
+<role-module-table *ngIf="title !== 'Add'" [editable]="editable"></role-module-table>
+
 <role-menu-table *ngIf="title !== 'Add'" [editable]="editable"></role-menu-table>
 
 <role-privilege-table *ngIf="title !== 'Add'" [editable]="editable"></role-privilege-table>
