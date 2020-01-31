@@ -13,7 +13,8 @@
     }
   },
   "angularCompilerOptions": {
-    "enableIvy": false
+    "enableIvy": false,
+    "preserveWhitespaces": true
   },
   "exclude": [
     "test.ts",

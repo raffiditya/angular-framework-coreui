@@ -38,7 +38,7 @@ export class SearchTableComponent {
       return;
     }
 
-    page.searchTerm = '';
+    page.searchTerm = search;
     this.onSearch.emit();
   }
 }
