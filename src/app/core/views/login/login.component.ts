@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
         _ => this.router.navigateByUrl('/dashboard'),
         (error: HttpErrorResponse) => {
           let errorResponse = error as HttpErrorResponse;
-          if (errorResponse.status === 401) {
+          if (errorResponse.status === 401 || errorResponse.status === 400) {
             this.wrongPassword = true;
           }
         }

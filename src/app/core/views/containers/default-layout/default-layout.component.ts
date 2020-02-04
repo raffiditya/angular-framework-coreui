@@ -42,7 +42,6 @@ export class DefaultLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.getMenu();
     this.getModule();
   }
 

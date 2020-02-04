@@ -43,7 +43,7 @@ export class UserRoleTableComponent implements OnInit {
     this.getUserRole();
   }
 
-  getUserRole(pageNumber?: number) {
+  getUserRole(pageNumber: number = 1) {
     this.loadingIndicator = true;
     this.page.page = pageNumber;
 

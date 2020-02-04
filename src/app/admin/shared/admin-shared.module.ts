@@ -4,8 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { EllipsisPipe } from '../../shared/pipe/ellipsis.pipe';
-import { SearchTableComponent } from '../../shared/search-table/search-table.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -13,11 +12,8 @@ import { SearchTableComponent } from '../../shared/search-table/search-table.com
     ReactiveFormsModule,
     NgSelectModule,
     NgxDatatableModule,
-    SweetAlert2Module
-  ],
-  declarations: [
-    EllipsisPipe,
-    SearchTableComponent
+    SweetAlert2Module, 
+    SharedModule
   ],
   exports: [
     CommonModule,
@@ -25,8 +21,7 @@ import { SearchTableComponent } from '../../shared/search-table/search-table.com
     NgSelectModule,
     NgxDatatableModule,
     SweetAlert2Module,
-    SearchTableComponent,
-    EllipsisPipe
+    SharedModule
   ]
 })
 export class AdminSharedModule {}
