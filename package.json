@@ -42,7 +42,7 @@
     "classlist.js": "^1.1.20150312",
     "flag-icon-css": "^3.4.5",
     "font-awesome": "^4.7.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mutationobserver-shim": "^0.3.3",
     "ng-block-ui": "^2.1.8",
     "ng2-charts": "^2.3.0",
